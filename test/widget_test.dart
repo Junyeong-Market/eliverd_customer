@@ -1,30 +1,33 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility that Flutter provides. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:eliverdcustomer/main.dart';
+import 'package:Eliverd/main.dart';
+
+import 'package:Eliverd/common/string.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('Main Test', (WidgetTester tester) async {
+    final splashScreenPageKey = Key('SplashScreenPage');
+    final loginPageKey = Key('LoginPage');
+
+    final idFieldKey = Key('IdField');
+    final passwordFieldKey = Key('PasswordField');
+    final signInButtonKey = Key('SignInButton');
+    final signUpButtonKey = Key('SignUpButton');
+
     await tester.pumpWidget(EliverdCustomer());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.byKey(splashScreenPageKey), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    expect(find.text(title), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    await tester.pumpAndSettle(const Duration(seconds: 3));
+
+    expect(find.byKey(loginPageKey), findsOneWidget);
+
+    expect(find.byKey(idFieldKey), findsOneWidget);
+    expect(find.byKey(passwordFieldKey), findsOneWidget);
+    expect(find.byKey(signInButtonKey), findsOneWidget);
+    expect(find.byKey(signUpButtonKey), findsOneWidget);
   });
 }
