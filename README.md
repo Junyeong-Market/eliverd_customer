@@ -12,7 +12,7 @@ Eliverd 플랫폼의 소비자용 모바일 애플리케이션입니다.
 
 ### 불러오기
 ```shell script
-git clone https://github.com/Junyeong-Market/eliverd_store.git -b master
+git clone https://github.com/Junyeong-Market/eliverd_customer.git -b master
 ```
 
 ### 실행
