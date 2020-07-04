@@ -11,8 +11,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  intl: ^0.16.1
   cupertino_icons: ^0.1.3
+  meta: ^1.1.6
+  equatable: ^1.0.0
+  flutter_bloc: ^4.0.0
+  http: ^0.12.0
+  rxdart: ^0.24.1
+  shared_preferences: ^0.5.7+3
 
 dev_dependencies:
   flutter_test:
@@ -20,3 +26,101 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/logo/eliverd_logo_white.png
+    - assets/images/logo/eliverd_logo_original.png
+  fonts:
+    - family: SFProDisplay
+      fonts:
+        - asset: assets/fonts/SFPro/SF-Pro-Display-Black.otf
+          weight: 900
+        - asset: assets/fonts/SFPro/SF-Pro-Display-BlackItalic.otf
+          weight: 900
+          style: italic
+        - asset: assets/fonts/SFPro/SF-Pro-Display-Bold.otf
+          weight: 700
+        - asset: assets/fonts/SFPro/SF-Pro-Display-BoldItalic.otf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/SFPro/SF-Pro-Display-Heavy.otf
+          weight: 800
+        - asset: assets/fonts/SFPro/SF-Pro-Display-HeavyItalic.otf
+          weight: 800
+          style: italic
+        - asset: assets/fonts/SFPro/SF-Pro-Display-Light.otf
+          weight: 300
+        - asset: assets/fonts/SFPro/SF-Pro-Display-LightItalic.otf
+          weight: 300
+          style: italic
+        - asset: assets/fonts/SFPro/SF-Pro-Display-Medium.otf
+          weight: 500
+        - asset: assets/fonts/SFPro/SF-Pro-Display-MediumItalic.otf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/SFPro/SF-Pro-Display-Regular.otf
+          weight: 400
+        - asset: assets/fonts/SFPro/SF-Pro-Display-RegularItalic.otf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/SFPro/SF-Pro-Display-Semibold.otf
+          weight: 600
+        - asset: assets/fonts/SFPro/SF-Pro-Display-SemiboldItalic.otf
+          weight: 600
+          style: italic
+        - asset: assets/fonts/SFPro/SF-Pro-Display-Thin.otf
+          weight: 200
+        - asset: assets/fonts/SFPro/SF-Pro-Display-ThinItalic.otf
+          weight: 200
+          style: italic
+        - asset: assets/fonts/SFPro/SF-Pro-Display-Ultralight.otf
+          weight: 100
+        - asset: assets/fonts/SFPro/SF-Pro-Display-UltralightItalic.otf
+          weight: 100
+          style: italic
+    - family: SFProText
+      fonts:
+        - asset: assets/fonts/SFPro/SF-Pro-Text-Black.otf
+          weight: 900
+        - asset: assets/fonts/SFPro/SF-Pro-Text-BlackItalic.otf
+          weight: 900
+          style: italic
+        - asset: assets/fonts/SFPro/SF-Pro-Text-Bold.otf
+          weight: 700
+        - asset: assets/fonts/SFPro/SF-Pro-Text-BoldItalic.otf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/SFPro/SF-Pro-Text-Heavy.otf
+          weight: 800
+        - asset: assets/fonts/SFPro/SF-Pro-Text-HeavyItalic.otf
+          weight: 800
+          style: italic
+        - asset: assets/fonts/SFPro/SF-Pro-Text-Light.otf
+          weight: 300
+        - asset: assets/fonts/SFPro/SF-Pro-Text-LightItalic.otf
+          weight: 300
+          style: italic
+        - asset: assets/fonts/SFPro/SF-Pro-Text-Medium.otf
+          weight: 500
+        - asset: assets/fonts/SFPro/SF-Pro-Text-MediumItalic.otf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/SFPro/SF-Pro-Text-Regular.otf
+          weight: 400
+        - asset: assets/fonts/SFPro/SF-Pro-Text-RegularItalic.otf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/SFPro/SF-Pro-Text-Semibold.otf
+          weight: 600
+        - asset: assets/fonts/SFPro/SF-Pro-Text-SemiboldItalic.otf
+          weight: 600
+          style: italic
+        - asset: assets/fonts/SFPro/SF-Pro-Text-Thin.otf
+          weight: 200
+        - asset: assets/fonts/SFPro/SF-Pro-Text-ThinItalic.otf
+          weight: 200
+          style: italic
+        - asset: assets/fonts/SFPro/SF-Pro-Text-Ultralight.otf
+          weight: 100
+        - asset: assets/fonts/SFPro/SF-Pro-Text-UltralightItalic.otf
+          weight: 100
+          style: italic

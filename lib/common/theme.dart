@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
-final appTheme = ThemeData(
-  primarySwatch: Colors.lightBlue,
+import 'package:Eliverd/common/color.dart';
+
+final eliverdTheme = ThemeData(
+  primaryColor: eliverdDarkColor,
+  primarySwatch: eliverdSwatchColor,
+  fontFamily: 'SFProText',
   visualDensity: VisualDensity.adaptivePlatformDensity,
 );
