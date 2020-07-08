@@ -62,10 +62,6 @@ class AuthenticationBloc
     if (session != null) {
       final data = await accountRepository.validateSession();
 
-      if (data['is_seller'] == false) {
-        yield AuthenticationError(ErrorMessages.disallowedToManageStoreMessage);
-      }
-
       final authenticatedUser = User(
         userId: data['user_id'],
         nickname: data['nickname'],
@@ -88,10 +84,6 @@ class AuthenticationBloc
       }
 
       final data = await accountRepository.validateSession();
-
-      if (data['is_seller'] == false) {
-        yield AuthenticationError(ErrorMessages.disallowedToManageStoreMessage);
-      }
 
       final authenticatedUser = User(
         userId: data['user_id'],
