@@ -55,6 +55,7 @@ class AccountAPIClient {
     );
 
     if (res.statusCode != 201) {
+      prefs.remove('session');
       throw Exception('Error occurred while creating session');
     }
 
@@ -80,6 +81,7 @@ class AccountAPIClient {
     );
 
     if (res.statusCode != 200) {
+      prefs.remove('session');
       throw Exception('Error occurred while validating session');
     }
 
