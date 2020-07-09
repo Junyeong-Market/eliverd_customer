@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
 
   static const double minExtent = 0.06;
   static const double maxExtentOnKeyboardVisible = 0.5;
-  static const double maxExtent = 0.88;
+  static const double maxExtent = 0.85;
 
   double initialExtent = minExtent;
   BuildContext draggableSheetContext;
