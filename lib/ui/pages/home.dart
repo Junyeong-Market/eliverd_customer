@@ -1,12 +1,14 @@
 import 'dart:async';
 
-import 'package:Eliverd/common/string.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+
+import 'package:Eliverd/common/string.dart';
+import 'package:Eliverd/common/color.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -18,10 +20,13 @@ class _HomePageState extends State<HomePage> {
   Future<CameraPosition> _getResponses;
   Marker _selectedMarker;
 
-  static const double minExtent = 0.08;
-  static const double maxExtent = 1.0;
+  bool _isSearching = false;
+  // bool _isCartRequested = false;
 
-  bool isExpanded = false;
+  static const double minExtent = 0.06;
+  static const double maxExtentOnKeyboardVisible = 0.5;
+  static const double maxExtent = 0.88;
+
   double initialExtent = minExtent;
   BuildContext draggableSheetContext;
 
@@ -100,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             Text(
-                              '오류가 났엉... 다시다시',
+                              HomePageStrings.googleMapCannotBeLoaded,
                               style: TextStyle(
                                 color: Colors.black26,
                                 fontWeight: FontWeight.w600,
@@ -121,7 +126,7 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          '불러오고 있음-_- 좀 기다려봐',
+                          HomePageStrings.googleMapLoading,
                           style: TextStyle(
                             color: Colors.black26,
                             fontWeight: FontWeight.w600,
@@ -137,42 +142,79 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Positioned(
-            top: 60.0,
-            left: 20.0,
+            top: 0.0,
+            left: 0.0,
             child: Container(
-              width: width * 0.9,
-              height: height * 0.05,
-              child: CupertinoTextField(
-                placeholder: HomePageStrings.searchProductHelperText,
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 20.0,
-            left: 20.0,
-            child: Container(
-              width: width * 0.9,
-              height: height * 0.05,
+              width: width,
+              height: height * 0.18,
+              color: _shouldSheetExpanded() ? Colors.white : Colors.transparent,
             ),
           ),
           Positioned(
             bottom: 0.0,
             child: Container(
               width: width,
-              height: height * 0.8,
+              height: height,
               child: SizedBox.expand(
-                child: InkWell(
-                  onTap: _toggleDraggableScrollableSheet,
-                  child: DraggableScrollableActuator(
-                    child: DraggableScrollableSheet(
-                      key: Key(initialExtent.toString()),
-                      minChildSize: minExtent,
-                      maxChildSize: maxExtent,
-                      initialChildSize: initialExtent,
-                      builder: _draggableScrollableSheetBuilder,
-                    ),
+                child: DraggableScrollableActuator(
+                  child: DraggableScrollableSheet(
+                    key: Key(initialExtent.toString()),
+                    minChildSize: minExtent,
+                    maxChildSize: maxExtent,
+                    initialChildSize: initialExtent,
+                    builder: _draggableScrollableSheetBuilder,
                   ),
                 ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 32.0,
+            left: width * 0.05,
+            child: Container(
+              width: width * 0.9,
+              height: 48.0,
+              decoration: BoxDecoration(
+                color: _shouldSheetExpanded() ? Colors.white : Colors.white.withOpacity(0.7),
+                border: Border.all(
+                  color: Colors.black26,
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+              ),
+              padding: EdgeInsets.all(4.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  _buildUserProfileButton(),
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: CupertinoTextField(
+                      placeholder: HomePageStrings.searchProductHelperText,
+                      decoration: BoxDecoration(
+                        color: _shouldSheetExpanded()
+                            ? Colors.white
+                            : Colors.white.withOpacity(0.7),
+                      ),
+                      onTap: () {
+                        _changeDraggableScrollableSheet(
+                            maxExtentOnKeyboardVisible);
+
+                        setState(() {
+                          _isSearching = true;
+                        });
+                      },
+                      onSubmitted: (value) {
+                        _changeDraggableScrollableSheet(minExtent);
+
+                        setState(() {
+                          _isSearching = false;
+                        });
+                      },
+                    ),
+                  ),
+                  _buildCartButton(),
+                ],
               ),
             ),
           ),
@@ -187,15 +229,7 @@ class _HomePageState extends State<HomePage> {
     ),
   ].toSet();
 
-  void _toggleDraggableScrollableSheet() {
-    if (draggableSheetContext != null) {
-      setState(() {
-        initialExtent = isExpanded ? minExtent : maxExtent;
-        isExpanded = !isExpanded;
-      });
-      DraggableScrollableActuator.reset(draggableSheetContext);
-    }
-  }
+  bool _shouldSheetExpanded() => _isSearching;
 
   void _onMapTapped(LatLng position) async {
     String address = await _getAddressFromPosition(position);
@@ -218,6 +252,7 @@ class _HomePageState extends State<HomePage> {
     final height = MediaQuery.of(context).size.height;
 
     draggableSheetContext = context;
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -227,30 +262,28 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       padding: EdgeInsets.symmetric(
-        horizontal: height * 0.05,
+        horizontal: height * 0.03,
       ),
       child: ListView(
+        physics: _shouldSheetExpanded()
+            ? NeverScrollableScrollPhysics()
+            : AlwaysScrollableScrollPhysics(),
+        controller: scrollController,
         children: <Widget>[
-          Divider(
-            indent: 120.0,
-            endIndent: 120.0,
-            height: 16.0,
-            thickness: 4.0,
-          ),
-          Container(
-            width: width,
-            height: height * 0.7,
-            child: ListView.builder(
-              controller: scrollController,
-              itemCount: 25,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(title: Text('Item $index'));
-              },
-            ),
-          ),
+          _buildHomeSheetByState(width, height),
         ],
       ),
     );
+  }
+
+  void _changeDraggableScrollableSheet(double extent) {
+    if (draggableSheetContext != null) {
+      setState(() {
+        initialExtent = extent;
+      });
+
+      DraggableScrollableActuator.reset(draggableSheetContext);
+    }
   }
 
   Future<CameraPosition> _getCurrentLocation() async {
@@ -291,4 +324,246 @@ class _HomePageState extends State<HomePage> {
             '${placemark.country} ${placemark.administrativeArea} ${placemark.locality} ${placemark.name} ${placemark.postalCode}')
         .join(',');
   }
+
+  Widget _buildCartButton() => ButtonTheme(
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        minWidth: 0,
+        height: 0,
+        child: FlatButton(
+          padding: EdgeInsets.all(0.0),
+          textColor: Colors.black38,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          child: Text(
+            '􀍩',
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 24.0,
+            ),
+          ),
+          onPressed: () {
+          },
+        ),
+      );
+
+  Widget _buildUserProfileButton() => Container(
+        width: 40.0,
+        height: 40.0,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: [Colors.black26, Colors.black45],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter),
+          borderRadius: BorderRadius.all(Radius.circular(50.0)),
+        ),
+        child: Center(
+          child: Text(
+            '언퍼노운',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 10.0,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      );
+
+  Widget _buildHomeSheetByState(double width, double height) =>
+      _isSearching
+          ? _buildSearchResult(width, height) : _buildInfoSheet(width, height);
+
+  Widget _buildSearchResult(double width, double height) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: <Widget>[
+      Divider(
+        indent: 120.0,
+        endIndent: 120.0,
+        height: 16.0,
+        thickness: 4.0,
+      ),
+      SizedBox(height: height / 80.0),
+      Text('언제나 난 검색 중!'),
+    ],
+  );
+
+  Widget _buildInfoSheet(double width, double height) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: <Widget>[
+      Divider(
+        indent: 120.0,
+        endIndent: 120.0,
+        height: 16.0,
+        thickness: 4.0,
+      ),
+      SizedBox(height: height / 80.0),
+      Container(
+        width: width,
+        height: height * 0.4,
+        padding: EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: [eliverdLightColor, eliverdDarkColor],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight),
+          borderRadius: BorderRadius.all(Radius.circular(25.0)),
+        ),
+        child: Text(
+          '누가 봐도 오늘의 대표 상품 소개하는 배너',
+          style: TextStyle(
+            fontWeight: FontWeight.w800,
+            color: Colors.white,
+            fontSize: 28.0,
+          ),
+        ),
+      ),
+      SizedBox(height: height / 40.0),
+      Text(
+        '카테고리 살펴보기',
+        style: TextStyle(
+          fontWeight: FontWeight.w800,
+          fontSize: 28.0,
+        ),
+      ),
+      SizedBox(height: height / 80.0),
+      Container(
+        width: width,
+        height: height * 0.2,
+        child: GridView(
+          scrollDirection: Axis.horizontal,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 1,
+            mainAxisSpacing: 8.0,
+          ),
+          children: <Widget>[
+            Container(
+              width: width,
+              height: height * 0.2,
+              padding: EdgeInsets.all(10.0),
+              decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+              ),
+              child: Text(
+                '음식',
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                  fontSize: 24.0,
+                ),
+              ),
+            ),
+            Container(
+              width: width,
+              height: height * 0.2,
+              padding: EdgeInsets.all(10.0),
+              decoration: BoxDecoration(
+                color: Colors.amber,
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+              ),
+              child: Text(
+                '생활용품',
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                  fontSize: 24.0,
+                ),
+              ),
+            ),
+            Container(
+              width: width,
+              height: height * 0.2,
+              padding: EdgeInsets.all(10.0),
+              decoration: BoxDecoration(
+                color: Colors.deepOrange,
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+              ),
+              child: Text(
+                '음반',
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                  fontSize: 24.0,
+                ),
+              ),
+            ),
+            Container(
+              width: width,
+              height: height * 0.2,
+              padding: EdgeInsets.all(10.0),
+              decoration: BoxDecoration(
+                color: Colors.purple,
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+              ),
+              child: Text(
+                '의류',
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                  fontSize: 24.0,
+                ),
+              ),
+            ),
+            Container(
+              width: width,
+              height: height * 0.2,
+              padding: EdgeInsets.all(10.0),
+              decoration: BoxDecoration(
+                color: Colors.pinkAccent,
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+              ),
+              child: Text(
+                '식물',
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                  fontSize: 24.0,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      SizedBox(height: height / 40.0),
+      Text(
+        '내가 가장 많이 살펴본 물건은?',
+        style: TextStyle(
+          fontWeight: FontWeight.w800,
+          fontSize: 28.0,
+        ),
+      ),
+      SizedBox(height: height / 80.0),
+      Container(
+        width: width,
+        height: height * 0.25,
+        padding: EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          color: Colors.greenAccent,
+          borderRadius: BorderRadius.all(Radius.circular(25.0)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'ㅇㅇㅇ 님은...',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+                fontSize: 26.0,
+              ),
+            ),
+            Text(
+              'ㅇㅇ을 가장 좋아하시네요!',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+                fontSize: 22.0,
+              ),
+            ),
+          ],
+        ),
+      ),
+      SizedBox(height: height / 40.0),
+    ],
+  );
 }
