@@ -21,11 +21,13 @@ class _HomePageState extends State<HomePage> {
   Marker _selectedMarker;
 
   bool _isSearching = false;
+  bool _isInfoSheetExpandedToMaximum = false;
+
   // bool _isCartRequested = false;
 
   static const double minExtent = 0.06;
-  static const double maxExtentOnKeyboardVisible = 0.5;
-  static const double maxExtent = 0.85;
+  static const double maxExtentOnKeyboardVisible = 0.48;
+  static const double maxExtent = 0.88;
 
   double initialExtent = minExtent;
   BuildContext draggableSheetContext;
@@ -156,13 +158,26 @@ class _HomePageState extends State<HomePage> {
               width: width,
               height: height,
               child: SizedBox.expand(
-                child: DraggableScrollableActuator(
-                  child: DraggableScrollableSheet(
-                    key: Key(initialExtent.toString()),
-                    minChildSize: minExtent,
-                    maxChildSize: maxExtent,
-                    initialChildSize: initialExtent,
-                    builder: _draggableScrollableSheetBuilder,
+                child: NotificationListener<DraggableScrollableNotification>(
+                  onNotification: (notification) {
+                    setState(() {
+                      if (notification.extent == maxExtent) {
+                        _isInfoSheetExpandedToMaximum = true;
+                      } else {
+                        _isInfoSheetExpandedToMaximum = false;
+                      }
+                    });
+
+                    return false;
+                  },
+                  child: DraggableScrollableActuator(
+                    child: DraggableScrollableSheet(
+                      key: Key(initialExtent.toString()),
+                      minChildSize: minExtent,
+                      maxChildSize: maxExtent,
+                      initialChildSize: initialExtent,
+                      builder: _draggableScrollableSheetBuilder,
+                    ),
                   ),
                 ),
               ),
@@ -175,7 +190,9 @@ class _HomePageState extends State<HomePage> {
               width: width * 0.9,
               height: 48.0,
               decoration: BoxDecoration(
-                color: _shouldSheetExpanded() ? Colors.white : Colors.white.withOpacity(0.7),
+                color: _shouldSheetExpanded()
+                    ? Colors.white
+                    : Colors.white.withOpacity(0.7),
                 border: Border.all(
                   color: Colors.black26,
                   width: 1.0,
@@ -192,9 +209,7 @@ class _HomePageState extends State<HomePage> {
                     child: CupertinoTextField(
                       placeholder: HomePageStrings.searchProductHelperText,
                       decoration: BoxDecoration(
-                        color: _shouldSheetExpanded()
-                            ? Colors.white
-                            : Colors.white.withOpacity(0.7),
+                        color: Colors.transparent,
                       ),
                       onTap: () {
                         _changeDraggableScrollableSheet(
@@ -229,7 +244,7 @@ class _HomePageState extends State<HomePage> {
     ),
   ].toSet();
 
-  bool _shouldSheetExpanded() => _isSearching;
+  bool _shouldSheetExpanded() => _isSearching || _isInfoSheetExpandedToMaximum;
 
   void _onMapTapped(LatLng position) async {
     String address = await _getAddressFromPosition(position);
@@ -264,13 +279,29 @@ class _HomePageState extends State<HomePage> {
       padding: EdgeInsets.symmetric(
         horizontal: height * 0.03,
       ),
-      child: ListView(
-        physics: _shouldSheetExpanded()
-            ? NeverScrollableScrollPhysics()
-            : AlwaysScrollableScrollPhysics(),
-        controller: scrollController,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          _buildHomeSheetByState(width, height),
+          SizedBox(height: height / 80.0),
+          Divider(
+            indent: 120.0,
+            endIndent: 120.0,
+            height: 16.0,
+            thickness: 4.0,
+          ),
+          SizedBox(height: height / 80.0),
+          Expanded(
+            flex: 1,
+            child: ListView(
+              physics: _isSearching
+                  ? NeverScrollableScrollPhysics()
+                  : BouncingScrollPhysics(),
+              controller: scrollController,
+              children: <Widget>[
+                _buildHomeSheetByState(width, height),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -280,6 +311,12 @@ class _HomePageState extends State<HomePage> {
     if (draggableSheetContext != null) {
       setState(() {
         initialExtent = extent;
+
+        if (extent == maxExtent) {
+          _isInfoSheetExpandedToMaximum = true;
+        } else {
+          _isInfoSheetExpandedToMaximum = false;
+        }
       });
 
       DraggableScrollableActuator.reset(draggableSheetContext);
@@ -337,12 +374,11 @@ class _HomePageState extends State<HomePage> {
           child: Text(
             '􀍩',
             style: TextStyle(
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w400,
               fontSize: 24.0,
             ),
           ),
-          onPressed: () {
-          },
+          onPressed: () {},
         ),
       );
 
@@ -351,7 +387,7 @@ class _HomePageState extends State<HomePage> {
         height: 40.0,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              colors: [Colors.black26, Colors.black45],
+              colors: [Colors.black38, Colors.black54],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter),
           borderRadius: BorderRadius.all(Radius.circular(50.0)),
@@ -361,209 +397,196 @@ class _HomePageState extends State<HomePage> {
             '언퍼노운',
             style: TextStyle(
               color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 10.0,
+              fontWeight: FontWeight.w200,
+              fontSize: 11.0,
             ),
             overflow: TextOverflow.ellipsis,
           ),
         ),
       );
 
-  Widget _buildHomeSheetByState(double width, double height) =>
-      _isSearching
-          ? _buildSearchResult(width, height) : _buildInfoSheet(width, height);
+  Widget _buildHomeSheetByState(double width, double height) => _isSearching
+      ? _buildSearchResult(width, height)
+      : _buildInfoSheet(width, height);
 
   Widget _buildSearchResult(double width, double height) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: <Widget>[
-      Divider(
-        indent: 120.0,
-        endIndent: 120.0,
-        height: 16.0,
-        thickness: 4.0,
-      ),
-      SizedBox(height: height / 80.0),
-      Text('언제나 난 검색 중!'),
-    ],
-  );
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(height: height / 80.0),
+          Text('언제나 난 검색 중!'),
+        ],
+      );
 
   Widget _buildInfoSheet(double width, double height) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: <Widget>[
-      Divider(
-        indent: 120.0,
-        endIndent: 120.0,
-        height: 16.0,
-        thickness: 4.0,
-      ),
-      SizedBox(height: height / 80.0),
-      Container(
-        width: width,
-        height: height * 0.4,
-        padding: EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-              colors: [eliverdLightColor, eliverdDarkColor],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight),
-          borderRadius: BorderRadius.all(Radius.circular(25.0)),
-        ),
-        child: Text(
-          '누가 봐도 오늘의 대표 상품 소개하는 배너',
-          style: TextStyle(
-            fontWeight: FontWeight.w800,
-            color: Colors.white,
-            fontSize: 28.0,
-          ),
-        ),
-      ),
-      SizedBox(height: height / 40.0),
-      Text(
-        '카테고리 살펴보기',
-        style: TextStyle(
-          fontWeight: FontWeight.w800,
-          fontSize: 28.0,
-        ),
-      ),
-      SizedBox(height: height / 80.0),
-      Container(
-        width: width,
-        height: height * 0.2,
-        child: GridView(
-          scrollDirection: Axis.horizontal,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 1,
-            mainAxisSpacing: 8.0,
-          ),
-          children: <Widget>[
-            Container(
-              width: width,
-              height: height * 0.2,
-              padding: EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-              ),
-              child: Text(
-                '음식',
-                style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                  fontSize: 24.0,
-                ),
-              ),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            width: width,
+            height: height * 0.4,
+            padding: EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [eliverdLightColor, eliverdDarkColor],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight),
+              borderRadius: BorderRadius.all(Radius.circular(25.0)),
             ),
-            Container(
-              width: width,
-              height: height * 0.2,
-              padding: EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: Colors.amber,
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-              ),
-              child: Text(
-                '생활용품',
-                style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                  fontSize: 24.0,
-                ),
-              ),
-            ),
-            Container(
-              width: width,
-              height: height * 0.2,
-              padding: EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: Colors.deepOrange,
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-              ),
-              child: Text(
-                '음반',
-                style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                  fontSize: 24.0,
-                ),
-              ),
-            ),
-            Container(
-              width: width,
-              height: height * 0.2,
-              padding: EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: Colors.purple,
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-              ),
-              child: Text(
-                '의류',
-                style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                  fontSize: 24.0,
-                ),
-              ),
-            ),
-            Container(
-              width: width,
-              height: height * 0.2,
-              padding: EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: Colors.pinkAccent,
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-              ),
-              child: Text(
-                '식물',
-                style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                  fontSize: 24.0,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      SizedBox(height: height / 40.0),
-      Text(
-        '내가 가장 많이 살펴본 물건은?',
-        style: TextStyle(
-          fontWeight: FontWeight.w800,
-          fontSize: 28.0,
-        ),
-      ),
-      SizedBox(height: height / 80.0),
-      Container(
-        width: width,
-        height: height * 0.25,
-        padding: EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          color: Colors.greenAccent,
-          borderRadius: BorderRadius.all(Radius.circular(25.0)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              'ㅇㅇㅇ 님은...',
+            child: Text(
+              '누가 봐도 오늘의 대표 상품 소개하는 배너',
               style: TextStyle(
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w800,
                 color: Colors.white,
-                fontSize: 26.0,
+                fontSize: 28.0,
               ),
             ),
-            Text(
-              'ㅇㅇ을 가장 좋아하시네요!',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-                fontSize: 22.0,
-              ),
+          ),
+          SizedBox(height: height / 40.0),
+          Text(
+            '카테고리 살펴보기',
+            style: TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 28.0,
             ),
-          ],
-        ),
-      ),
-      SizedBox(height: height / 40.0),
-    ],
-  );
+          ),
+          SizedBox(height: height / 80.0),
+          Container(
+            width: width,
+            height: height * 0.2,
+            child: GridView(
+              scrollDirection: Axis.horizontal,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 1,
+                mainAxisSpacing: 8.0,
+              ),
+              children: <Widget>[
+                Container(
+                  width: width,
+                  height: height * 0.2,
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                  ),
+                  child: Text(
+                    '음식',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      fontSize: 24.0,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: width,
+                  height: height * 0.2,
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.amber,
+                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                  ),
+                  child: Text(
+                    '생활용품',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      fontSize: 24.0,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: width,
+                  height: height * 0.2,
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.deepOrange,
+                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                  ),
+                  child: Text(
+                    '음반',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      fontSize: 24.0,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: width,
+                  height: height * 0.2,
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.purple,
+                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                  ),
+                  child: Text(
+                    '의류',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      fontSize: 24.0,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: width,
+                  height: height * 0.2,
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.pinkAccent,
+                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                  ),
+                  child: Text(
+                    '식물',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      fontSize: 24.0,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: height / 40.0),
+          Text(
+            '내가 가장 많이 살펴본 물건은?',
+            style: TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 28.0,
+            ),
+          ),
+          SizedBox(height: height / 80.0),
+          Container(
+            width: width,
+            height: height * 0.25,
+            padding: EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              color: Colors.greenAccent,
+              borderRadius: BorderRadius.all(Radius.circular(25.0)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'ㅇㅇㅇ 님은...',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    fontSize: 26.0,
+                  ),
+                ),
+                Text(
+                  'ㅇㅇ을 가장 좋아하시네요!',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    fontSize: 22.0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: height / 40.0),
+        ],
+      );
 }
