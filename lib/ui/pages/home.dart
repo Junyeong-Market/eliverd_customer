@@ -498,57 +498,79 @@ class _HomePageState extends State<HomePage> {
                 final width = MediaQuery.of(context).size.width;
                 final height = MediaQuery.of(context).size.height;
 
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Material(
-                    color: Colors.transparent,
-                    child: Center(
-                      child: Container(
-                        width: width * 0.9,
-                        height: height * 0.85,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 1,
-                              blurRadius: 1,
-                              offset: Offset(0, 1),
-                            ),
-                          ],
-                        ),
-                        padding: EdgeInsets.all(24.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              '장바구니',
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 32.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            CupertinoButton(
-                              child: Text(
-                                '주문',
-                                style: TextStyle(
-                                  color: Colors.white,
+                return Material(
+                  color: Colors.transparent,
+                  child: Center(
+                    child: Container(
+                      width: width * 0.9,
+                      height: height * 0.85,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 1,
+                            blurRadius: 1,
+                            offset: Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                      padding: EdgeInsets.all(24.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                '장바구니',
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 32.0,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18.0,
                                 ),
                               ),
-                              color: eliverdColor,
-                              borderRadius: BorderRadius.circular(25.0),
-                              padding: EdgeInsets.symmetric(vertical: 15.0),
-                              onPressed: () {},
+                              ButtonTheme(
+                                materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                                minWidth: 0,
+                                height: 0,
+                                child: FlatButton(
+                                  padding: EdgeInsets.all(0.0),
+                                  textColor: Colors.black,
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  child: Text(
+                                    '􀆄',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 24.0,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          CupertinoButton(
+                            child: Text(
+                              '주문',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0,
+                              ),
                             ),
-                          ],
-                        ),
+                            color: eliverdColor,
+                            borderRadius: BorderRadius.circular(25.0),
+                            padding: EdgeInsets.symmetric(vertical: 15.0),
+                            onPressed: () {},
+                          ),
+                        ],
                       ),
                     ),
                   ),
