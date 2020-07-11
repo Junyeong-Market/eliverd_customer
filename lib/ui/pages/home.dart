@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
   // bool _isCartRequested = false;
 
   static const double minExtent = 0.06;
-  static const double maxExtentOnKeyboardVisible = 0.48;
+  static const double maxExtentOnKeyboardVisible = 0.45;
   static const double maxExtent = 0.83;
 
   double initialExtent = 0.4;
