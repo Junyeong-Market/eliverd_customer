@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
 
   static const double minExtent = 0.06;
   static const double maxExtentOnKeyboardVisible = 0.48;
-  static const double maxExtent = 0.88;
+  static const double maxExtent = 0.83;
 
   double initialExtent = 0.4;
   BuildContext draggableSheetContext;
@@ -152,38 +152,108 @@ class _HomePageState extends State<HomePage> {
             left: 0.0,
             child: Container(
               width: width,
-              height: height * 0.18,
+              height: height * 0.24,
               color: _shouldSheetExpanded() ? Colors.white : Colors.transparent,
             ),
           ),
           Positioned(
-            bottom: 0.0,
+            top: 80.0,
+            left: width * 0.05,
             child: Container(
-              width: width,
-              height: height,
-              child: SizedBox.expand(
-                child: NotificationListener<DraggableScrollableNotification>(
-                  onNotification: (notification) {
-                    setState(() {
-                      if (notification.extent == maxExtent) {
-                        _isInfoSheetExpandedToMaximum = true;
-                      } else {
-                        _isInfoSheetExpandedToMaximum = false;
-                      }
-                    });
-
-                    return false;
-                  },
-                  child: DraggableScrollableActuator(
-                    child: DraggableScrollableSheet(
-                      key: Key(initialExtent.toString()),
-                      minChildSize: minExtent,
-                      maxChildSize: maxExtent,
-                      initialChildSize: initialExtent,
-                      builder: _draggableScrollableSheetBuilder,
+              width: width * 0.9,
+              height: 24.0,
+              padding: EdgeInsets.symmetric(
+                vertical: 1.0,
+              ),
+              child: GridView(
+                scrollDirection: Axis.horizontal,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  mainAxisSpacing: 8.0,
+                  childAspectRatio: 0.28,
+                ),
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.amber,
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    ),
+                    padding: EdgeInsets.all(4.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          '􀑉 음식',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    ),
+                    padding: EdgeInsets.all(4.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          '􀍣 생활용품',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.purple,
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    ),
+                    padding: EdgeInsets.all(4.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          '􀖆 의류',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.deepOrange,
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    ),
+                    padding: EdgeInsets.all(4.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          '􀑈 음반',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -192,16 +262,18 @@ class _HomePageState extends State<HomePage> {
             left: width * 0.05,
             child: Container(
               width: width * 0.9,
-              height: 48.0,
+              height: 40.0,
               decoration: BoxDecoration(
-                color: _shouldSheetExpanded()
-                    ? Colors.white
-                    : Colors.white.withOpacity(0.7),
-                border: Border.all(
-                  color: Colors.black26,
-                  width: 1.0,
-                ),
-                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 1,
+                    blurRadius: 1,
+                    offset: Offset(0, 1),
+                  ),
+                ],
               ),
               padding: EdgeInsets.all(4.0),
               child: Row(
@@ -212,6 +284,9 @@ class _HomePageState extends State<HomePage> {
                     fit: FlexFit.loose,
                     child: CupertinoTextField(
                       placeholder: HomePageStrings.searchProductHelperText,
+                      placeholderStyle: TextStyle(
+                        color: Colors.black45,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.transparent,
                       ),
@@ -234,6 +309,37 @@ class _HomePageState extends State<HomePage> {
                   ),
                   _buildCartButton(),
                 ],
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 0.0,
+            child: Container(
+              width: width,
+              height: height,
+              child: SizedBox.expand(
+                child: NotificationListener<DraggableScrollableNotification>(
+                  onNotification: (notification) {
+                    setState(() {
+                      if (notification.extent >= maxExtent) {
+                        _isInfoSheetExpandedToMaximum = true;
+                      } else {
+                        _isInfoSheetExpandedToMaximum = false;
+                      }
+                    });
+
+                    return false;
+                  },
+                  child: DraggableScrollableActuator(
+                    child: DraggableScrollableSheet(
+                      key: Key(initialExtent.toString()),
+                      minChildSize: minExtent,
+                      maxChildSize: maxExtent,
+                      initialChildSize: initialExtent,
+                      builder: _draggableScrollableSheetBuilder,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -372,7 +478,7 @@ class _HomePageState extends State<HomePage> {
         height: 0,
         child: FlatButton(
           padding: EdgeInsets.all(0.0),
-          textColor: Colors.black38,
+          textColor: Colors.black54,
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           child: Text(
@@ -386,57 +492,25 @@ class _HomePageState extends State<HomePage> {
         ),
       );
 
-  Widget _buildUserProfileButton() => BlocBuilder<AuthenticationBloc, AuthenticationState>(
-    builder: (context, state) {
-      if (state is Authenticated) {
-        return Container(
-          width: 40.0,
-          height: 40.0,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-                colors: [Colors.black38, Colors.black54],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter),
-            borderRadius: BorderRadius.all(Radius.circular(50.0)),
-          ),
-          child: Center(
-            child: Text(
-              state.user.nickname,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w200,
-                fontSize: 11.0,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        );
-      }
-
-      return Container(
-        width: 40.0,
-        height: 40.0,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-              colors: [Colors.black38, Colors.black54],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter),
-          borderRadius: BorderRadius.all(Radius.circular(50.0)),
-        ),
-        child: Center(
+  Widget _buildUserProfileButton() => ButtonTheme(
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        minWidth: 0,
+        height: 0,
+        child: FlatButton(
+          padding: EdgeInsets.all(0.0),
+          textColor: Colors.black54,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
           child: Text(
-            '오류',
+            '􀉩',
             style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w200,
-              fontSize: 11.0,
+              fontWeight: FontWeight.w400,
+              fontSize: 24.0,
             ),
-            overflow: TextOverflow.ellipsis,
           ),
+          onPressed: () {},
         ),
       );
-    },
-  );
 
   Widget _buildHomeSheetByState(double width, double height) => _isSearching
       ? _buildSearchResult(width, height)
