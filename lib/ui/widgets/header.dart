@@ -40,6 +40,7 @@ class Header extends PreferredSize {
               ),
             ),
             backgroundColor: eliverdColor,
+            brightness: Brightness.dark,
             elevation: 0.0,
             actions: actions,
           ),

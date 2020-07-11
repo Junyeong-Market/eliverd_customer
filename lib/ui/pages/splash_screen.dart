@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreenPage> {
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          brightness: Brightness.light,
+          brightness: Brightness.dark,
           elevation: 0.0,
           automaticallyImplyLeading: false,
         ),
