@@ -4,8 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+
+import 'package:Eliverd/bloc/authBloc.dart';
+import 'package:Eliverd/bloc/states/authState.dart';
 
 import 'package:Eliverd/common/string.dart';
 import 'package:Eliverd/common/color.dart';
@@ -382,7 +386,34 @@ class _HomePageState extends State<HomePage> {
         ),
       );
 
-  Widget _buildUserProfileButton() => Container(
+  Widget _buildUserProfileButton() => BlocBuilder<AuthenticationBloc, AuthenticationState>(
+    builder: (context, state) {
+      if (state is Authenticated) {
+        return Container(
+          width: 40.0,
+          height: 40.0,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                colors: [Colors.black38, Colors.black54],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter),
+            borderRadius: BorderRadius.all(Radius.circular(50.0)),
+          ),
+          child: Center(
+            child: Text(
+              state.user.nickname,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w200,
+                fontSize: 11.0,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        );
+      }
+
+      return Container(
         width: 40.0,
         height: 40.0,
         decoration: BoxDecoration(
@@ -394,7 +425,7 @@ class _HomePageState extends State<HomePage> {
         ),
         child: Center(
           child: Text(
-            '언퍼노운',
+            '오류',
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w200,
@@ -404,6 +435,8 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       );
+    },
+  );
 
   Widget _buildHomeSheetByState(double width, double height) => _isSearching
       ? _buildSearchResult(width, height)
