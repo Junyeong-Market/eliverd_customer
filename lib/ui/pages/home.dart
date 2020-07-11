@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
   static const double maxExtentOnKeyboardVisible = 0.45;
   static const double maxExtent = 0.83;
 
-  double initialExtent = 0.4;
+  double initialExtent = 0.36;
   BuildContext draggableSheetContext;
 
   @override
@@ -625,7 +625,7 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           Container(
             width: width,
-            height: height * 0.3,
+            height: height * 0.25,
             padding: EdgeInsets.all(10.0),
             decoration: BoxDecoration(
               gradient: LinearGradient(
