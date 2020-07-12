@@ -16,12 +16,7 @@ class _MyPagePageState extends State<MyPagePage> {
       extendBodyBehindAppBar: true,
       appBar: Header(
         onBackButtonPressed: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => HomePage(),
-            ),
-          );
+          Navigator.pop(context);
         },
         title: '마이페이지',
       ),
