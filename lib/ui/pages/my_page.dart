@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:Eliverd/ui/widgets/header.dart';
-import 'package:Eliverd/ui/pages/home.dart';
 
 class MyPagePage extends StatefulWidget {
   @override
