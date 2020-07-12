@@ -51,5 +51,7 @@ class HomePageStrings {
   static final searchProductHelperText = '원하시는 상품을 검색하세요.';
   static final googleMapCannotBeLoaded = '지도를 불러오는 중 오류가 발생했습니다.\n나중에 다시 시도해주세요.';
   static final googleMapLoading = '지도를 불러오는 중입니다.\n잠시만 기다려주세요.';
-}
 
+  static final cart = '장바구니';
+  static final order = '주문';
+}
