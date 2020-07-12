@@ -23,10 +23,10 @@ class _HomePageState extends State<HomePage> {
   Future<CameraPosition> _getResponses;
   Marker _selectedMarker;
 
+  String _searchKeyword = '';
+
   bool _isSearching = false;
   bool _isInfoSheetExpandedToMaximum = false;
-
-  // bool _isCartRequested = false;
 
   static const double minExtent = 0.06;
   static const double maxExtentOnKeyboardVisible = 0.45;
@@ -58,95 +58,7 @@ class _HomePageState extends State<HomePage> {
               top: 0,
               left: 0,
               right: 0,
-              child: Container(
-                width: double.infinity,
-                height: double.infinity,
-                child: FutureBuilder<CameraPosition>(
-                  future: _getResponses,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      if (snapshot.hasData) {
-                        return GoogleMap(
-                          mapType: MapType.normal,
-                          initialCameraPosition: snapshot.data,
-                          zoomGesturesEnabled: true,
-                          tiltGesturesEnabled: false,
-                          myLocationButtonEnabled: false,
-                          myLocationEnabled: true,
-                          onMapCreated: (GoogleMapController controller) {
-                            _controller.complete(controller);
-                          },
-                          gestureRecognizers: _gesterRecognizer,
-                          onTap: _onMapTapped,
-                          markers: _selectedMarker != null
-                              ? Set.of([_selectedMarker])
-                              : Set.of([]),
-                        );
-                      } else {
-                        return RefreshIndicator(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              ButtonTheme(
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap,
-                                minWidth: 0,
-                                height: 0,
-                                child: FlatButton(
-                                  padding: EdgeInsets.all(0.0),
-                                  textColor: Colors.black12,
-                                  child: Text(
-                                    '⟳',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 56.0,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    return _getCurrentLocation();
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(25.0)),
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                HomePageStrings.googleMapCannotBeLoaded,
-                                style: TextStyle(
-                                  color: Colors.black26,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                          onRefresh: () {
-                            return _getCurrentLocation();
-                          },
-                        );
-                      }
-                    }
-
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            HomePageStrings.googleMapLoading,
-                            style: TextStyle(
-                              color: Colors.black26,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          CupertinoActivityIndicator(),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
+              child: _buildMap(),
             ),
             Positioned(
               top: 0.0,
@@ -174,145 +86,14 @@ class _HomePageState extends State<HomePage> {
                     mainAxisSpacing: 8.0,
                     childAspectRatio: 0.28,
                   ),
-                  children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.amber,
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      ),
-                      padding: EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            '􀑉 음식',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      ),
-                      padding: EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            '􀍣 생활용품',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.purple,
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      ),
-                      padding: EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            '􀖆 의류',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.deepOrange,
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      ),
-                      padding: EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            '􀑈 음반',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                  children: _buildCategoriesList(),
                 ),
               ),
             ),
             Positioned(
               top: 32.0,
               left: width * 0.05,
-              child: Container(
-                width: width * 0.9,
-                height: 40.0,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 1,
-                      blurRadius: 1,
-                      offset: Offset(0, 1),
-                    ),
-                  ],
-                ),
-                padding: EdgeInsets.all(4.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    _buildUserProfileButton(),
-                    Flexible(
-                      fit: FlexFit.loose,
-                      child: CupertinoTextField(
-                        placeholder: HomePageStrings.searchProductHelperText,
-                        placeholderStyle: TextStyle(
-                          color: Colors.black45,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                        ),
-                        onTap: () {
-                          _changeDraggableScrollableSheet(
-                              maxExtentOnKeyboardVisible);
-
-                          setState(() {
-                            _isSearching = true;
-                          });
-                        },
-                        onSubmitted: (value) {
-                          _changeDraggableScrollableSheet(minExtent);
-
-                          setState(() {
-                            _isSearching = false;
-                          });
-                        },
-                      ),
-                    ),
-                    _buildCartButton(),
-                  ],
-                ),
-              ),
+              child: _buildSearchBox(width),
             ),
             Positioned(
               bottom: 0.0,
@@ -321,17 +102,7 @@ class _HomePageState extends State<HomePage> {
                 height: height,
                 child: SizedBox.expand(
                   child: NotificationListener<DraggableScrollableNotification>(
-                    onNotification: (notification) {
-                      setState(() {
-                        if (notification.extent >= maxExtent) {
-                          _isInfoSheetExpandedToMaximum = true;
-                        } else {
-                          _isInfoSheetExpandedToMaximum = false;
-                        }
-                      });
-
-                      return false;
-                    },
+                    onNotification: _toggleInfoSheetExtentByListener,
                     child: DraggableScrollableActuator(
                       child: DraggableScrollableSheet(
                         key: Key(initialExtent.toString()),
@@ -420,6 +191,19 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  bool _toggleInfoSheetExtentByListener(
+      DraggableScrollableNotification notification) {
+    setState(() {
+      if (notification.extent >= maxExtent) {
+        _isInfoSheetExpandedToMaximum = true;
+      } else {
+        _isInfoSheetExpandedToMaximum = false;
+      }
+    });
+
+    return false;
+  }
+
   void _changeDraggableScrollableSheet(double extent) {
     if (draggableSheetContext != null) {
       setState(() {
@@ -494,88 +278,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {
             showDialog(
               context: context,
-              builder: (context) {
-                final width = MediaQuery.of(context).size.width;
-                final height = MediaQuery.of(context).size.height;
-
-                return Material(
-                  color: Colors.transparent,
-                  child: Center(
-                    child: Container(
-                      width: width * 0.9,
-                      height: height * 0.85,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 1,
-                            blurRadius: 1,
-                            offset: Offset(0, 1),
-                          ),
-                        ],
-                      ),
-                      padding: EdgeInsets.all(24.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                '장바구니',
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 32.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              ButtonTheme(
-                                materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                                minWidth: 0,
-                                height: 0,
-                                child: FlatButton(
-                                  padding: EdgeInsets.all(0.0),
-                                  textColor: Colors.black,
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  child: Text(
-                                    '􀆄',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 24.0,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                          CupertinoButton(
-                            child: Text(
-                              '주문',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18.0,
-                              ),
-                            ),
-                            color: eliverdColor,
-                            borderRadius: BorderRadius.circular(25.0),
-                            padding: EdgeInsets.symmetric(vertical: 15.0),
-                            onPressed: () {},
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
+              builder: (context) => _buildShoppingCartList(context),
             );
           },
         ),
@@ -612,14 +315,330 @@ class _HomePageState extends State<HomePage> {
       ? _buildSearchResult(width, height)
       : _buildInfoSheet(width, height);
 
+  // TO-DO: 상품 검색 BLOC 로직 추가
   Widget _buildSearchResult(double width, double height) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          SizedBox(height: height / 80.0),
-          Text('언제나 난 검색 중!'),
+          Text(
+            _searchKeyword,
+          ),
         ],
       );
 
+  Widget _buildMap() => Container(
+        width: double.infinity,
+        height: double.infinity,
+        child: FutureBuilder<CameraPosition>(
+          future: _getResponses,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasData) {
+                return GoogleMap(
+                  mapType: MapType.normal,
+                  initialCameraPosition: snapshot.data,
+                  zoomGesturesEnabled: true,
+                  tiltGesturesEnabled: false,
+                  myLocationButtonEnabled: false,
+                  myLocationEnabled: true,
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller.complete(controller);
+                  },
+                  gestureRecognizers: _gesterRecognizer,
+                  onTap: _onMapTapped,
+                  markers: _selectedMarker != null
+                      ? Set.of([_selectedMarker])
+                      : Set.of([]),
+                );
+              } else {
+                return RefreshIndicator(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      ButtonTheme(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        minWidth: 0,
+                        height: 0,
+                        child: FlatButton(
+                          padding: EdgeInsets.all(0.0),
+                          textColor: Colors.black12,
+                          child: Text(
+                            '⟳',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 56.0,
+                            ),
+                          ),
+                          onPressed: () {
+                            return _getCurrentLocation();
+                          },
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(25.0)),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        HomePageStrings.googleMapCannotBeLoaded,
+                        style: TextStyle(
+                          color: Colors.black26,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                  onRefresh: () {
+                    return _getCurrentLocation();
+                  },
+                );
+              }
+            }
+
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    HomePageStrings.googleMapLoading,
+                    style: TextStyle(
+                      color: Colors.black26,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  CupertinoActivityIndicator(),
+                ],
+              ),
+            );
+          },
+        ),
+      );
+
+  List<Widget> _buildCategoriesList() => <Widget>[
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.amber,
+            borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          ),
+          padding: EdgeInsets.all(4.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                '􀑉 음식',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.green,
+            borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          ),
+          padding: EdgeInsets.all(4.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                '􀍣 생활용품',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.purple,
+            borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          ),
+          padding: EdgeInsets.all(4.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                '􀖆 의류',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.deepOrange,
+            borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          ),
+          padding: EdgeInsets.all(4.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                '􀑈 음반',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ];
+
+  Widget _buildSearchBox(double width) => Container(
+        width: width * 0.9,
+        height: 40.0,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 1,
+              blurRadius: 1,
+              offset: Offset(0, 1),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.all(4.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _buildUserProfileButton(),
+            Flexible(
+              fit: FlexFit.loose,
+              child: CupertinoTextField(
+                placeholder: HomePageStrings.searchProductHelperText,
+                placeholderStyle: TextStyle(
+                  color: Colors.black45,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                ),
+                onTap: () {
+                  _changeDraggableScrollableSheet(maxExtentOnKeyboardVisible);
+
+                  setState(() {
+                    _isSearching = true;
+                  });
+                },
+                onChanged: (value) {
+                  setState(() {
+                    _searchKeyword = value;
+                    // TO-DO: 상품 검색 BLOC 이벤트 요청하기
+                  });
+                },
+                onSubmitted: (value) {
+                  _changeDraggableScrollableSheet(minExtent);
+
+                  // TO-DO: _buildSearchResult 구현 이후 삭제
+                  setState(() {
+                    _isSearching = false;
+                  });
+                },
+              ),
+            ),
+            _buildCartButton(),
+          ],
+        ),
+      );
+
+  // TO-DO: 상품 주문 BLOC 요청 로직 추가
+  Widget _buildShoppingCartList(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
+    return Material(
+      color: Colors.transparent,
+      child: Center(
+        child: Container(
+          width: width * 0.9,
+          height: height * 0.85,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(50.0)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 1,
+                blurRadius: 1,
+                offset: Offset(0, 1),
+              ),
+            ],
+          ),
+          padding: EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    HomePageStrings.cart,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 32.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  ButtonTheme(
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    minWidth: 0,
+                    height: 0,
+                    child: FlatButton(
+                      padding: EdgeInsets.all(0.0),
+                      textColor: Colors.black,
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      child: Text(
+                        '􀆄',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 24.0,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              CupertinoButton(
+                child: Text(
+                  HomePageStrings.order,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0,
+                  ),
+                ),
+                color: eliverdColor,
+                borderRadius: BorderRadius.circular(25.0),
+                padding: EdgeInsets.symmetric(vertical: 15.0),
+                onPressed: () {},
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // TO-DO: 배포 직전에 서버와 연동하여 수정
   Widget _buildInfoSheet(double width, double height) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
