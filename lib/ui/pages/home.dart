@@ -1,12 +1,20 @@
 import 'dart:async';
 
+import 'package:Eliverd/models/models.dart';
+import 'package:Eliverd/ui/widgets/stock.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+
+import 'package:Eliverd/bloc/events/storeEvent.dart';
+import 'package:Eliverd/bloc/states/storeState.dart';
+import 'package:Eliverd/bloc/storeBloc.dart';
 
 import 'package:Eliverd/common/string.dart';
 import 'package:Eliverd/common/color.dart';
@@ -21,7 +29,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Completer<GoogleMapController> _controller = Completer();
   Future<CameraPosition> _getResponses;
-  Marker _selectedMarker;
+  Set<Marker> _stores;
 
   String _searchKeyword = '';
 
@@ -30,7 +38,7 @@ class _HomePageState extends State<HomePage> {
 
   static const double minExtent = 0.06;
   static const double maxExtentOnKeyboardVisible = 0.45;
-  static const double maxExtent = 0.83;
+  static const double maxExtent = 0.84;
 
   double initialExtent = 0.36;
   BuildContext draggableSheetContext;
@@ -130,19 +138,6 @@ class _HomePageState extends State<HomePage> {
 
   bool _shouldSheetExpanded() => _isSearching || _isInfoSheetExpandedToMaximum;
 
-  void _onMapTapped(LatLng position) async {
-    String address = await _getAddressFromPosition(position);
-
-    setState(() {
-      _selectedMarker = _selectedMarker.copyWith(
-        positionParam: position,
-        infoWindowParam: _selectedMarker.infoWindow.copyWith(
-          snippetParam: address,
-        ),
-      );
-    });
-  }
-
   Widget _draggableScrollableSheetBuilder(
     BuildContext context,
     ScrollController scrollController,
@@ -225,23 +220,9 @@ class _HomePageState extends State<HomePage> {
         desiredAccuracy: LocationAccuracy.bestForNavigation);
 
     LatLng latlng = LatLng(position.latitude, position.longitude);
-    String address = await _getAddressFromPosition(latlng);
-
-    setState(() {
-      _selectedMarker = Marker(
-          markerId: MarkerId('Selected'),
-          position: latlng,
-          infoWindow: InfoWindow(title: '위치', snippet: address),
-          draggable: true,
-          onDragEnd: (position) {
-            _selectedMarker = _selectedMarker.copyWith(
-              positionParam: position,
-            );
-          });
-    });
 
     return CameraPosition(
-      target: LatLng(position.latitude, position.longitude),
+      target: latlng,
       zoom: 20.0,
     );
   }
@@ -333,21 +314,53 @@ class _HomePageState extends State<HomePage> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData) {
-                return GoogleMap(
-                  mapType: MapType.normal,
-                  initialCameraPosition: snapshot.data,
-                  zoomGesturesEnabled: true,
-                  tiltGesturesEnabled: false,
-                  myLocationButtonEnabled: false,
-                  myLocationEnabled: true,
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
+                final coordinate = Coordinate(
+                  lat: snapshot.data.target.latitude,
+                  lng: snapshot.data.target.longitude,
+                );
+
+                context.bloc<StoreBloc>().add(FetchStore(coordinate));
+
+                return BlocListener<StoreBloc, StoreState>(
+                  listener: (context, state) {
+                    if (state is StoreFetched) {
+                      print(state.stocks);
+                      setState(() {
+                        final stocks =
+                            groupBy(state.stocks, (stock) => stock.store);
+
+                        _stores = stocks.keys.map((store) {
+                          final latlng =
+                              LatLng(store.location.lat, store.location.lng);
+
+                          return Marker(
+                            markerId: MarkerId(store.id.toString()),
+                            position: latlng,
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => _buildProductList(
+                                    context, store, stocks[store]),
+                              );
+                            },
+                          );
+                        }).toSet();
+                      });
+                    }
                   },
-                  gestureRecognizers: _gesterRecognizer,
-                  onTap: _onMapTapped,
-                  markers: _selectedMarker != null
-                      ? Set.of([_selectedMarker])
-                      : Set.of([]),
+                  child: GoogleMap(
+                    mapType: MapType.normal,
+                    initialCameraPosition: snapshot.data,
+                    zoomGesturesEnabled: true,
+                    tiltGesturesEnabled: false,
+                    myLocationButtonEnabled: false,
+                    myLocationEnabled: true,
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                    gestureRecognizers: _gesterRecognizer,
+                    markers: _stores ?? Set.of([]),
+                  ),
                 );
               } else {
                 return RefreshIndicator(
@@ -554,6 +567,143 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       );
+
+  Widget _buildProductList(
+      BuildContext context, Store store, List<Stock> stocks) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
+    final latlng = LatLng(store.location.lat, store.location.lng);
+
+    Future<String> _getAddress = _getAddressFromPosition(latlng);
+
+    return Material(
+      color: Colors.transparent,
+      child: Center(
+        child: Container(
+          width: width * 0.9,
+          height: height * 0.85,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(50.0)),
+          ),
+          padding: EdgeInsets.only(
+            top: 24.0,
+            left: 16.0,
+            right: 16.0,
+            bottom: 32.0,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                flex: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            store.name,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 32.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            store.description,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w200,
+                            ),
+                          ),
+                          FutureBuilder(
+                            future: _getAddress,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    snapshot.data,
+                                    overflow: TextOverflow.visible,
+                                  );
+                                } else if (snapshot.hasError) {
+                                  return ButtonTheme(
+                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    minWidth: 0,
+                                    height: 0,
+                                    child: FlatButton(
+                                      padding: EdgeInsets.all(0.0),
+                                      textColor: Colors.black,
+                                      splashColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      child: Text(
+                                        '􀅈',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 24.0,
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        _getAddress = _getAddressFromPosition(latlng);
+                                      },
+                                    ),
+                                  );
+                                }
+                              }
+
+                              return CupertinoActivityIndicator();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    ButtonTheme(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      minWidth: 0,
+                      height: 0,
+                      child: FlatButton(
+                        padding: EdgeInsets.all(0.0),
+                        textColor: Colors.black,
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        child: Text(
+                          '􀆄',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 24.0,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 4,
+                child: ListView.builder(
+                  itemBuilder: (context, index) => ShowableStock(
+                    stock: stocks[index],
+                    currentStore: stocks[0].store,
+                  ),
+                  itemCount: stocks.length,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   // TO-DO: 상품 주문 BLOC 요청 로직 추가
   Widget _buildShoppingCartList(BuildContext context) {
