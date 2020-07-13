@@ -582,7 +582,7 @@ class _HomePageState extends State<HomePage> {
       child: Center(
         child: Container(
           width: width * 0.9,
-          height: height * 0.85,
+          height: height * 0.9,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(50.0)),
@@ -715,7 +715,7 @@ class _HomePageState extends State<HomePage> {
       child: Center(
         child: Container(
           width: width * 0.9,
-          height: height * 0.85,
+          height: height * 0.9,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(50.0)),
