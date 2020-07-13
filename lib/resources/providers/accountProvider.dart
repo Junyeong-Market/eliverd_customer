@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:Eliverd/models/models.dart';
 
 class AccountAPIClient {
-  static const baseUrl = 'http://donote.co:8000';
+  static const baseUrl = 'SECRET:8000';
   final http.Client httpClient;
 
   AccountAPIClient({
