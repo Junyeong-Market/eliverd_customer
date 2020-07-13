@@ -31,6 +31,8 @@ class _HomePageState extends State<HomePage> {
   Future<CameraPosition> _getResponses;
   Set<Marker> _stores;
 
+  List<Stock> _carts = [];
+
   String _searchKeyword = '';
 
   bool _isSearching = false;
@@ -213,6 +215,12 @@ class _HomePageState extends State<HomePage> {
 
       DraggableScrollableActuator.reset(draggableSheetContext);
     }
+  }
+
+  void _onCartsChanged(List<Stock> carts) {
+    setState(() {
+      _carts = carts;
+    });
   }
 
   Future<CameraPosition> _getCurrentLocation() async {
@@ -581,18 +589,13 @@ class _HomePageState extends State<HomePage> {
       color: Colors.transparent,
       child: Center(
         child: Container(
-          width: width * 0.9,
-          height: height * 0.9,
+          width: width * 0.85,
+          height: height * 0.85,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(50.0)),
+            borderRadius: BorderRadius.all(Radius.circular(25.0)),
           ),
-          padding: EdgeInsets.only(
-            top: 24.0,
-            left: 16.0,
-            right: 16.0,
-            bottom: 32.0,
-          ),
+          padding: EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -690,12 +693,9 @@ class _HomePageState extends State<HomePage> {
               ),
               Expanded(
                 flex: 4,
-                child: ListView.builder(
-                  itemBuilder: (context, index) => ShowableStock(
-                    stock: stocks[index],
-                    currentStore: stocks[0].store,
-                  ),
-                  itemCount: stocks.length,
+                child: StockList(
+                  stocks: stocks,
+                  onCartsChanged: _onCartsChanged,
                 ),
               ),
             ],
@@ -714,11 +714,11 @@ class _HomePageState extends State<HomePage> {
       color: Colors.transparent,
       child: Center(
         child: Container(
-          width: width * 0.9,
-          height: height * 0.9,
+          width: width * 0.85,
+          height: height * 0.85,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(50.0)),
+            borderRadius: BorderRadius.all(Radius.circular(25.0)),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.5),
@@ -728,7 +728,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          padding: EdgeInsets.all(24.0),
+          padding: EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -766,6 +766,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ],
+              ),
+              Text(
+                _carts.toString(),
               ),
               CupertinoButton(
                 child: Text(

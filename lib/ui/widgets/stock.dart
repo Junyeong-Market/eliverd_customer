@@ -6,17 +6,63 @@ import 'package:Eliverd/models/models.dart';
 
 import 'package:Eliverd/common/color.dart';
 
-class ShowableStock extends StatefulWidget {
-  final Stock stock;
-  final Store currentStore;
+class StockList extends StatefulWidget {
+  final List<Stock> stocks;
+  final ValueChanged<List<Stock>> onCartsChanged;
 
-  const ShowableStock({Key key, @required this.stock, @required this.currentStore}) : super(key: key);
+  const StockList(
+      {Key key, @required this.stocks, @required this.onCartsChanged})
+      : super(key: key);
 
   @override
-  _ShowableStockState createState() => _ShowableStockState();
+  StockListState createState() => StockListState();
 }
 
-class _ShowableStockState extends State<ShowableStock> {
+class StockListState extends State<StockList> {
+  List<Stock> _carts = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemBuilder: (context, index) => ShowableStock(
+        stock: widget.stocks[index],
+        currentStore: widget.stocks[index].store,
+        toggleCart: () {
+          _toggleAddingCart(widget.stocks[index]);
+
+          widget.onCartsChanged(_carts);
+        },
+      ),
+      itemCount: widget.stocks.length,
+    );
+  }
+
+  void _toggleAddingCart(Stock stock) {
+    print(_carts);
+    setState(() {
+      if (_carts.contains(stock)) {
+        _carts.remove(stock);
+      } else {
+        _carts.add(stock);
+      }
+    });
+
+    print(_carts);
+  }
+}
+
+class ShowableStock extends StatelessWidget {
+  final Stock stock;
+  final Store currentStore;
+  final Function toggleCart;
+
+  const ShowableStock(
+      {Key key,
+      @required this.stock,
+      @required this.currentStore,
+      @required this.toggleCart})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -44,7 +90,7 @@ class _ShowableStockState extends State<ShowableStock> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        widget.stock.product.name,
+                        stock.product.name,
                         maxLines: 1,
                         textAlign: TextAlign.left,
                         overflow: TextOverflow.ellipsis,
@@ -54,7 +100,7 @@ class _ShowableStockState extends State<ShowableStock> {
                         ),
                       ),
                       Text(
-                        widget.stock.product.manufacturer.name,
+                        stock.product.manufacturer.name,
                         maxLines: 1,
                         textAlign: TextAlign.left,
                         style: TextStyle(
@@ -69,8 +115,7 @@ class _ShowableStockState extends State<ShowableStock> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     ButtonTheme(
-                      materialTapTargetSize:
-                      MaterialTapTargetSize.shrinkWrap,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       minWidth: 0,
                       height: 0,
                       child: FlatButton(
@@ -83,8 +128,7 @@ class _ShowableStockState extends State<ShowableStock> {
                             fontSize: 24.0,
                           ),
                         ),
-                        onPressed: () {
-                        },
+                        onPressed: toggleCart,
                       ),
                     ),
                   ],
@@ -96,16 +140,19 @@ class _ShowableStockState extends State<ShowableStock> {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(
-                  formattedPrice(widget.stock.price),
-                  maxLines: 1,
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 20.0,
+                Flexible(
+                  flex: 1,
+                  child: Text(
+                    formattedPrice(stock.price),
+                    maxLines: 1,
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20.0,
+                    ),
                   ),
                 ),
-                _buildAmountText(widget.stock.amount),
+                _buildAmountText(stock.amount),
               ],
             ),
           ],
