@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:Eliverd/models/models.dart';
-import 'package:Eliverd/ui/widgets/stock.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,10 +14,14 @@ import 'package:Eliverd/bloc/events/storeEvent.dart';
 import 'package:Eliverd/bloc/states/storeState.dart';
 import 'package:Eliverd/bloc/storeBloc.dart';
 
+import 'package:Eliverd/models/models.dart';
+
 import 'package:Eliverd/common/string.dart';
 import 'package:Eliverd/common/color.dart';
 
 import 'package:Eliverd/ui/pages/my_page.dart';
+import 'package:Eliverd/ui/widgets/stock.dart';
+import 'package:Eliverd/ui/widgets/cart.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -217,9 +219,13 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _onCartsChanged(List<Stock> carts) {
+  void _toggleCart(Stock stock) {
     setState(() {
-      _carts = carts;
+      if (_carts.contains(stock)) {
+        _carts.remove(stock);
+      } else {
+        _carts.add(stock);
+      }
     });
   }
 
@@ -332,7 +338,6 @@ class _HomePageState extends State<HomePage> {
                 return BlocListener<StoreBloc, StoreState>(
                   listener: (context, state) {
                     if (state is StoreFetched) {
-                      print(state.stocks);
                       setState(() {
                         final stocks =
                             groupBy(state.stocks, (stock) => stock.store);
@@ -695,7 +700,7 @@ class _HomePageState extends State<HomePage> {
                 flex: 4,
                 child: StockList(
                   stocks: stocks,
-                  onCartsChanged: _onCartsChanged,
+                  onCartsChanged: _toggleCart,
                 ),
               ),
             ],
@@ -767,8 +772,11 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              Text(
-                _carts.toString(),
+              Expanded(
+                flex: 4,
+                child: CartList(
+                  carts: _carts,
+                ),
               ),
               CupertinoButton(
                 child: Text(

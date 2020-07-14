@@ -8,7 +8,7 @@ import 'package:Eliverd/common/color.dart';
 
 class StockList extends StatefulWidget {
   final List<Stock> stocks;
-  final ValueChanged<List<Stock>> onCartsChanged;
+  final ValueChanged<Stock> onCartsChanged;
 
   const StockList(
       {Key key, @required this.stocks, @required this.onCartsChanged})
@@ -19,8 +19,6 @@ class StockList extends StatefulWidget {
 }
 
 class StockListState extends State<StockList> {
-  List<Stock> _carts = [];
-
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -28,26 +26,11 @@ class StockListState extends State<StockList> {
         stock: widget.stocks[index],
         currentStore: widget.stocks[index].store,
         toggleCart: () {
-          _toggleAddingCart(widget.stocks[index]);
-
-          widget.onCartsChanged(_carts);
+          widget.onCartsChanged(widget.stocks[index]);
         },
       ),
       itemCount: widget.stocks.length,
     );
-  }
-
-  void _toggleAddingCart(Stock stock) {
-    print(_carts);
-    setState(() {
-      if (_carts.contains(stock)) {
-        _carts.remove(stock);
-      } else {
-        _carts.add(stock);
-      }
-    });
-
-    print(_carts);
   }
 }
 
