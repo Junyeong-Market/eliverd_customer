@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 class Categories {
+  // ignore: non_constant_identifier_names
   static final FASHION = Category(
     id: 'fashion',
     icon: '􀖆',
@@ -9,6 +10,7 @@ class Categories {
     text: '의류',
   );
 
+  // ignore: non_constant_identifier_names
   static final BEAUTY = Category(
     id: 'beauty',
     icon: '􀜍',
@@ -16,6 +18,7 @@ class Categories {
     text: '화장품',
   );
 
+  // ignore: non_constant_identifier_names
   static final BABY = Category(
     id: 'baby',
     icon: '􀎸',
@@ -23,6 +26,7 @@ class Categories {
     text: '육아용품',
   );
 
+  // ignore: non_constant_identifier_names
   static final FOOD = Category(
     id: 'food',
     icon: '􀊴',
@@ -30,6 +34,7 @@ class Categories {
     text: '식료품',
   );
 
+  // ignore: non_constant_identifier_names
   static final KITCHEN = Category(
     id: 'kitchen',
     icon: '􀍺',
@@ -37,6 +42,7 @@ class Categories {
     text: '주방용품',
   );
 
+  // ignore: non_constant_identifier_names
   static final LIVING = Category(
     id: 'living',
     icon: '􀙩',
@@ -44,6 +50,7 @@ class Categories {
     text: '생활용품',
   );
 
+  // ignore: non_constant_identifier_names
   static final FURNITURE = Category(
     id: 'furniture',
     icon: '􀎲',
@@ -51,6 +58,7 @@ class Categories {
     text: '가구',
   );
 
+  // ignore: non_constant_identifier_names
   static final DIGITAL = Category(
     id: 'digital',
     icon: '􀙗',
@@ -58,6 +66,7 @@ class Categories {
     text: '전자제품',
   );
 
+  // ignore: non_constant_identifier_names
   static final LEISURE = Category(
     id: 'leisure',
     icon: '􀝐',
@@ -65,6 +74,7 @@ class Categories {
     text: '스포츠/레저',
   );
 
+  // ignore: non_constant_identifier_names
   static final CAR = Category(
     id: 'car',
     icon: '􀙘',
@@ -72,6 +82,7 @@ class Categories {
     text: '자동차용품',
   );
 
+  // ignore: non_constant_identifier_names
   static final PUBLICATION = Category(
     id: 'publication',
     icon: '􀉚',
@@ -79,6 +90,7 @@ class Categories {
     text: '도서/영화/음반',
   );
 
+  // ignore: non_constant_identifier_names
   static final TOY = Category(
     id: 'toy',
     icon: '􀛸',
@@ -86,6 +98,7 @@ class Categories {
     text: '장난감',
   );
 
+  // ignore: non_constant_identifier_names
   static final OFFICE = Category(
     id: 'office',
     icon: '􀒋',
@@ -93,6 +106,7 @@ class Categories {
     text: '문구류',
   );
 
+  // ignore: non_constant_identifier_names
   static final PET = Category(
     id: 'pet',
     icon: '􀓎',
@@ -100,6 +114,7 @@ class Categories {
     text: '동물용품',
   );
 
+  // ignore: non_constant_identifier_names
   static final HEALTH = Category(
     id: 'health',
     icon: '􀑆',
@@ -107,7 +122,7 @@ class Categories {
     text: '헬스용품',
   );
 
-  static final LIST = [FASHION, BEAUTY, BABY, FOOD, KITCHEN, LIVING, FURNITURE, DIGITAL, LEISURE, CAR, PUBLICATION, TOY, OFFICE, PET, HEALTH];
+  static final list = [FASHION, BEAUTY, BABY, FOOD, KITCHEN, LIVING, FURNITURE, DIGITAL, LEISURE, CAR, PUBLICATION, TOY, OFFICE, PET, HEALTH];
 }
 
 class Category extends Equatable {

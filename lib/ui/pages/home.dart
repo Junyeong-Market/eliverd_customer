@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                   itemBuilder: (context, index) {
                     return Container(
                       decoration: BoxDecoration(
-                        color: Categories.LIST[index].color,
+                        color: Categories.list[index].color,
                         borderRadius: BorderRadius.all(Radius.circular(5.0)),
                       ),
                       padding: EdgeInsets.all(4.0),
@@ -109,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            Categories.LIST[index].icon + ' ' + Categories.LIST[index].text,
+                            Categories.list[index].icon + ' ' + Categories.list[index].text,
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w700,
@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     );
                   },
-                  itemCount: Categories.LIST.length,
+                  itemCount: Categories.list.length,
                 ),
               ),
             ),
