@@ -91,14 +91,36 @@ class _HomePageState extends State<HomePage> {
                 padding: EdgeInsets.symmetric(
                   vertical: 1.0,
                 ),
-                child: GridView(
+                child: GridView.builder(
                   scrollDirection: Axis.horizontal,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 1,
                     mainAxisSpacing: 8.0,
-                    childAspectRatio: 0.28,
+                    childAspectRatio: 0.22,
                   ),
-                  children: _buildCategoriesList(),
+                  itemBuilder: (context, index) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Categories.LIST[index].color,
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                      padding: EdgeInsets.all(4.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            Categories.LIST[index].icon + ' ' + Categories.LIST[index].text,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  itemCount: Categories.LIST.length,
                 ),
               ),
             ),
@@ -448,89 +470,6 @@ class _HomePageState extends State<HomePage> {
           },
         ),
       );
-
-  List<Widget> _buildCategoriesList() => <Widget>[
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.amber,
-            borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          ),
-          padding: EdgeInsets.all(4.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                '􀑉 음식',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12.0,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.green,
-            borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          ),
-          padding: EdgeInsets.all(4.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                '􀍣 생활용품',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12.0,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.purple,
-            borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          ),
-          padding: EdgeInsets.all(4.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                '􀖆 의류',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12.0,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.deepOrange,
-            borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          ),
-          padding: EdgeInsets.all(4.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                '􀑈 음반',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12.0,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ];
 
   Widget _buildSearchBox(double width) => Container(
         width: width * 0.9,
