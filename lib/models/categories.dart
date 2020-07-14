@@ -122,7 +122,8 @@ class Categories {
     text: '헬스용품',
   );
 
-  static final list = [FASHION, BEAUTY, BABY, FOOD, KITCHEN, LIVING, FURNITURE, DIGITAL, LEISURE, CAR, PUBLICATION, TOY, OFFICE, PET, HEALTH];
+  static final listByViewPOV = [FASHION, BEAUTY, BABY, FOOD, KITCHEN, LIVING, FURNITURE, DIGITAL, LEISURE, CAR, PUBLICATION, TOY, OFFICE, PET, HEALTH];
+  static final listByNetworkPOV = listByViewPOV.map((category) => category.id).toList();
 }
 
 class Category extends Equatable {
