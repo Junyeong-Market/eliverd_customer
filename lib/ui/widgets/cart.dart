@@ -4,10 +4,14 @@ import 'package:intl/intl.dart';
 
 import 'package:Eliverd/models/models.dart';
 
+import 'package:Eliverd/common/color.dart';
+
 class CartList extends StatefulWidget {
   final List<Stock> carts;
+  final ValueChanged<Stock> removeFromCart;
 
-  const CartList({Key key, @required this.carts}) : super(key: key);
+  const CartList({Key key, @required this.carts, @required this.removeFromCart})
+      : super(key: key);
 
   @override
   CartListState createState() => CartListState();
@@ -16,19 +20,31 @@ class CartList extends StatefulWidget {
 class CartListState extends State<CartList> {
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (context, index) => ShowableCart(
-        stock: widget.carts[index],
-      ),
-      itemCount: widget.carts.length,
-    );
+    return widget.carts.length != 0
+        ? ListView.builder(
+            itemBuilder: (context, index) => ShowableCart(
+              stock: widget.carts[index],
+              removeFromCart: () {
+                setState(() {
+                  widget.removeFromCart(widget.carts[index]);
+                });
+              },
+            ),
+            itemCount: widget.carts.length,
+          )
+        : Text(
+            '장바구니가 비어 있습니다!',
+          );
   }
 }
 
 class ShowableCart extends StatelessWidget {
   final Stock stock;
+  final Function removeFromCart;
 
-  const ShowableCart({Key key, @required this.stock}) : super(key: key);
+  const ShowableCart(
+      {Key key, @required this.stock, @required this.removeFromCart})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -87,26 +103,52 @@ class ShowableCart extends StatelessWidget {
                     ],
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.start,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                      '주문 수량',
-                    ),
-                    Container(
-                      width: 50.0,
-                      height: 50.0,
-                      child: CupertinoPicker.builder(
-                        itemExtent: 32.0,
-                        onSelectedItemChanged: (index) {},
-                        itemBuilder: (context, index) {
-                          return Text(
-                            index.toString(),
-                          );
-                        },
-                        childCount: stock.amount + 1,
+                    ButtonTheme(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      minWidth: 0,
+                      height: 0,
+                      child: FlatButton(
+                        padding: EdgeInsets.all(0.0),
+                        textColor: eliverdColor,
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        child: Text(
+                          '􀍭',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 24.0,
+                          ),
+                        ),
+                        onPressed: removeFromCart,
                       ),
+                    ),
+                    SizedBox(width: 8.0),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          '주문 수량',
+                        ),
+                        Container(
+                          width: 50.0,
+                          height: 50.0,
+                          child: CupertinoPicker.builder(
+                            itemExtent: 32.0,
+                            onSelectedItemChanged: (index) {},
+                            itemBuilder: (context, index) {
+                              return Text(
+                                index.toString(),
+                              );
+                            },
+                            childCount: stock.amount + 1,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

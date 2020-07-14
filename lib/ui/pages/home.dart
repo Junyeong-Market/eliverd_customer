@@ -229,6 +229,12 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _removeFromCart(Stock stock) {
+    setState(() {
+      _carts.remove(stock);
+    });
+  }
+
   Future<CameraPosition> _getCurrentLocation() async {
     Position position = await Geolocator().getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
@@ -598,9 +604,9 @@ class _HomePageState extends State<HomePage> {
           height: height * 0.85,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(25.0)),
+            borderRadius: BorderRadius.all(Radius.circular(50.0)),
           ),
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -723,7 +729,7 @@ class _HomePageState extends State<HomePage> {
           height: height * 0.85,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(25.0)),
+            borderRadius: BorderRadius.all(Radius.circular(50.0)),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.5),
@@ -733,7 +739,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -776,6 +782,7 @@ class _HomePageState extends State<HomePage> {
                 flex: 4,
                 child: CartList(
                   carts: _carts,
+                  removeFromCart: _removeFromCart,
                 ),
               ),
               CupertinoButton(
