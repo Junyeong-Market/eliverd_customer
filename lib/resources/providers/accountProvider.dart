@@ -31,11 +31,7 @@ class AccountAPIClient {
   Future<String> createSession([String userId, String password]) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    final currentSession = prefs.getString('session');
-
-    if (currentSession != null) {
-      return currentSession;
-    } else if (userId == null || password == null) {
+    if (userId == null || password == null) {
       return null;
     }
 
@@ -108,7 +104,7 @@ class AccountAPIClient {
       }
     );
 
-    await prefs.remove('session');
+    prefs.remove('session');
 
     if (res.statusCode != 204) {
       throw Exception('Error occurred while deleting session');
