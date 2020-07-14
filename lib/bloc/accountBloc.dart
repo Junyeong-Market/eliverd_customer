@@ -11,10 +11,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   final AccountRepository accountRepository;
 
   AccountBloc({@required this.accountRepository})
-      : assert(accountRepository != null);
-
-  @override
-  AccountState get initialState => AccountInitial();
+      : assert(accountRepository != null), super(AccountInitial());
 
   @override
   Stream<AccountState> mapEventToState(AccountEvent event) async* {

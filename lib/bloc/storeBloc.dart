@@ -12,10 +12,7 @@ import 'package:Eliverd/resources/repositories/repositories.dart';
 class StoreBloc extends Bloc<StoreEvent, StoreState> {
   final StoreRepository storeRepository;
 
-  StoreBloc({@required this.storeRepository}) : assert(storeRepository != null);
-
-  @override
-  StoreState get initialState => StoreNotFetched();
+  StoreBloc({@required this.storeRepository}) : assert(storeRepository != null), super(StoreNotFetched());
 
   @override
   Stream<StoreState> mapEventToState(StoreEvent event) async* {

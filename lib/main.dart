@@ -16,7 +16,7 @@ import 'package:Eliverd/ui/pages/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  BlocSupervisor.delegate = EliverdBlocDelegate();
+  Bloc.observer = EliverdBlocDelegate();
 
   runApp(EliverdCustomer());
 }
@@ -54,7 +54,7 @@ class EliverdCustomer extends StatelessWidget {
   }
 }
 
-class EliverdBlocDelegate extends BlocDelegate {
+class EliverdBlocDelegate extends BlocObserver {
   @override
   void onEvent(Bloc bloc, Object event) {
     print('onEvent $event');

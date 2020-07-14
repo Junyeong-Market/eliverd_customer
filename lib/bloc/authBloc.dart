@@ -14,10 +14,7 @@ class AuthenticationBloc
 
   AuthenticationBloc(
       {@required this.accountRepository})
-      : assert(accountRepository != null);
-
-  @override
-  AuthenticationState get initialState => NotAuthenticated();
+      : assert(accountRepository != null), super(NotAuthenticated());
 
   @override
   Stream<AuthenticationState> mapEventToState(
