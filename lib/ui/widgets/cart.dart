@@ -4,8 +4,6 @@ import 'package:intl/intl.dart';
 
 import 'package:Eliverd/models/models.dart';
 
-import 'package:Eliverd/common/color.dart';
-
 class CartList extends StatefulWidget {
   final List<Stock> carts;
 
