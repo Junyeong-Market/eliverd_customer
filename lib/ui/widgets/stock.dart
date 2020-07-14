@@ -128,7 +128,8 @@ class ShowableStock extends StatelessWidget {
                   child: Text(
                     formattedPrice(stock.price),
                     maxLines: 1,
-                    textAlign: TextAlign.right,
+                    textAlign: TextAlign.left,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 20.0,

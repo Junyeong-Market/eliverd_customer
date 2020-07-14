@@ -33,7 +33,11 @@ class CartListState extends State<CartList> {
             itemCount: widget.carts.length,
           )
         : Text(
-            '장바구니가 비어 있습니다!',
+            '장바구니가 비어 있습니다. 지도에서 원하시는 상품을 장바구니에 넣어보세요!',
+            style: TextStyle(
+              fontSize: 14.0,
+              color: Colors.black45,
+            ),
           );
   }
 }
@@ -94,7 +98,8 @@ class ShowableCart extends StatelessWidget {
                       Text(
                         formattedPrice(stock.price),
                         maxLines: 1,
-                        textAlign: TextAlign.right,
+                        textAlign: TextAlign.left,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 20.0,
