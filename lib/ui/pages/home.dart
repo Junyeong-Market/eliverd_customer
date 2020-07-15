@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:Eliverd/common/marker.dart';
 import 'package:Eliverd/ui/widgets/shopping_cart_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +31,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Completer<GoogleMapController> _controller = Completer();
-  Future<CameraPosition> _getResponses;
-  Set<Marker> _stores;
+  Future<Coordinate> _coordinate;
+  Future<Set<Marker>> _storeMarkers;
 
   List<Stock> _carts = [];
 
@@ -51,7 +52,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    _getResponses = _getCurrentLocation();
+    _coordinate = _getCurrentLocation();
   }
 
   @override
@@ -109,7 +110,9 @@ class _HomePageState extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            Categories.listByViewPOV[index].icon + ' ' + Categories.listByViewPOV[index].text,
+                            Categories.listByViewPOV[index].icon +
+                                ' ' +
+                                Categories.listByViewPOV[index].text,
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w700,
@@ -257,15 +260,13 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Future<CameraPosition> _getCurrentLocation() async {
+  Future<Coordinate> _getCurrentLocation() async {
     Position position = await Geolocator().getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
 
-    LatLng latlng = LatLng(position.latitude, position.longitude);
-
-    return CameraPosition(
-      target: latlng,
-      zoom: 20.0,
+    return Coordinate(
+      lat: position.latitude,
+      lng: position.longitude,
     );
   }
 
@@ -280,6 +281,39 @@ class _HomePageState extends State<HomePage> {
         .map((placemark) =>
             '${placemark.country} ${placemark.administrativeArea} ${placemark.locality} ${placemark.name} ${placemark.postalCode}')
         .join(',');
+  }
+
+  Future<Set<Marker>> _getStoreMarkers(List<Stock> stockBatch) async {
+    final stocks = groupBy(stockBatch, (stock) => stock.store);
+
+    final markers = await Future.wait(stocks.keys.map((store) async {
+      final stocksFromStore = stocks[store];
+      final latlng = LatLng(store.location.lat, store.location.lng);
+
+      final categories = stocksFromStore
+          .map((stock) => stock.product.category)
+          .map((category) => Categories.listByNetworkPOV[category])
+          .toSet()
+          .toList();
+
+      final markerIcon = await Markers.getMarkerIconByCategories(store.name, categories);
+
+      return Marker(
+        markerId: MarkerId(store.id.toString()),
+        position: latlng,
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (context) =>
+                _buildProductList(context, store, stocksFromStore),
+          );
+        },
+        icon: markerIcon,
+      );
+    }).toSet())
+        .then((value) => value.toSet());
+
+    return markers;
   }
 
   Widget _buildCartButton() => ButtonTheme(
@@ -354,101 +388,66 @@ class _HomePageState extends State<HomePage> {
   Widget _buildMap() => Container(
         width: double.infinity,
         height: double.infinity,
-        child: FutureBuilder<CameraPosition>(
-          future: _getResponses,
+        child: FutureBuilder<Coordinate>(
+          future: _coordinate,
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.hasData) {
-                final coordinate = Coordinate(
-                  lat: snapshot.data.target.latitude,
-                  lng: snapshot.data.target.longitude,
-                );
+            if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+              final coordinate = snapshot.data;
 
-                context.bloc<StoreBloc>().add(FetchStore(coordinate));
+              final cameraPosition = CameraPosition(
+                target: LatLng(coordinate.lat, coordinate.lng),
+                zoom: 20.0,
+              );
 
-                return BlocListener<StoreBloc, StoreState>(
-                  listener: (context, state) {
-                    if (state is StoreFetched) {
-                      setState(() {
-                        final stocks =
-                            groupBy(state.stocks, (stock) => stock.store);
+              context.bloc<StoreBloc>().add(FetchStore(coordinate));
 
-                        _stores = stocks.keys.map((store) {
-                          final latlng =
-                              LatLng(store.location.lat, store.location.lng);
-
-                          return Marker(
-                            markerId: MarkerId(store.id.toString()),
-                            position: latlng,
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => _buildProductList(
-                                    context, store, stocks[store]),
-                              );
-                            },
-                          );
-                        }).toSet();
-                      });
-                    }
-                  },
-                  child: GoogleMap(
-                    mapType: MapType.normal,
-                    initialCameraPosition: snapshot.data,
-                    zoomGesturesEnabled: true,
-                    tiltGesturesEnabled: false,
-                    myLocationButtonEnabled: false,
-                    myLocationEnabled: true,
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
-                    },
-                    gestureRecognizers: _gesterRecognizer,
-                    markers: _stores ?? Set.of([]),
-                  ),
-                );
-              } else {
-                return RefreshIndicator(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      ButtonTheme(
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        minWidth: 0,
-                        height: 0,
-                        child: FlatButton(
-                          padding: EdgeInsets.all(0.0),
-                          textColor: Colors.black12,
-                          child: Text(
-                            '⟳',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 56.0,
-                            ),
-                          ),
-                          onPressed: () {
-                            return _getCurrentLocation();
+              return BlocConsumer<StoreBloc, StoreState>(
+                listener: (context, state) {
+                  if (state is StoreFetched) {
+                    print('Fetched');
+                    _storeMarkers = _getStoreMarkers(state.stocks);
+                  }
+                },
+                builder: (context, state) {
+                  return FutureBuilder<Set<Marker>>(
+                    future: _storeMarkers,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+                        return GoogleMap(
+                          mapType: MapType.normal,
+                          initialCameraPosition: cameraPosition,
+                          zoomGesturesEnabled: true,
+                          tiltGesturesEnabled: false,
+                          myLocationButtonEnabled: false,
+                          myLocationEnabled: true,
+                          onMapCreated: (GoogleMapController controller) {
+                            _controller.complete(controller);
                           },
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(25.0)),
-                          ),
+                          gestureRecognizers: _gesterRecognizer,
+                          markers: snapshot.data ?? Set.of([]),
+                        );
+                      }
+
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              HomePageStrings.googleMapLoading,
+                              style: TextStyle(
+                                color: Colors.black26,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            CupertinoActivityIndicator(),
+                          ],
                         ),
-                      ),
-                      Text(
-                        HomePageStrings.googleMapCannotBeLoaded,
-                        style: TextStyle(
-                          color: Colors.black26,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                  onRefresh: () {
-                    return _getCurrentLocation();
-                  },
-                );
-              }
+                      );
+                    },
+                  );
+                }
+              );
             }
 
             return Center(
@@ -591,7 +590,8 @@ class _HomePageState extends State<HomePage> {
                                   );
                                 } else if (snapshot.hasError) {
                                   return ButtonTheme(
-                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
                                     minWidth: 0,
                                     height: 0,
                                     child: FlatButton(
@@ -607,7 +607,8 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                       ),
                                       onPressed: () {
-                                        _getAddress = _getAddressFromPosition(latlng);
+                                        _getAddress =
+                                            _getAddressFromPosition(latlng);
                                       },
                                     ),
                                   );
