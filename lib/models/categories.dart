@@ -122,8 +122,26 @@ class Categories {
     text: '헬스용품',
   );
 
-  static final listByViewPOV = [FASHION, BEAUTY, BABY, FOOD, KITCHEN, LIVING, FURNITURE, DIGITAL, LEISURE, CAR, PUBLICATION, TOY, OFFICE, PET, HEALTH];
-  static final listByNetworkPOV = listByViewPOV.map((category) => category.id).toList();
+  static final listByViewPOV = [
+    FASHION,
+    BEAUTY,
+    BABY,
+    FOOD,
+    KITCHEN,
+    LIVING,
+    FURNITURE,
+    DIGITAL,
+    LEISURE,
+    CAR,
+    PUBLICATION,
+    TOY,
+    OFFICE,
+    PET,
+    HEALTH
+  ];
+
+  static get listByNetworkPOV => Map.fromIterable(listByViewPOV,
+      key: (category) => category.id, value: (category) => category);
 }
 
 class Category extends Equatable {
@@ -132,7 +150,11 @@ class Category extends Equatable {
   final Color color;
   final String text;
 
-  Category({@required this.id, @required this.icon, @required this.color, @required this.text});
+  Category(
+      {@required this.id,
+      @required this.icon,
+      @required this.color,
+      @required this.text});
 
   @override
   List<Object> get props => [id, icon, color, text];

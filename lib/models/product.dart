@@ -5,23 +5,25 @@ class Product extends Equatable {
   final String name;
   final Manufacturer manufacturer;
   final String ian;
+  final String category;
 
-  Product({this.id, this.name, this.manufacturer, this.ian});
+  Product({this.id, this.name, this.manufacturer, this.ian, this.category});
 
   @override
-  List<Object> get props => [id, name, manufacturer, ian];
+  List<Object> get props => [id, name, manufacturer, ian, category];
 
   @override
   String toString() =>
-      'Product { id: $id, name: $name, manufacturer: $manufacturer, ian: $ian}';
+      'Product { id: $id, name: $name, manufacturer: $manufacturer, ian: $ian, category: $category }';
 
   Product copyWith(
-          {int id, String name, Manufacturer manufacturer, String ian}) =>
+          {int id, String name, Manufacturer manufacturer, String ian, String category}) =>
       Product(
         id: id,
         name: name,
         manufacturer: manufacturer,
         ian: ian,
+        category: category,
       );
 
   static Product fromJson(dynamic json) => Product(
@@ -29,6 +31,7 @@ class Product extends Equatable {
         name: json['name'],
         manufacturer: Manufacturer.fromJson(json['manufacturer']),
         ian: json['ian'],
+        category: json['category'],
       );
 }
 
