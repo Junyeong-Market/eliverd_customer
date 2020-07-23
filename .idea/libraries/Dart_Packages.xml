@@ -96,7 +96,7 @@
         <entry key="flutter">
           <value>
             <list>
-              <option value="$USER_HOME$/flutter/packages/flutter/lib" />
+              <option value="$PROJECT_DIR$/../../lib/flutter/packages/flutter/lib" />
             </list>
           </value>
         </entry>
@@ -124,14 +124,14 @@
         <entry key="flutter_test">
           <value>
             <list>
-              <option value="$USER_HOME$/flutter/packages/flutter_test/lib" />
+              <option value="$PROJECT_DIR$/../../lib/flutter/packages/flutter_test/lib" />
             </list>
           </value>
         </entry>
         <entry key="flutter_web_plugins">
           <value>
             <list>
-              <option value="$USER_HOME$/flutter/packages/flutter_web_plugins/lib" />
+              <option value="$PROJECT_DIR$/../../lib/flutter/packages/flutter_web_plugins/lib" />
             </list>
           </value>
         </entry>
@@ -166,7 +166,7 @@
         <entry key="http">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/http-0.12.1/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/http-0.12.2/lib" />
             </list>
           </value>
         </entry>
@@ -334,7 +334,7 @@
         <entry key="sky_engine">
           <value>
             <list>
-              <option value="$USER_HOME$/flutter/bin/cache/pkg/sky_engine/lib" />
+              <option value="$PROJECT_DIR$/../../lib/flutter/bin/cache/pkg/sky_engine/lib" />
             </list>
           </value>
         </entry>
@@ -438,7 +438,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/google_api_availability-2.0.4/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter-0.5.28+1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter_platform_interface-1.0.2/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/http-0.12.1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/http-0.12.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/http_parser-3.1.4/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/image-2.1.12/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/intl-0.16.1/lib" />
@@ -473,10 +473,10 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/vector_math-2.0.8/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/xdg_directories-0.1.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/xml-3.6.1/lib" />
-      <root url="file://$USER_HOME$/flutter/bin/cache/pkg/sky_engine/lib" />
-      <root url="file://$USER_HOME$/flutter/packages/flutter/lib" />
-      <root url="file://$USER_HOME$/flutter/packages/flutter_test/lib" />
-      <root url="file://$USER_HOME$/flutter/packages/flutter_web_plugins/lib" />
+      <root url="file://$PROJECT_DIR$/../../lib/flutter/bin/cache/pkg/sky_engine/lib" />
+      <root url="file://$PROJECT_DIR$/../../lib/flutter/packages/flutter/lib" />
+      <root url="file://$PROJECT_DIR$/../../lib/flutter/packages/flutter_test/lib" />
+      <root url="file://$PROJECT_DIR$/../../lib/flutter/packages/flutter_web_plugins/lib" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
