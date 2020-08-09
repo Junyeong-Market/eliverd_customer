@@ -40,7 +40,12 @@ class _FormTextFieldState extends State<FormTextField> {
     return TextField(
       textInputAction: TextInputAction.done,
       inputFormatters: widget.regex == null
-          ? [BlacklistingTextInputFormatter('')]
+          ? [
+              FilteringTextInputFormatter(
+                RegExp(''),
+                allow: false,
+              )
+            ]
           : widget.regex is List ? widget.regex : [widget.regex],
       maxLength: widget.maxLength,
       maxLengthEnforced: widget.maxLength == null ? false : true,

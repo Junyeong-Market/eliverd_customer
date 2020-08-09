@@ -121,13 +121,22 @@ class _SignUpPageState extends State<SignUpPage> {
     iconTheme: IconThemeData(color: Colors.black),
   );
 
-  final _nameRegex =
-      WhitelistingTextInputFormatter(RegExp("[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣^\s]"));
-  final _nicknameRegex =
-      WhitelistingTextInputFormatter(RegExp("[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣^\s]"));
-  final _idRegex = WhitelistingTextInputFormatter(RegExp("[a-zA-Z0-9^\s]"));
-  final _passwordRegex =
-      WhitelistingTextInputFormatter(RegExp("[a-zA-Z0-9\x01-\x19\x21-\x7F]"));
+  final _nameRegex = FilteringTextInputFormatter(
+    RegExp("[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣^\s]"),
+    allow: true,
+  );
+  final _nicknameRegex = FilteringTextInputFormatter(
+    RegExp("[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣^\s]"),
+    allow: true,
+  );
+  final _idRegex = FilteringTextInputFormatter(
+    RegExp("[a-zA-Z0-9^\s]"),
+    allow: true,
+  );
+  final _passwordRegex = FilteringTextInputFormatter(
+    RegExp("[a-zA-Z0-9\x01-\x19\x21-\x7F]"),
+    allow: true,
+  );
 
   Widget _signUpTitle = Text(
     TitleStrings.signUpTitle,

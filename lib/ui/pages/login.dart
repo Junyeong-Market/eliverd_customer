@@ -57,8 +57,7 @@ class _LoginPageState extends State<LoginPage> {
         if (state is Authenticated) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-                builder: (context) => HomePage()),
+            MaterialPageRoute(builder: (context) => HomePage()),
           );
         }
       },
@@ -132,9 +131,14 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  final _idRegex = WhitelistingTextInputFormatter(RegExp("[a-zA-Z0-9^\s]"));
-  final _passwordRegex =
-      WhitelistingTextInputFormatter(RegExp("[a-zA-Z0-9\x01-\x19\x21-\x7F]"));
+  final _idRegex = FilteringTextInputFormatter(
+    RegExp("[a-zA-Z0-9^\s]"),
+    allow: true,
+  );
+  final _passwordRegex = FilteringTextInputFormatter(
+    RegExp("[a-zA-Z0-9\x01-\x19\x21-\x7F]"),
+    allow: true,
+  );
 
   final _passwordNavigationFocus = FocusNode();
 
@@ -208,28 +212,28 @@ class _LoginPageState extends State<LoginPage> {
       );
 
   Widget _buildSignInSection() => ButtonTheme(
-    minWidth: double.infinity,
-    child: CupertinoButton(
-      key: LoginPageKeys.loginBtn,
-      child: Text(
-        SignInStrings.login,
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 16.0,
+        minWidth: double.infinity,
+        child: CupertinoButton(
+          key: LoginPageKeys.loginBtn,
+          child: Text(
+            SignInStrings.login,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16.0,
+            ),
+          ),
+          color: eliverdColor,
+          borderRadius: BorderRadius.circular(15.0),
+          padding: EdgeInsets.symmetric(
+            vertical: 15.0,
+          ),
+          onPressed: () {
+            context.bloc<AuthenticationBloc>().add(GrantAuthentication(
+                _idController.text, _passwordController.text));
+          },
         ),
-      ),
-      color: eliverdColor,
-      borderRadius: BorderRadius.circular(15.0),
-      padding: EdgeInsets.symmetric(
-        vertical: 15.0,
-      ),
-      onPressed: () {
-        context.bloc<AuthenticationBloc>().add(GrantAuthentication(
-            _idController.text, _passwordController.text));
-      },
-    ),
-  );
+      );
 
   Widget _buildSignUpSection() => FlatButton(
         key: LoginPageKeys.signUpBtn,
