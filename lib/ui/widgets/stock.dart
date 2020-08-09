@@ -96,39 +96,6 @@ class ShowableStock extends StatelessWidget {
     );
   }
 
-  Widget _buildAmountText(int amount) {
-    String text;
-    TextStyle textStyle;
-
-    if (amount == 0) {
-      text = '재고 소진됨';
-      textStyle = const TextStyle(
-        color: Colors.red,
-        fontWeight: FontWeight.w800,
-        fontSize: 14.0,
-      );
-    } else if (amount == 1) {
-      text = '서두르세요! $amount개 남음';
-      textStyle = const TextStyle(
-        color: Colors.red,
-        fontWeight: FontWeight.w800,
-        fontSize: 14.0,
-      );
-    } else {
-      text = '현재 $amount개 남음';
-      textStyle = const TextStyle(
-        color: Colors.black,
-        fontWeight: FontWeight.w300,
-        fontSize: 14.0,
-      );
-    }
-
-    return Text(
-      text,
-      style: textStyle,
-    );
-  }
-
   String formattedPrice(int price) {
     return NumberFormat.currency(
       locale: 'ko',
