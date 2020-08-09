@@ -12,7 +12,9 @@ class ShoppingCartDialog extends StatefulWidget {
   final List<Stock> carts;
   final ValueChanged<Stock> removeFromCart;
 
-  const ShoppingCartDialog({Key key, @required this.carts, @required this.removeFromCart}) : super(key: key);
+  const ShoppingCartDialog(
+      {Key key, @required this.carts, @required this.removeFromCart})
+      : super(key: key);
 
   @override
   ShoppingCartDialogState createState() => ShoppingCartDialogState();
@@ -28,11 +30,11 @@ class ShoppingCartDialogState extends State<ShoppingCartDialog> {
       color: Colors.transparent,
       child: Center(
         child: Container(
-          width: width * 0.85,
-          height: height * 0.85,
+          width: width * 0.9,
+          height: height * 0.9,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(35.0)),
+            borderRadius: BorderRadius.all(Radius.circular(40.0)),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.5),
@@ -81,6 +83,7 @@ class ShoppingCartDialogState extends State<ShoppingCartDialog> {
                   ),
                 ],
               ),
+              SizedBox(height: 4.0),
               Expanded(
                 flex: 4,
                 child: CartList(
@@ -112,5 +115,4 @@ class ShoppingCartDialogState extends State<ShoppingCartDialog> {
       ),
     );
   }
-
 }

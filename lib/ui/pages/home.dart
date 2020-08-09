@@ -287,16 +287,17 @@ class _HomePageState extends State<HomePage> {
     final stocks = groupBy(stockBatch, (stock) => stock.store);
 
     final markers = await Future.wait(stocks.keys.map((store) async {
-      final stocksFromStore = stocks[store];
+      final storeStocks = stocks[store];
       final latlng = LatLng(store.location.lat, store.location.lng);
 
-      final categories = stocksFromStore
+      final categories = storeStocks
           .map((stock) => stock.product.category)
           .map((category) => Categories.listByNetworkPOV[category])
           .toSet()
           .toList();
 
-      final markerIcon = await Markers.getMarkerIconByCategories(store.name, categories);
+      final markerIcon =
+          await Markers.getMarkerIconByCategories(store.name, categories);
 
       return Marker(
         markerId: MarkerId(store.id.toString()),
@@ -305,7 +306,7 @@ class _HomePageState extends State<HomePage> {
           showDialog(
             context: context,
             builder: (context) =>
-                _buildProductList(context, store, stocksFromStore),
+                _buildProductList(context, store, storeStocks, categories),
           );
         },
         icon: markerIcon,
@@ -391,7 +392,8 @@ class _HomePageState extends State<HomePage> {
         child: FutureBuilder<Coordinate>(
           future: _coordinate,
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+            if (snapshot.connectionState == ConnectionState.done &&
+                snapshot.hasData) {
               final coordinate = snapshot.data;
 
               final cameraPosition = CameraPosition(
@@ -402,52 +404,50 @@ class _HomePageState extends State<HomePage> {
               context.bloc<StoreBloc>().add(FetchStore(coordinate));
 
               return BlocConsumer<StoreBloc, StoreState>(
-                listener: (context, state) {
-                  if (state is StoreFetched) {
-                    print('Fetched');
-                    _storeMarkers = _getStoreMarkers(state.stocks);
-                  }
-                },
-                builder: (context, state) {
-                  return FutureBuilder<Set<Marker>>(
-                    future: _storeMarkers,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-                        return GoogleMap(
-                          mapType: MapType.normal,
-                          initialCameraPosition: cameraPosition,
-                          zoomGesturesEnabled: true,
-                          tiltGesturesEnabled: false,
-                          myLocationButtonEnabled: false,
-                          myLocationEnabled: true,
-                          onMapCreated: (GoogleMapController controller) {
-                            _controller.complete(controller);
-                          },
-                          gestureRecognizers: _gesterRecognizer,
-                          markers: snapshot.data ?? Set.of([]),
-                        );
-                      }
-
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              HomePageStrings.googleMapLoading,
-                              style: TextStyle(
-                                color: Colors.black26,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            CupertinoActivityIndicator(),
-                          ],
-                        ),
-                      );
-                    },
-                  );
+                  listener: (context, state) {
+                if (state is StoreFetched) {
+                  _storeMarkers = _getStoreMarkers(state.stocks);
                 }
-              );
+              }, builder: (context, state) {
+                return FutureBuilder<Set<Marker>>(
+                  future: _storeMarkers,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done &&
+                        snapshot.hasData) {
+                      return GoogleMap(
+                        mapType: MapType.normal,
+                        initialCameraPosition: cameraPosition,
+                        zoomGesturesEnabled: true,
+                        tiltGesturesEnabled: false,
+                        myLocationButtonEnabled: false,
+                        myLocationEnabled: true,
+                        onMapCreated: (GoogleMapController controller) {
+                          _controller.complete(controller);
+                        },
+                        gestureRecognizers: _gesterRecognizer,
+                        markers: snapshot.data ?? Set.of([]),
+                      );
+                    }
+
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            HomePageStrings.googleMapLoading,
+                            style: TextStyle(
+                              color: Colors.black26,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          CupertinoActivityIndicator(),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              });
             }
 
             return Center(
@@ -528,8 +528,8 @@ class _HomePageState extends State<HomePage> {
         ),
       );
 
-  Widget _buildProductList(
-      BuildContext context, Store store, List<Stock> stocks) {
+  Widget _buildProductList(BuildContext context, Store store,
+      List<Stock> stocks, List<dynamic> categories) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
@@ -541,11 +541,11 @@ class _HomePageState extends State<HomePage> {
       color: Colors.transparent,
       child: Center(
         child: Container(
-          width: width * 0.85,
-          height: height * 0.85,
+          width: width * 0.9,
+          height: height * 0.9,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(35.0)),
+            borderRadius: BorderRadius.all(Radius.circular(40.0)),
           ),
           padding: EdgeInsets.all(24.0),
           child: Column(
@@ -554,93 +554,90 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               Expanded(
                 flex: 1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Flexible(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            store.name,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 32.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            store.description,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w200,
-                            ),
-                          ),
-                          FutureBuilder(
-                            future: _getAddress,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                if (snapshot.hasData) {
-                                  return Text(
-                                    snapshot.data,
-                                    overflow: TextOverflow.visible,
-                                  );
-                                } else if (snapshot.hasError) {
-                                  return ButtonTheme(
-                                    materialTapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                    minWidth: 0,
-                                    height: 0,
-                                    child: FlatButton(
-                                      padding: EdgeInsets.all(0.0),
-                                      textColor: Colors.black,
-                                      splashColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      child: Text(
-                                        '􀅈',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 24.0,
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        _getAddress =
-                                            _getAddressFromPosition(latlng);
-                                      },
-                                    ),
-                                  );
-                                }
-                              }
-
-                              return CupertinoActivityIndicator();
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    ButtonTheme(
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      minWidth: 0,
-                      height: 0,
-                      child: FlatButton(
-                        padding: EdgeInsets.all(0.0),
-                        textColor: Colors.black,
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        child: Text(
-                          '􀆄',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 24.0,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          store.name,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 32.0,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+                        ButtonTheme(
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          minWidth: 0,
+                          height: 0,
+                          child: FlatButton(
+                            padding: EdgeInsets.all(0.0),
+                            textColor: Colors.black,
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            child: Text(
+                              '􀆄',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 24.0,
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      store.description,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w200,
                       ),
+                    ),
+                    FutureBuilder(
+                      future: _getAddress,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.hasData) {
+                            return Text(
+                              snapshot.data,
+                              overflow: TextOverflow.visible,
+                            );
+                          } else if (snapshot.hasError) {
+                            return ButtonTheme(
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              minWidth: 0,
+                              height: 0,
+                              child: FlatButton(
+                                padding: EdgeInsets.all(0.0),
+                                textColor: Colors.black,
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                child: Text(
+                                  '􀅈',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 24.0,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  _getAddress = _getAddressFromPosition(latlng);
+                                },
+                              ),
+                            );
+                          }
+                        }
+
+                        return CupertinoActivityIndicator();
+                      },
                     ),
                   ],
                 ),
