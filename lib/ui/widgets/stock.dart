@@ -22,6 +22,9 @@ class StockListState extends State<StockList> {
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
+        crossAxisSpacing: 4,
+        mainAxisSpacing: 4,
+        childAspectRatio: 0.8,
       ),
       itemBuilder: (context, index) => ShowableStock(
         stock: widget.stocks[index],
@@ -52,43 +55,53 @@ class ShowableStock extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       elevation: 0.0,
-      color: Colors.transparent,
       child: Padding(
         padding: EdgeInsets.symmetric(
           vertical: 8.0,
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text(
-              stock.product.name,
-              maxLines: 1,
-              textAlign: TextAlign.left,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 18.0,
-              ),
-            ),
-            Text(
-              stock.product.manufacturer.name,
-              maxLines: 1,
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                color: Colors.black54,
-                fontSize: 16.0,
+            Flexible(
+              child: Container(
+                color: Colors.black12,
+                child: Center(
+                  child: Text(
+                    '사진 없음',
+                    style: const TextStyle(
+                      color: Colors.black45,
+                      fontSize: 12.0,
+                    ),
+                  ),
+                ),
               ),
             ),
             SizedBox(height: 4.0),
-            Text(
-              formattedPrice(stock.price),
-              maxLines: 1,
-              textAlign: TextAlign.left,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 20.0,
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  stock.product.name,
+                  maxLines: 1,
+                  textAlign: TextAlign.left,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15.0,
+                  ),
+                ),
+                Text(
+                  formattedPrice(stock.price),
+                  maxLines: 1,
+                  textAlign: TextAlign.right,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 17.0,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
