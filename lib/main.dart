@@ -68,8 +68,8 @@ class EliverdBlocDelegate extends BlocObserver {
   }
 
   @override
-  void onError(Bloc bloc, Object error, StackTrace stackTrace) {
-    print('onError $error');
-    super.onError(bloc, error, stackTrace);
+  void onError(Cubit cubit, Object error, StackTrace stackTrace) {
+    print('${cubit.runtimeType} $error');
+    super.onError(cubit, error, stackTrace);
   }
 }
