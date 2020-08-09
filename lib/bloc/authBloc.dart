@@ -12,9 +12,9 @@ class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   final AccountRepository accountRepository;
 
-  AuthenticationBloc(
-      {@required this.accountRepository})
-      : assert(accountRepository != null), super(NotAuthenticated());
+  AuthenticationBloc({@required this.accountRepository})
+      : assert(accountRepository != null),
+        super(NotAuthenticated());
 
   @override
   Stream<AuthenticationState> mapEventToState(
@@ -54,9 +54,7 @@ class AuthenticationBloc
 
   Stream<AuthenticationState> _mapCheckAuthenticationToState(
       CheckAuthentication event) async* {
-    final session = await accountRepository.createSession();
-
-    if (session != null) {
+    try {
       final data = await accountRepository.validateSession();
 
       final authenticatedUser = User(
@@ -67,6 +65,8 @@ class AuthenticationBloc
       );
 
       yield Authenticated(authenticatedUser);
+    } catch (_) {
+      yield NotAuthenticated();
     }
   }
 
@@ -90,8 +90,7 @@ class AuthenticationBloc
       );
 
       yield Authenticated(authenticatedUser);
-    } catch (e) {
-      print(e.toString());
+    } catch (_) {
       yield AuthenticationError(ErrorMessages.loginErrorMessage);
     }
   }
