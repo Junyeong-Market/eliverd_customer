@@ -32,7 +32,7 @@ class ShoppingCartDialogState extends State<ShoppingCartDialog> {
           height: height * 0.85,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(50.0)),
+            borderRadius: BorderRadius.all(Radius.circular(35.0)),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.5),
