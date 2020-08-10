@@ -24,9 +24,8 @@ jobs:
       - name: Add Flutter to the PATH if running OS is Windows
         run: echo "::add-path::${env:GITHUB_WORKSPACE}\flutter\bin"
         if: runner.os == 'Windows'
-      - name: Doctor Flutter repository
-        run: flutter doctor -v
-
+      - name: Show Flutter Version
+        run: flutter --version
       - name: Clone Eliverd repository
         uses: actions/checkout@v2
         with:
