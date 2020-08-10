@@ -11,26 +11,21 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
-      - name: Clone Flutter repository
-        uses: actions/checkout@v2
-        with:
-          repository: 'flutter/flutter'
-          ref: 'stable'
-          path: 'flutter'
-          fetch-depth: 0
-      - name: Add Flutter to the PATH if running OS is Unix
-        run: echo "::add-path::/$GITHUB_WORKSPACE/flutter/bin"
-        if: runner.os != 'Windows'
-      - name: Add Flutter to the PATH if running OS is Windows
-        run: echo "::add-path::${env:GITHUB_WORKSPACE}\flutter\bin"
-        if: runner.os == 'Windows'
-      - name: Show Flutter Version
-        run: flutter --version
       - name: Clone Eliverd repository
         uses: actions/checkout@v2
         with:
           path: 'eliverd'
-
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '1.17.5'
+          channel: 'stable'
+      - name: Doctor Flutter Repository
+        run: flutter doctor -v
+      - name: Show Flutter Version
+        run: flutter --version
       - name: Fetch all dependencies on Flutter project
         run: flutter pub get
         working-directory: eliverd
