@@ -20,7 +20,6 @@ jobs:
           java-version: '12.x'
       - uses: subosito/flutter-action@v1
         with:
-          flutter-version: '1.17.5'
           channel: 'stable'
       - name: Doctor Flutter Repository
         run: flutter doctor -v
