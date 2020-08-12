@@ -27,8 +27,9 @@ class PurchaseAPIClient {
       url,
       headers: {
         HttpHeaders.authorizationHeader: session,
+        HttpHeaders.contentTypeHeader: 'application/json',
       },
-      body: carts,
+      body: json.encode(carts),
       encoding: Encoding.getByName('utf-8'),
     );
 
