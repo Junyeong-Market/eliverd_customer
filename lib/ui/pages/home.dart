@@ -669,7 +669,7 @@ class _HomePageState extends State<HomePage> {
                   colors: [eliverdLightColor, eliverdDarkColor],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight),
-              borderRadius: BorderRadius.all(Radius.circular(25.0)),
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
             ),
             child: Text(
               '누가 봐도 오늘의 대표 상품 소개하는 배너',
