@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
@@ -18,15 +19,14 @@ class StoreAPIClient {
   Future<List<Store>> fetchStoreListByLocation(Coordinate coordinate) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    final currentSession = prefs.getString('session');
+    final session = prefs.getString('session');
 
     final url =
         '$baseUrl/store/by-radius/?lat=${coordinate.lat}&lng=${coordinate.lng}&distance=1000.0';
-
     final res = await this.httpClient.get(
       url,
       headers: {
-        'Authorization': currentSession,
+        HttpHeaders.authorizationHeader: session,
       },
     );
 
@@ -34,9 +34,9 @@ class StoreAPIClient {
       throw Exception('Error occurred while fetching store list by location');
     }
 
-    final jsonData = utf8.decode(res.bodyBytes);
+    final decoded = utf8.decode(res.bodyBytes);
 
-    final data = json.decode(jsonData) as List;
+    final data = json.decode(decoded) as List;
 
     return data
         .map(
@@ -53,14 +53,13 @@ class StoreAPIClient {
   Future<List<Stock>> fetchStock(Store store) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    final currentSession = prefs.getString('session');
+    final session = prefs.getString('session');
 
-    final storeId = store.id;
-    final url = '$baseUrl/store/$storeId/stocks/';
+    final url = '$baseUrl/store/${store.id}/stocks/';
     final res = await this.httpClient.get(
       url,
       headers: {
-        'Authorization': currentSession,
+        HttpHeaders.authorizationHeader: session,
       },
     );
 
@@ -68,9 +67,9 @@ class StoreAPIClient {
       throw Exception('Error occurred while fetching all stocks on your store');
     }
 
-    final jsonData = utf8.decode(res.bodyBytes);
+    final decoded = utf8.decode(res.bodyBytes);
 
-    final data = json.decode(jsonData)['results'] as List;
+    final data = json.decode(decoded)['results'] as List;
 
     final stocks = data.map((rawStock) {
       return Stock(
