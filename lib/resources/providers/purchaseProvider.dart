@@ -67,4 +67,76 @@ class PurchaseAPIClient {
 
     return data;
   }
+
+  Future<Order> approveOrder(String orderId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final session = prefs.getString('session');
+
+    final url = '$baseUrl/purchase/$orderId/approve/';
+    final res = await httpClient.get(
+      url,
+      headers: {
+        HttpHeaders.authorizationHeader: session,
+      },
+    );
+
+    if (res.statusCode != 200) {
+      throw Exception('Error occurred when notifying approved order to server');
+    }
+
+    final decoded = utf8.decode(res.bodyBytes);
+
+    final data = json.decode(decoded) as Order;
+
+    return data;
+  }
+
+  Future<Order> cancelOrder(String orderId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final session = prefs.getString('session');
+
+    final url = '$baseUrl/purchase/$orderId/cancel/';
+    final res = await httpClient.get(
+      url,
+      headers: {
+        HttpHeaders.authorizationHeader: session,
+      },
+    );
+
+    if (res.statusCode != 200) {
+      throw Exception('Error occurred when notifying canceled order to server');
+    }
+
+    final decoded = utf8.decode(res.bodyBytes);
+
+    final data = json.decode(decoded) as Order;
+
+    return data;
+  }
+
+  Future<Order> failOrder(String orderId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final session = prefs.getString('session');
+
+    final url = '$baseUrl/purchase/$orderId/fail/';
+    final res = await httpClient.get(
+      url,
+      headers: {
+        HttpHeaders.authorizationHeader: session,
+      },
+    );
+
+    if (res.statusCode != 200) {
+      throw Exception('Error occurred when notifying failed order to server');
+    }
+
+    final decoded = utf8.decode(res.bodyBytes);
+
+    final data = json.decode(decoded) as Order;
+
+    return data;
+  }
 }
