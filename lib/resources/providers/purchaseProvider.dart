@@ -34,7 +34,7 @@ class PurchaseAPIClient {
     );
 
     if (res.statusCode != 200) {
-      throw Exception('Error occured while processing carts');
+      throw Exception('Error occurred while processing carts');
     }
 
     final decoded = utf8.decode(res.bodyBytes);

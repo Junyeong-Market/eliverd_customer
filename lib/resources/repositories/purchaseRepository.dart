@@ -22,4 +22,22 @@ class PurchaseRepository {
 
     return data;
   }
+
+  Future<Order> approveOrder(String orderId) async {
+    final data = purchaseAPIClient.approveOrder(orderId);
+
+    return data;
+  }
+
+  Future<Order> cancelOrder(String orderId) async {
+    final data = purchaseAPIClient.cancelOrder(orderId);
+
+    return data;
+  }
+
+  Future<Order> failOrder(String orderId) async {
+    final data = purchaseAPIClient.failOrder(orderId);
+
+    return data;
+  }
 }
