@@ -48,7 +48,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     try {
       final order = await purchaseRepository.cancelOrder(event.orderId);
 
-      yield OrderApproved(order);
+      yield OrderCanceled(order);
     } catch (_) {
       yield OrderError();
     }
@@ -58,7 +58,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     try {
       final order = await purchaseRepository.failOrder(event.orderId);
 
-      yield OrderApproved(order);
+      yield OrderFailed(order);
     } catch (_) {
       yield OrderError();
     }
