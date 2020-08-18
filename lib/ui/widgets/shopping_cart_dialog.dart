@@ -30,19 +30,14 @@ class ShoppingCartDialogState extends State<ShoppingCartDialog> {
       color: Colors.transparent,
       child: Center(
         child: Container(
-          width: width * 0.9,
-          height: height * 0.9,
+          width: width,
+          height: height,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(40.0)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: Offset(0, 1),
-              ),
-            ],
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30.0),
+              topRight: Radius.circular(30.0),
+            ),
           ),
           padding: EdgeInsets.all(24.0),
           child: Column(
