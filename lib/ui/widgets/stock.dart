@@ -21,10 +21,10 @@ class StockListState extends State<StockList> {
   Widget build(BuildContext context) {
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+        crossAxisCount: 3,
         crossAxisSpacing: 4,
         mainAxisSpacing: 4,
-        childAspectRatio: 0.8,
+        childAspectRatio: 0.6,
       ),
       itemBuilder: (context, index) => ShowableStock(
         stock: widget.stocks[index],
@@ -60,7 +60,7 @@ class ShowableStock extends StatelessWidget {
           vertical: 8.0,
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Flexible(
@@ -79,8 +79,18 @@ class ShowableStock extends StatelessWidget {
             ),
             SizedBox(height: 4.0),
             Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                Text(
+                  stock.product.manufacturer.name,
+                  maxLines: 1,
+                  textAlign: TextAlign.left,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontSize: 11.0,
+                  ),
+                ),
                 Text(
                   stock.product.name,
                   maxLines: 1,
@@ -88,13 +98,13 @@ class ShowableStock extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: Colors.black87,
-                    fontSize: 15.0,
+                    fontSize: 13.0,
                   ),
                 ),
                 Text(
                   formattedPrice(stock.price),
                   maxLines: 1,
-                  textAlign: TextAlign.right,
+                  textAlign: TextAlign.left,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
