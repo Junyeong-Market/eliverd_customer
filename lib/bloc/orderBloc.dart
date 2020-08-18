@@ -28,7 +28,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Stream<OrderState> _mapProceedOrderToState(ProceedOrder event) async* {
     try {
-      // TO-DO: 주문 진행 BLOC 로직
+      yield OrderInProgress();
     } catch (_) {
       yield OrderError();
     }
