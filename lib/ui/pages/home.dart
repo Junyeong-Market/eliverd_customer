@@ -541,11 +541,14 @@ class _HomePageState extends State<HomePage> {
       color: Colors.transparent,
       child: Center(
         child: Container(
-          width: width * 0.9,
-          height: height * 0.9,
+          width: width,
+          height: height,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(40.0)),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30.0),
+              topRight: Radius.circular(30.0),
+            ),
           ),
           padding: EdgeInsets.all(24.0),
           child: Column(
@@ -596,8 +599,8 @@ class _HomePageState extends State<HomePage> {
                     Text(
                       store.description,
                       style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 18.0,
+                        color: Colors.black54,
+                        fontSize: 16.0,
                         fontWeight: FontWeight.w200,
                       ),
                     ),
@@ -609,6 +612,11 @@ class _HomePageState extends State<HomePage> {
                             return Text(
                               snapshot.data,
                               overflow: TextOverflow.visible,
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w200,
+                              ),
                             );
                           } else if (snapshot.hasError) {
                             return ButtonTheme(
@@ -624,8 +632,9 @@ class _HomePageState extends State<HomePage> {
                                 child: Text(
                                   '􀅈',
                                   style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 24.0,
+                                    color: Colors.black54,
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w200,
                                   ),
                                 ),
                                 onPressed: () {
@@ -643,7 +652,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Expanded(
-                flex: 4,
+                flex: 5,
                 child: StockList(
                   stocks: stocks,
                   onCartsChanged: _toggleCart,
