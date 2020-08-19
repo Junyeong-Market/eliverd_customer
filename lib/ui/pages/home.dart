@@ -655,7 +655,6 @@ class _HomePageState extends State<HomePage> {
                 flex: 5,
                 child: StockList(
                   stocks: stocks,
-                  onCartsChanged: _toggleCart,
                 ),
               ),
             ],
