@@ -19,7 +19,7 @@ class StockList extends StatelessWidget {
         crossAxisCount: 3,
         crossAxisSpacing: 4,
         mainAxisSpacing: 4,
-        childAspectRatio: 0.6,
+        childAspectRatio: 0.55,
       ),
       itemBuilder: (context, index) => SimplifiedStock(
         stock: stocks[index],
@@ -105,6 +105,11 @@ class SimplifiedStock extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                       fontSize: 17.0,
                     ),
+                  ),
+                  WidgetifiedCategory(
+                    categoryId: stock.product.category,
+                    fontSize: 9.0,
+                    padding: 2.0,
                   ),
                 ],
               ),
