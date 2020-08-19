@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:Eliverd/common/marker.dart';
+import 'package:Eliverd/ui/widgets/category.dart';
 import 'package:Eliverd/ui/widgets/shopping_cart_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -97,30 +98,11 @@ class _HomePageState extends State<HomePage> {
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 1,
                     mainAxisSpacing: 8.0,
-                    childAspectRatio: 0.22,
+                    childAspectRatio: 0.2,
                   ),
                   itemBuilder: (context, index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Categories.listByViewPOV[index].color,
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      ),
-                      padding: EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            Categories.listByViewPOV[index].icon +
-                                ' ' +
-                                Categories.listByViewPOV[index].text,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12.0,
-                            ),
-                          ),
-                        ],
-                      ),
+                    return WidgetifiedCategory(
+                      categoryId: Categories.listByViewPOV[index].id,
                     );
                   },
                   itemCount: Categories.listByViewPOV.length,
@@ -638,11 +620,30 @@ class _HomePageState extends State<HomePage> {
                         return CupertinoActivityIndicator();
                       },
                     ),
+                    Container(
+                      width: width,
+                      height: 24.0,
+                      child: GridView.builder(
+                        scrollDirection: Axis.horizontal,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 1,
+                          mainAxisSpacing: 8.0,
+                          childAspectRatio: 0.25,
+                        ),
+                        itemBuilder: (context, index) {
+                          return WidgetifiedCategory(
+                            categoryId: categories[index].id,
+                            fontSize: 12.0,
+                          );
+                        },
+                        itemCount: categories.length,
+                      ),
+                    ),
                   ],
                 ),
               ),
               Expanded(
-                flex: 5,
+                flex: 4,
                 child: StockList(
                   stocks: stocks,
                 ),
