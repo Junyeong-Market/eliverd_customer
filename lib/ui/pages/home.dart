@@ -244,16 +244,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _toggleCart(Stock stock) {
-    setState(() {
-      if (_carts.contains(stock)) {
-        _carts.remove(stock);
-      } else {
-        _carts.add(stock);
-      }
-    });
-  }
-
   void _removeFromCart(Stock stock) {
     setState(() {
       _carts.remove(stock);

@@ -7,8 +7,6 @@ import 'package:Eliverd/models/models.dart';
 import 'package:Eliverd/ui/pages/product_info.dart';
 import 'package:Eliverd/ui/widgets/category.dart';
 
-import 'package:Eliverd/common/color.dart';
-
 class StockList extends StatelessWidget {
   final List<Stock> stocks;
 
@@ -172,7 +170,7 @@ class SpecifiedStock extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: Colors.black45,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w500,
                   fontSize: 14.0,
                 ),
               ),
@@ -197,7 +195,7 @@ class SpecifiedStock extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      fontSize: 25.0,
+                      fontSize: 24.0,
                     ),
                   ),
                   SizedBox(width: 4.0),
