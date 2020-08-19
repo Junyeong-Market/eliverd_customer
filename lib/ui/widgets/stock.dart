@@ -4,19 +4,16 @@ import 'package:intl/intl.dart';
 
 import 'package:Eliverd/models/models.dart';
 
-class StockList extends StatefulWidget {
+import 'package:Eliverd/ui/pages/product_info.dart';
+import 'package:Eliverd/ui/widgets/category.dart';
+
+import 'package:Eliverd/common/color.dart';
+
+class StockList extends StatelessWidget {
   final List<Stock> stocks;
-  final ValueChanged<Stock> onCartsChanged;
 
-  const StockList(
-      {Key key, @required this.stocks, @required this.onCartsChanged})
-      : super(key: key);
+  const StockList({Key key, @required this.stocks}) : super(key: key);
 
-  @override
-  StockListState createState() => StockListState();
-}
-
-class StockListState extends State<StockList> {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
@@ -26,96 +23,193 @@ class StockListState extends State<StockList> {
         mainAxisSpacing: 4,
         childAspectRatio: 0.6,
       ),
-      itemBuilder: (context, index) => ShowableStock(
-        stock: widget.stocks[index],
-        currentStore: widget.stocks[index].store,
-        toggleCart: () {
-          widget.onCartsChanged(widget.stocks[index]);
-        },
+      itemBuilder: (context, index) => SimplifiedStock(
+        stock: stocks[index],
       ),
-      itemCount: widget.stocks.length,
+      itemCount: stocks.length,
     );
   }
 }
 
-class ShowableStock extends StatelessWidget {
+class SimplifiedStock extends StatelessWidget {
   final Stock stock;
-  final Store currentStore;
-  final Function toggleCart;
 
-  const ShowableStock(
-      {Key key,
-      @required this.stock,
-      @required this.currentStore,
-      @required this.toggleCart})
-      : super(key: key);
+  const SimplifiedStock({Key key, @required this.stock}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.zero,
-      elevation: 0.0,
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: 8.0,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Flexible(
-              child: Container(
-                color: Colors.black12,
-                child: Center(
-                  child: Text(
-                    '사진 없음',
-                    style: const TextStyle(
-                      color: Colors.black45,
-                      fontSize: 12.0,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductInfoPage(
+              stock: stock,
+            ),
+          ),
+        );
+      },
+      child: Card(
+        margin: EdgeInsets.zero,
+        elevation: 0.0,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: 8.0,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Flexible(
+                child: Container(
+                  color: Colors.black12,
+                  child: Center(
+                    child: Text(
+                      '사진 없음',
+                      style: const TextStyle(
+                        color: Colors.black45,
+                        fontSize: 12.0,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(height: 4.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  stock.product.manufacturer.name,
-                  maxLines: 1,
-                  textAlign: TextAlign.left,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.black45,
-                    fontSize: 11.0,
+              SizedBox(height: 4.0),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    stock.product.manufacturer.name,
+                    maxLines: 1,
+                    textAlign: TextAlign.left,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.black45,
+                      fontSize: 11.0,
+                    ),
                   ),
-                ),
-                Text(
-                  stock.product.name,
-                  maxLines: 1,
-                  textAlign: TextAlign.left,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 13.0,
+                  Text(
+                    stock.product.name,
+                    maxLines: 1,
+                    textAlign: TextAlign.left,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 13.0,
+                    ),
                   ),
-                ),
-                Text(
-                  formattedPrice(stock.price),
-                  maxLines: 1,
-                  textAlign: TextAlign.left,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 17.0,
+                  Text(
+                    formattedPrice(stock.price),
+                    maxLines: 1,
+                    textAlign: TextAlign.left,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 17.0,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  String formattedPrice(int price) {
+    return NumberFormat.currency(
+      locale: 'ko',
+      symbol: '₩',
+    )?.format(price);
+  }
+}
+
+class SpecifiedStock extends StatelessWidget {
+  final Stock stock;
+
+  const SpecifiedStock({Key key, @required this.stock}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Flexible(
+          fit: FlexFit.loose,
+          child: Container(
+            color: Colors.black12,
+            width: width,
+            height: width,
+            child: Center(
+              child: Text(
+                '누가 봐도 이 상품에 대한 사진',
+                style: const TextStyle(
+                  color: Colors.black45,
+                  fontSize: 14.0,
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 4.0),
+        Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: 16.0,
+            horizontal: 4.0,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                stock.product.manufacturer.name,
+                maxLines: 1,
+                textAlign: TextAlign.left,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: Colors.black45,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14.0,
+                ),
+              ),
+              Text(
+                stock.product.name,
+                maxLines: 2,
+                textAlign: TextAlign.left,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 19.0,
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    formattedPrice(stock.price),
+                    maxLines: 1,
+                    textAlign: TextAlign.left,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 25.0,
+                    ),
+                  ),
+                  SizedBox(width: 4.0),
+                  WidgetifiedCategory(
+                    categoryId: stock.product.category,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
