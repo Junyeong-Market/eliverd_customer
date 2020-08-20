@@ -151,8 +151,6 @@ class ProductInfoPage extends StatelessWidget {
   Future<void> _addToCart(Stock product) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    print(product);
-
     List<String> carts = prefs.getStringList('carts') ?? <String>[];
 
     carts.add(json.encode(product.toJson()));
