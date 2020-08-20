@@ -31,6 +31,7 @@ flutter:
   assets:
     - assets/images/logo/eliverd_logo_white.png
     - assets/images/logo/eliverd_logo_original.png
+    - assets/images/shop.ico
   fonts:
     - family: SFProDisplay
       fonts:
