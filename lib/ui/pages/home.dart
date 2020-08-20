@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:Eliverd/common/marker.dart';
-import 'package:Eliverd/ui/widgets/category.dart';
-import 'package:Eliverd/ui/widgets/shopping_cart_dialog.dart';
+import 'package:Eliverd/ui/pages/cart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,9 +19,11 @@ import 'package:Eliverd/models/models.dart';
 
 import 'package:Eliverd/common/string.dart';
 import 'package:Eliverd/common/color.dart';
+import 'package:Eliverd/common/marker.dart';
 
 import 'package:Eliverd/ui/pages/my_page.dart';
 import 'package:Eliverd/ui/widgets/stock.dart';
+import 'package:Eliverd/ui/widgets/category.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -34,8 +34,6 @@ class _HomePageState extends State<HomePage> {
   Completer<GoogleMapController> _controller = Completer();
   Future<Coordinate> _coordinate;
   Future<Set<Marker>> _storeMarkers;
-
-  List<Stock> _carts = [];
 
   String _searchKeyword = '';
 
@@ -226,12 +224,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _removeFromCart(Stock stock) {
-    setState(() {
-      _carts.remove(stock);
-    });
-  }
-
   Future<Coordinate> _getCurrentLocation() async {
     Position position = await Geolocator().getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
@@ -306,11 +298,10 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) => ShoppingCartDialog(
-                carts: _carts,
-                removeFromCart: _removeFromCart,
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ShoppingCartPage(),
               ),
             );
           },
