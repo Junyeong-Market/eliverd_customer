@@ -123,6 +123,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         .toList();
   }
 
+  // TO-DO: 장바구니 목록 삭제 기능 재구현
+  /*
   Future<List<Stock>> _removeFromCart() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -136,4 +138,5 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         .map((rawProduct) => Stock.fromJson(json.decode(rawProduct)))
         .toList();
   }
+   */
 }
