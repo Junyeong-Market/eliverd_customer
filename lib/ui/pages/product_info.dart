@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:Eliverd/models/models.dart';
 import 'package:Eliverd/ui/widgets/stock.dart';
+import 'package:Eliverd/ui/pages/cart.dart';
 
 import 'package:Eliverd/common/color.dart';
 
@@ -75,7 +79,12 @@ class ProductInfoPage extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ShoppingCartPage(),
+                  ),
+                );
               },
             ),
           ),
@@ -130,10 +139,24 @@ class ProductInfoPage extends StatelessWidget {
             color: eliverdColor,
             borderRadius: BorderRadius.circular(5.0),
             padding: EdgeInsets.symmetric(vertical: 16.0),
-            onPressed: () {},
+            onPressed: () {
+              _addToCart(stock);
+            },
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _addToCart(Stock product) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    print(product);
+
+    List<String> carts = prefs.getStringList('carts') ?? <String>[];
+
+    carts.add(json.encode(product.toJson()));
+
+    prefs.setStringList('carts', carts);
   }
 }
