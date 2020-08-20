@@ -17,6 +17,7 @@ class ShoppingCartPage extends StatefulWidget {
 
 class _ShoppingCartPageState extends State<ShoppingCartPage> {
   Future<List<Stock>> products;
+  bool isShoppingCartEmpty = true;
 
   @override
   void initState() {
@@ -69,23 +70,63 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
           preferredSize: Size.fromHeight(0.0),
         ),
       ),
-      body: FutureBuilder(
+      body: FutureBuilder<List<Stock>>(
         future: products,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
-              return StockListOnCart(
+              return snapshot.data.isEmpty ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(height: 16.0),
+                    Text(
+                      '아무 상품도 없네요.\n얼른 상품을 담으러 둘러보세요! 👀',
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16.0,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ) : StockListOnCart(
                 stocks: snapshot.data,
+                removeHandler: (Stock stock) {
+                  setState(() {
+                    products = _removeFromCart(stock);
+                  });
+                },
               );
             } else if (snapshot.hasError) {
               return Text(
-                snapshot.error.toString(),
+                '장바구니를 불러오는 중 오류가 발생했습니다.\n다시 시도해주세요.',
+                style: TextStyle(
+                  color: Colors.black26,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
               );
             }
           }
 
-          return Text(
-            '불러오고 있음!',
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                CupertinoActivityIndicator(),
+                SizedBox(height: 4.0),
+                Text(
+                  '장바구니를 불러오고 있습니다.\n잠시만 기다려주세요!',
+                  style: TextStyle(
+                    color: Colors.black26,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           );
         },
       ),
@@ -94,20 +135,35 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         child: BottomAppBar(
           color: Colors.transparent,
           elevation: 0.0,
-          child: CupertinoButton(
-            child: Text(
-              '주문하기',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                '총합: ₩0',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20.0,
+                ),
+                textAlign: TextAlign.right,
               ),
-            ),
-            color: eliverdColor,
-            borderRadius: BorderRadius.circular(5.0),
-            padding: EdgeInsets.symmetric(vertical: 16.0),
-            onPressed: () {},
-          ),
+              SizedBox(height: 4.0),
+              CupertinoButton(
+                child: Text(
+                  '주문하기',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0,
+                  ),
+                ),
+                color: eliverdColor,
+                borderRadius: BorderRadius.circular(5.0),
+                padding: EdgeInsets.symmetric(vertical: 16.0),
+                onPressed: isShoppingCartEmpty ? null : () {},
+              ),
+            ],
+          )
         ),
       ),
     );
@@ -118,25 +174,38 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
 
     List<String> rawProducts = prefs.getStringList('carts') ?? <String>[];
 
+    if (rawProducts.isEmpty) {
+      setState(() {
+        isShoppingCartEmpty = true;
+      });
+    } else {
+      setState(() {
+        isShoppingCartEmpty = false;
+      });
+    }
+
     return rawProducts
         .map((rawProduct) => Stock.fromJson(json.decode(rawProduct)))
         .toList();
   }
 
-  // TO-DO: 장바구니 목록 삭제 기능 재구현
-  /*
-  Future<List<Stock>> _removeFromCart() async {
+  Future<List<Stock>> _removeFromCart(Stock stock) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     List<String> carts = prefs.getStringList('carts') ?? <String>[];
 
-    carts.removeLast();
+    carts.remove(json.encode(stock.toJson()));
 
     prefs.setStringList('carts', carts);
+
+    if (carts.isEmpty) {
+      setState(() {
+        isShoppingCartEmpty = true;
+      });
+    }
 
     return carts
         .map((rawProduct) => Stock.fromJson(json.decode(rawProduct)))
         .toList();
   }
-   */
 }
