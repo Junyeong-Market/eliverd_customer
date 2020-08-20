@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 
 import 'package:Eliverd/models/models.dart';
 
 import 'package:Eliverd/ui/pages/product_info.dart';
 import 'package:Eliverd/ui/widgets/category.dart';
+
+import 'package:Eliverd/common/color.dart';
 
 class StockList extends StatelessWidget {
   final List<Stock> stocks;
@@ -22,6 +25,23 @@ class StockList extends StatelessWidget {
         childAspectRatio: 0.55,
       ),
       itemBuilder: (context, index) => SimplifiedStock(
+        stock: stocks[index],
+      ),
+      itemCount: stocks.length,
+    );
+  }
+}
+
+class StockListOnCart extends StatelessWidget {
+  final List<Stock> stocks;
+
+  const StockListOnCart({Key key, @required this.stocks}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: EdgeInsets.all(8.0),
+      itemBuilder: (context, index) => SimplifiedStockOnCart(
         stock: stocks[index],
       ),
       itemCount: stocks.length,
@@ -50,6 +70,7 @@ class SimplifiedStock extends StatelessWidget {
       child: Card(
         margin: EdgeInsets.zero,
         elevation: 0.0,
+        color: Colors.transparent,
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: 8.0,
@@ -123,9 +144,9 @@ class SimplifiedStock extends StatelessWidget {
 
   String formattedPrice(int price) {
     if (price >= 100000000) {
-      return '₩' + (price / 100000000).toString() + '억';
+      return '₩' + (price / 100000000).toStringAsFixed(1) + '억';
     } else if (price >= 10000000) {
-      return '₩' + (price / 10000).toString() + '만';
+      return '₩' + (price / 10000).toStringAsFixed(1) + '만';
     }
 
     return NumberFormat.currency(
@@ -224,6 +245,172 @@ class SpecifiedStock extends StatelessWidget {
   }
 
   String formattedPrice(int price) {
+    return NumberFormat.currency(
+      locale: 'ko',
+      symbol: '₩',
+    )?.format(price);
+  }
+}
+
+class SimplifiedStockOnCart extends StatelessWidget {
+  final Stock stock;
+
+  const SimplifiedStockOnCart({Key key, @required this.stock})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductInfoPage(
+              stock: stock,
+            ),
+          ),
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 0.0,
+          right: 8.0,
+          top: 8.0,
+          bottom: 0.0,
+        ),
+        child: Row(
+          children: <Widget>[
+            Flexible(
+              flex: 1,
+              child: ConstrainedBox(
+                constraints: BoxConstraints.expand(
+                  height: width * 0.25,
+                ),
+                child: Container(
+                  color: Colors.black12,
+                  child: Center(
+                    child: Text(
+                      '사진 없음',
+                      style: const TextStyle(
+                        color: Colors.black45,
+                        fontSize: 12.0,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 4.0),
+            Flexible(
+              flex: 3,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              stock.product.manufacturer.name,
+                              maxLines: 1,
+                              textAlign: TextAlign.left,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Colors.black45,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 13.0,
+                              ),
+                            ),
+                            Text(
+                              stock.product.name,
+                              maxLines: 1,
+                              textAlign: TextAlign.left,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                            SizedBox(height: 1.6),
+                            WidgetifiedCategory(
+                              categoryId: stock.product.category,
+                              fontSize: 9.0,
+                              padding: 2.0,
+                            ),
+                          ],
+                        ),
+                      ),
+                      ButtonTheme(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        minWidth: 0,
+                        height: 0,
+                        child: FlatButton(
+                          padding: EdgeInsets.all(0.0),
+                          textColor: Colors.black,
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          child: Text(
+                            '􀆄',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 18.0,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '수량 선택',
+                      ),
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: Text(
+                          formattedPrice(stock.price),
+                          maxLines: 1,
+                          textAlign: TextAlign.left,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 19.0,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String formattedPrice(int price) {
+    if (price >= 100000000) {
+      return '₩' + (price / 100000000).toStringAsFixed(1) + '억';
+    } else if (price >= 10000000) {
+      return '₩' + (price / 10000).toStringAsFixed(1) + '만';
+    }
+
     return NumberFormat.currency(
       locale: 'ko',
       symbol: '₩',
