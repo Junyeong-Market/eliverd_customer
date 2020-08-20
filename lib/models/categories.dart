@@ -122,7 +122,7 @@ class Categories {
     text: '헬스용품',
   );
 
-  static final listByViewPOV = [
+  static final List<Category> listByViewPOV = <Category>[
     FASHION,
     BEAUTY,
     BABY,
@@ -140,8 +140,8 @@ class Categories {
     HEALTH
   ];
 
-  static get listByNetworkPOV => Map.fromIterable(listByViewPOV,
-      key: (category) => category.id, value: (category) => category);
+  static Map<String, Category> get listByNetworkPOV => Map.fromIterable(listByViewPOV,
+      key: (category) => (category as Category).id, value: (category) => category);
 }
 
 class Category extends Equatable {
