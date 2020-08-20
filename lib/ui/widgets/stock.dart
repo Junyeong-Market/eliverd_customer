@@ -32,8 +32,11 @@ class StockList extends StatelessWidget {
 
 class StockListOnCart extends StatelessWidget {
   final List<Stock> stocks;
+  final Function removeHandler;
 
-  const StockListOnCart({Key key, @required this.stocks}) : super(key: key);
+  const StockListOnCart(
+      {Key key, @required this.stocks, @required this.removeHandler})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +44,9 @@ class StockListOnCart extends StatelessWidget {
       padding: EdgeInsets.all(8.0),
       itemBuilder: (context, index) => SimplifiedStockOnCart(
         stock: stocks[index],
+        onRemove: () {
+          removeHandler(stocks[index]);
+        },
       ),
       itemCount: stocks.length,
     );
@@ -250,11 +256,27 @@ class SpecifiedStock extends StatelessWidget {
   }
 }
 
-class SimplifiedStockOnCart extends StatelessWidget {
+class SimplifiedStockOnCart extends StatefulWidget {
   final Stock stock;
+  final Function onRemove;
 
-  const SimplifiedStockOnCart({Key key, @required this.stock})
+  const SimplifiedStockOnCart(
+      {Key key, @required this.stock, @required this.onRemove})
       : super(key: key);
+
+  @override
+  _SimplifiedStockOnCartState createState() => _SimplifiedStockOnCartState();
+}
+
+class _SimplifiedStockOnCartState extends State<SimplifiedStockOnCart> {
+  int _price;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _price = widget.stock.price;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -266,7 +288,7 @@ class SimplifiedStockOnCart extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => ProductInfoPage(
-              stock: stock,
+              stock: widget.stock,
             ),
           ),
         );
@@ -317,7 +339,7 @@ class SimplifiedStockOnCart extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              stock.product.manufacturer.name,
+                              widget.stock.product.manufacturer.name,
                               maxLines: 1,
                               textAlign: TextAlign.left,
                               overflow: TextOverflow.ellipsis,
@@ -328,19 +350,19 @@ class SimplifiedStockOnCart extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              stock.product.name,
+                              widget.stock.product.name,
                               maxLines: 1,
                               textAlign: TextAlign.left,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color: Colors.black87,
                                 fontWeight: FontWeight.w600,
-                                fontSize: 16.0,
+                                fontSize: 17.0,
                               ),
                             ),
                             SizedBox(height: 1.6),
                             WidgetifiedCategory(
-                              categoryId: stock.product.category,
+                              categoryId: widget.stock.product.category,
                               fontSize: 9.0,
                               padding: 2.0,
                             ),
@@ -363,9 +385,7 @@ class SimplifiedStockOnCart extends StatelessWidget {
                               fontSize: 18.0,
                             ),
                           ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
+                          onPressed: widget.onRemove,
                         ),
                       ),
                     ],
@@ -375,13 +395,44 @@ class SimplifiedStockOnCart extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(
-                        '수량 선택',
+                      Row(
+                        children: [
+                          Text(
+                            '수량',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 17.0,
+                            ),
+                          ),
+                          SizedBox(width: 8.0),
+                          Container(
+                            width: 32.0,
+                            height: 24.0,
+                            child: CupertinoPicker.builder(
+                              itemExtent: 24.0,
+                              onSelectedItemChanged: (index) {
+                                setState(() {
+                                  _price = widget.stock.price * (index + 1);
+                                });
+                              },
+                              itemBuilder: (context, index) {
+                                return Text(
+                                  (index + 1).toString(),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 17.0,
+                                  ),
+                                );
+                              },
+                              childCount: widget.stock.amount + 1,
+                            ),
+                          ),
+                        ],
                       ),
                       Flexible(
                         fit: FlexFit.loose,
                         child: Text(
-                          formattedPrice(stock.price),
+                          formattedPrice(_price),
                           maxLines: 1,
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,
