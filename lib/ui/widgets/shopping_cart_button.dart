@@ -12,24 +12,28 @@ class ShoppingCartButton extends StatefulWidget {
 }
 
 class _ShoppingCartButtonState extends State<ShoppingCartButton> {
+  Timer timer;
   Future<int> quantity;
 
   @override
   void initState() {
     super.initState();
 
-    if (!mounted) {
-      return;
-    }
-
-    Timer.periodic(
+    timer = Timer.periodic(
       Duration(milliseconds: 500),
-      (Timer t) {
+          (Timer t) {
         setState(() {
           quantity = _fetchShoppingCartQuantity();
         });
       },
     );
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+
+    super.dispose();
   }
 
   @override
