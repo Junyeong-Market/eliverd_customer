@@ -17,7 +17,11 @@ class Product extends Equatable {
       'Product { id: $id, name: $name, manufacturer: $manufacturer, ian: $ian, category: $category }';
 
   Product copyWith(
-          {int id, String name, Manufacturer manufacturer, String ian, String category}) =>
+          {int id,
+          String name,
+          Manufacturer manufacturer,
+          String ian,
+          String category}) =>
       Product(
         id: id,
         name: name,
@@ -33,6 +37,14 @@ class Product extends Equatable {
         ian: json['ian'],
         category: json['category'],
       );
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'manufacturer': manufacturer,
+        'ian': ian,
+        'category': category,
+      };
 }
 
 class Manufacturer extends Equatable {
@@ -56,4 +68,9 @@ class Manufacturer extends Equatable {
         id: json['id'],
         name: json['name'],
       );
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+      };
 }

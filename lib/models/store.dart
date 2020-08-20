@@ -16,6 +16,11 @@ class Coordinate extends Equatable {
   String toString() {
     return 'Coordinate{ lat: $lat, lng: $lng }';
   }
+
+  Map<String, dynamic> toJson() => {
+        'lat': lat,
+        'lng': lng,
+      };
 }
 
 class Store extends Equatable {
@@ -67,7 +72,9 @@ class Store extends Equatable {
       location: json['location']);
 
   static Coordinate getStoreCoordinate(String location) {
-    final rawCoordinate = location.substring(location.indexOf('(') + 1, location.indexOf(')')).split(' ');
+    final rawCoordinate = location
+        .substring(location.indexOf('(') + 1, location.indexOf(')'))
+        .split(' ');
 
     return Coordinate(
       lat: double.parse(rawCoordinate[0]),
@@ -76,10 +83,9 @@ class Store extends Equatable {
   }
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'name': name,
         'description': description,
-        'lat': location.lat.toString(),
-        'lng': location.lng.toString(),
       };
 }
 
@@ -106,11 +112,17 @@ class Stock extends Equatable {
         amount: amount,
       );
 
+  static Stock fromJson(dynamic json) => Stock(
+        store: Store.fromJson(json['store']),
+        product: Product.fromJson(json['product']),
+        price: json['price'],
+        amount: json['amount'],
+      );
+
   Map<String, dynamic> toJson() => {
-        'ian': product.ian,
-        'name': product.name,
-        'manufacturer': product.manufacturer.id.toString(),
-        'price': price.toString(),
-        'amount': amount.toString(),
+        'store': store,
+        'product': product,
+        'price': price,
+        'amount': amount,
       };
 }
