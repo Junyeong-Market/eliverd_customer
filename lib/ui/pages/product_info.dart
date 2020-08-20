@@ -138,6 +138,8 @@ class ProductInfoPage extends StatelessWidget {
     carts.add(encoded);
 
     prefs.setStringList('carts', carts);
+
+    showItemAddedAlertDialog(context, stock);
   }
 }
 
@@ -224,3 +226,88 @@ showDuplicatedShoppingCartAlertDialog(BuildContext context, Stock stock) {
     );
   }
 }
+
+showItemAddedAlertDialog(BuildContext context, Stock stock) {
+  Widget confirmButton = FlatButton(
+    child: Text(
+      '확인',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  Widget cupertinoConfirmButton = CupertinoDialogAction(
+    child: Text(
+      '확인',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  AlertDialog alertDialog = AlertDialog(
+    title: Text(
+      '장바구니 추가 완',
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 18.0,
+      ),
+    ),
+    content: Text(
+      '\'' + stock.product.name + '\' 상품이 장바구니에 성공적으로 추가되었습니다.',
+      style: TextStyle(
+        fontWeight: FontWeight.w400,
+        fontSize: 14.0,
+      ),
+    ),
+    actions: <Widget>[
+      confirmButton,
+    ],
+  );
+
+  CupertinoAlertDialog cupertinoAlertDialog = CupertinoAlertDialog(
+    title: Text(
+      '장바구니 중복',
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 18.0,
+      ),
+    ),
+    content: Text(
+      '\'' + stock.product.name + '\' 상품이 장바구니에 성공적으로 추가되었습니다.',
+      style: TextStyle(
+        fontWeight: FontWeight.w400,
+        fontSize: 14.0,
+      ),
+    ),
+    actions: <Widget>[
+      cupertinoConfirmButton,
+    ],
+  );
+
+  if (Platform.isAndroid) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alertDialog;
+      },
+    );
+  } else if (Platform.isIOS) {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return cupertinoAlertDialog;
+      },
+    );
+  }
+}
+
