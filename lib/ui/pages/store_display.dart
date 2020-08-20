@@ -27,7 +27,7 @@ class _StoreDisplayState extends State<StoreDisplay> {
     store = widget.stocks[0].store;
     categories = widget.stocks
         .map((stock) => stock.product.category)
-        .map((category) => Categories.listByNetworkPOV[category] as Category)
+        .map((category) => Categories.listByNetworkPOV[category])
         .toSet()
         .toList();
   }
