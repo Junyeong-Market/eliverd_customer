@@ -623,12 +623,15 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       width: width,
                       height: 24.0,
+                      padding: EdgeInsets.symmetric(
+                        vertical: 2.0,
+                      ),
                       child: GridView.builder(
                         scrollDirection: Axis.horizontal,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 1,
                           mainAxisSpacing: 8.0,
-                          childAspectRatio: 0.25,
+                          childAspectRatio: 0.2,
                         ),
                         itemBuilder: (context, index) {
                           return WidgetifiedCategory(
