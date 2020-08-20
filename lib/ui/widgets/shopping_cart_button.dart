@@ -18,8 +18,12 @@ class _ShoppingCartButtonState extends State<ShoppingCartButton> {
   void initState() {
     super.initState();
 
+    if (!mounted) {
+      return;
+    }
+
     Timer.periodic(
-      Duration(seconds: 1),
+      Duration(milliseconds: 500),
       (Timer t) {
         setState(() {
           quantity = _fetchShoppingCartQuantity();
