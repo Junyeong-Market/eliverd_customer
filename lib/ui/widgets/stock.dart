@@ -106,6 +106,7 @@ class SimplifiedStock extends StatelessWidget {
                       fontSize: 17.0,
                     ),
                   ),
+                  SizedBox(height: 1.6),
                   WidgetifiedCategory(
                     categoryId: stock.product.category,
                     fontSize: 9.0,
@@ -121,6 +122,12 @@ class SimplifiedStock extends StatelessWidget {
   }
 
   String formattedPrice(int price) {
+    if (price >= 100000000) {
+      return '₩' + (price / 100000000).toString() + '억';
+    } else if (price >= 10000000) {
+      return '₩' + (price / 10000).toString() + '만';
+    }
+
     return NumberFormat.currency(
       locale: 'ko',
       symbol: '₩',
