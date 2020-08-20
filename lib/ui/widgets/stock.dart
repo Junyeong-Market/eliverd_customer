@@ -85,7 +85,10 @@ class SimplifiedStock extends StatelessWidget {
             children: <Widget>[
               Flexible(
                 child: Container(
-                  color: Colors.black12,
+                  decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                   child: Center(
                     child: Text(
                       '사진 없음',
@@ -132,7 +135,7 @@ class SimplifiedStock extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 1.6),
-                  WidgetifiedCategory(
+                  CategoryWidget(
                     categoryId: stock.product.category,
                     fontSize: 9.0,
                     padding: 2.0,
@@ -148,9 +151,9 @@ class SimplifiedStock extends StatelessWidget {
 
   String formattedPrice(int price) {
     if (price >= 100000000) {
-      return '₩' + (price / 100000000).toStringAsFixed(1) + '억';
+      return '₩' + (price / 100000000).toStringAsFixed(price % 100000000 == 0 ? 0 : 1) + '억';
     } else if (price >= 10000000) {
-      return '₩' + (price / 10000).toStringAsFixed(1) + '만';
+      return '₩' + (price / 10000).toStringAsFixed(price % 10000 == 0 ? 0 : 1) + '만';
     }
 
     return NumberFormat.currency(
@@ -177,9 +180,12 @@ class SpecifiedStock extends StatelessWidget {
         Flexible(
           fit: FlexFit.loose,
           child: Container(
-            color: Colors.black12,
             width: width,
             height: width,
+            decoration: BoxDecoration(
+              color: Colors.black12,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
             child: Center(
               child: Text(
                 '누가 봐도 이 상품에 대한 사진',
@@ -236,7 +242,7 @@ class SpecifiedStock extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 4.0),
-                  WidgetifiedCategory(
+                  CategoryWidget(
                     categoryId: stock.product.category,
                   ),
                 ],
@@ -309,7 +315,10 @@ class _SimplifiedStockOnCartState extends State<SimplifiedStockOnCart> {
                   height: width * 0.25,
                 ),
                 child: Container(
-                  color: Colors.black12,
+                  decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                   child: Center(
                     child: Text(
                       '사진 없음',
@@ -361,7 +370,7 @@ class _SimplifiedStockOnCartState extends State<SimplifiedStockOnCart> {
                               ),
                             ),
                             SizedBox(height: 1.6),
-                            WidgetifiedCategory(
+                            CategoryWidget(
                               categoryId: widget.stock.product.category,
                               fontSize: 9.0,
                               padding: 2.0,
@@ -455,9 +464,9 @@ class _SimplifiedStockOnCartState extends State<SimplifiedStockOnCart> {
 
   String formattedPrice(int price) {
     if (price >= 100000000) {
-      return '₩' + (price / 100000000).toStringAsFixed(1) + '억';
+      return '₩' + (price / 100000000).toStringAsFixed(price % 100000000 == 0 ? 0 : 1) + '억';
     } else if (price >= 10000000) {
-      return '₩' + (price / 10000).toStringAsFixed(1) + '만';
+      return '₩' + (price / 10000).toStringAsFixed(price % 10000 == 0 ? 0 : 1) + '만';
     }
 
     return NumberFormat.currency(

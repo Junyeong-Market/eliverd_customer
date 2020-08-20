@@ -111,7 +111,7 @@ class ProductInfoPage extends StatelessWidget {
               ),
             ),
             color: eliverdColor,
-            borderRadius: BorderRadius.circular(5.0),
+            borderRadius: BorderRadius.circular(10.0),
             padding: EdgeInsets.symmetric(vertical: 16.0),
             onPressed: () {
               _addToCart(context, stock);
