@@ -256,7 +256,7 @@ showItemAddedAlertDialog(BuildContext context, Stock stock) {
 
   AlertDialog alertDialog = AlertDialog(
     title: Text(
-      '장바구니 추가 완',
+      '장바구니 추가 완료',
       style: TextStyle(
         fontWeight: FontWeight.w600,
         fontSize: 18.0,
@@ -276,7 +276,7 @@ showItemAddedAlertDialog(BuildContext context, Stock stock) {
 
   CupertinoAlertDialog cupertinoAlertDialog = CupertinoAlertDialog(
     title: Text(
-      '장바구니 중복',
+      '장바구니 추가 완료',
       style: TextStyle(
         fontWeight: FontWeight.w600,
         fontSize: 18.0,
