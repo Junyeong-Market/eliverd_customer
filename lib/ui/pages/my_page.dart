@@ -10,7 +10,6 @@ class _MyPagePageState extends State<MyPagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: ButtonTheme(
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
