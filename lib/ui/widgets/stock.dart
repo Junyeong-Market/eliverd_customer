@@ -8,8 +8,6 @@ import 'package:Eliverd/models/models.dart';
 import 'package:Eliverd/ui/pages/product_info.dart';
 import 'package:Eliverd/ui/widgets/category.dart';
 
-import 'package:Eliverd/common/color.dart';
-
 class StockList extends StatelessWidget {
   final List<Stock> stocks;
 
