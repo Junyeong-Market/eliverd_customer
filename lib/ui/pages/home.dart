@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:Eliverd/ui/pages/cart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +23,7 @@ import 'package:Eliverd/common/marker.dart';
 import 'package:Eliverd/ui/pages/my_page.dart';
 import 'package:Eliverd/ui/widgets/stock.dart';
 import 'package:Eliverd/ui/widgets/category.dart';
+import 'package:Eliverd/ui/widgets/shopping_cart_button.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -281,32 +281,7 @@ class _HomePageState extends State<HomePage> {
     return markers;
   }
 
-  Widget _buildCartButton() => ButtonTheme(
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        minWidth: 0,
-        height: 0,
-        child: FlatButton(
-          padding: EdgeInsets.all(0.0),
-          textColor: Colors.black54,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          child: Text(
-            '􀍩',
-            style: TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 24.0,
-            ),
-          ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ShoppingCartPage(),
-              ),
-            );
-          },
-        ),
-      );
+  Widget _buildCartButton() => ShoppingCartButton();
 
   Widget _buildUserProfileButton() => ButtonTheme(
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
