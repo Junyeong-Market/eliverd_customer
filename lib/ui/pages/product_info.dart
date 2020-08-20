@@ -1,12 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:Eliverd/ui/widgets/shopping_cart_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:Eliverd/models/models.dart';
 import 'package:Eliverd/ui/widgets/stock.dart';
-import 'package:Eliverd/ui/pages/cart.dart';
 
 import 'package:Eliverd/common/color.dart';
 
@@ -60,34 +61,7 @@ class ProductInfoPage extends StatelessWidget {
           preferredSize: Size.fromHeight(0.0),
         ),
         actions: [
-          ButtonTheme(
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            minWidth: 0,
-            height: 0,
-            child: FlatButton(
-              padding: EdgeInsets.only(
-                right: 4.0,
-              ),
-              textColor: Colors.black,
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              child: Text(
-                '􀍩',
-                style: TextStyle(
-                  fontWeight: FontWeight.w200,
-                  fontSize: 24.0,
-                ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ShoppingCartPage(),
-                  ),
-                );
-              },
-            ),
-          ),
+          ShoppingCartButton(),
           ButtonTheme(
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             minWidth: 0,
@@ -140,7 +114,7 @@ class ProductInfoPage extends StatelessWidget {
             borderRadius: BorderRadius.circular(5.0),
             padding: EdgeInsets.symmetric(vertical: 16.0),
             onPressed: () {
-              _addToCart(stock);
+              _addToCart(context, stock);
             },
           ),
         ),
@@ -148,13 +122,105 @@ class ProductInfoPage extends StatelessWidget {
     );
   }
 
-  Future<void> _addToCart(Stock product) async {
+  Future<void> _addToCart(BuildContext context, Stock product) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     List<String> carts = prefs.getStringList('carts') ?? <String>[];
 
-    carts.add(json.encode(product.toJson()));
+    String encoded = json.encode(product.toJson());
+
+    if (carts.contains(encoded)) {
+      showDuplicatedShoppingCartAlertDialog(context, stock);
+
+      return;
+    }
+
+    carts.add(encoded);
 
     prefs.setStringList('carts', carts);
+  }
+}
+
+showDuplicatedShoppingCartAlertDialog(BuildContext context, Stock stock) {
+  Widget confirmButton = FlatButton(
+    child: Text(
+      '확인',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  Widget cupertinoConfirmButton = CupertinoDialogAction(
+    child: Text(
+      '확인',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  AlertDialog alertDialog = AlertDialog(
+    title: Text(
+      '장바구니 중복',
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 18.0,
+      ),
+    ),
+    content: Text(
+      '\'' + stock.product.name + '\'상품은 이미 장바구니에 있는 상품입니다.',
+      style: TextStyle(
+        fontWeight: FontWeight.w400,
+        fontSize: 14.0,
+      ),
+    ),
+    actions: <Widget>[
+      confirmButton,
+    ],
+  );
+
+  CupertinoAlertDialog cupertinoAlertDialog = CupertinoAlertDialog(
+    title: Text(
+      '장바구니 중복',
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 18.0,
+      ),
+    ),
+    content: Text(
+      '\'' + stock.product.name + '\' 상품은 이미 장바구니에 있는 상품입니다.',
+      style: TextStyle(
+        fontWeight: FontWeight.w400,
+        fontSize: 14.0,
+      ),
+    ),
+    actions: <Widget>[
+      cupertinoConfirmButton,
+    ],
+  );
+
+  if (Platform.isAndroid) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alertDialog;
+      },
+    );
+  } else if (Platform.isIOS) {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return cupertinoAlertDialog;
+      },
+    );
   }
 }
