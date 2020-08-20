@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage> {
               child: _buildMap(),
             ),
             Positioned(
-              top: 80.0,
+              top: 96.0,
               left: width * 0.05,
               child: Container(
                 width: width * 0.9,
@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Positioned(
-              top: 32.0,
+              top: 48.0,
               left: width * 0.05,
               child: _buildSearchBox(width),
             ),
