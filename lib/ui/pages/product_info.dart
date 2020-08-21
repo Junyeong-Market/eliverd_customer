@@ -14,8 +14,7 @@ import 'package:Eliverd/common/color.dart';
 class ProductInfoPage extends StatelessWidget {
   final Stock stock;
 
-  const ProductInfoPage({Key key, @required this.stock})
-      : super(key: key);
+  const ProductInfoPage({Key key, @required this.stock}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,13 +52,6 @@ class ProductInfoPage extends StatelessWidget {
             fontSize: 20.0,
           ),
         ),
-        bottom: PreferredSize(
-          child: Container(
-            color: Colors.black12,
-            height: 1.0,
-          ),
-          preferredSize: Size.fromHeight(0.0),
-        ),
         actions: [
           ShoppingCartButton(),
           ButtonTheme(
@@ -89,8 +81,23 @@ class ProductInfoPage extends StatelessWidget {
         ],
       ),
       body: ListView(
-        padding: EdgeInsets.all(8.0),
+        padding: EdgeInsets.symmetric(
+          horizontal: 8.0,
+        ),
         children: [
+          Text(
+            stock.store.name +
+                ' > ' +
+                Categories.listByNetworkPOV[stock.product.category].text +
+                ' > ' +
+                stock.product.name,
+            style: TextStyle(
+              color: Colors.black45,
+              fontWeight: FontWeight.w500,
+              fontSize: 14.0,
+            ),
+          ),
+          SizedBox(height: 4.0),
           SpecifiedStock(
             stock: stock,
           ),
@@ -310,4 +317,3 @@ showItemAddedAlertDialog(BuildContext context, Stock stock) {
     );
   }
 }
-
