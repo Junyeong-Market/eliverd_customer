@@ -89,13 +89,6 @@ class _StoreDisplayState extends State<StoreDisplay> {
             ),
           ],
         ),
-        bottom: PreferredSize(
-          child: Container(
-            color: Colors.black12,
-            height: 1.0,
-          ),
-          preferredSize: Size.fromHeight(0.0),
-        ),
         actions: [
           ShoppingCartButton(),
           ButtonTheme(

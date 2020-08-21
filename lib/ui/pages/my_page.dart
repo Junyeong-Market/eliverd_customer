@@ -42,13 +42,6 @@ class _MyPagePageState extends State<MyPagePage> {
             fontWeight: FontWeight.w800,
           ),
         ),
-        bottom: PreferredSize(
-          child: Container(
-            color: Colors.black12,
-            height: 1.0,
-          ),
-          preferredSize: Size.fromHeight(0.0),
-        ),
       ),
       body: ListView(),
     );
