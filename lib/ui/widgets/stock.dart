@@ -32,10 +32,11 @@ class StockList extends StatelessWidget {
 
 class StockListOnCart extends StatelessWidget {
   final List<Stock> stocks;
+  final ValueNotifier<List<int>> amounts;
   final Function removeHandler;
 
   const StockListOnCart(
-      {Key key, @required this.stocks, @required this.removeHandler})
+      {Key key, @required this.stocks, @required this.amounts, @required this.removeHandler})
       : super(key: key);
 
   @override
@@ -44,9 +45,17 @@ class StockListOnCart extends StatelessWidget {
       padding: EdgeInsets.all(8.0),
       itemBuilder: (context, index) => SimplifiedStockOnCart(
         stock: stocks[index],
+        onAmountChange: (int newAmount) {
+          List<int> newAmounts = List.of(amounts.value);
+
+          newAmounts[index] = newAmount;
+
+          amounts.value = newAmounts;
+        },
         onRemove: () {
           removeHandler(stocks[index]);
         },
+        previousAmount: amounts.value.isEmpty ? 1 : amounts.value[index],
       ),
       itemCount: stocks.length,
     );
@@ -264,10 +273,12 @@ class SpecifiedStock extends StatelessWidget {
 
 class SimplifiedStockOnCart extends StatefulWidget {
   final Stock stock;
+  final Function onAmountChange;
   final Function onRemove;
+  final int previousAmount;
 
   const SimplifiedStockOnCart(
-      {Key key, @required this.stock, @required this.onRemove})
+      {Key key, @required this.stock, @required this.onAmountChange, @required this.onRemove, this.previousAmount})
       : super(key: key);
 
   @override
@@ -275,189 +286,187 @@ class SimplifiedStockOnCart extends StatefulWidget {
 }
 
 class _SimplifiedStockOnCartState extends State<SimplifiedStockOnCart> {
-  int _price;
+  FixedExtentScrollController amountScrollController;
+
+  int price;
+  int amount;
 
   @override
   void initState() {
     super.initState();
 
-    _price = widget.stock.price;
+    amount = widget.previousAmount ?? 1;
+    price = widget.stock.price * amount;
+    amountScrollController = FixedExtentScrollController(initialItem: amount - 1);
   }
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProductInfoPage(
-              stock: widget.stock,
-            ),
-          ),
-        );
-      },
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: 0.0,
-          right: 8.0,
-          top: 8.0,
-          bottom: 0.0,
-        ),
-        child: Row(
-          children: <Widget>[
-            Flexible(
-              flex: 1,
-              child: ConstrainedBox(
-                constraints: BoxConstraints.expand(
-                  height: width * 0.25,
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 0.0,
+        right: 8.0,
+        top: 8.0,
+        bottom: 0.0,
+      ),
+      child: Row(
+        children: <Widget>[
+          Flexible(
+            flex: 1,
+            child: ConstrainedBox(
+              constraints: BoxConstraints.expand(
+                height: width * 0.25,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black12,
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black12,
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Center(
-                    child: Text(
-                      '사진 없음',
-                      style: const TextStyle(
-                        color: Colors.black45,
-                        fontSize: 12.0,
-                      ),
-                      textAlign: TextAlign.center,
+                child: Center(
+                  child: Text(
+                    '사진 없음',
+                    style: const TextStyle(
+                      color: Colors.black45,
+                      fontSize: 12.0,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
             ),
-            SizedBox(width: 4.0),
-            Flexible(
-              flex: 3,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Flexible(
-                        fit: FlexFit.loose,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.stock.product.manufacturer.name,
-                              maxLines: 1,
-                              textAlign: TextAlign.left,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: Colors.black45,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 13.0,
-                              ),
-                            ),
-                            Text(
-                              widget.stock.product.name,
-                              maxLines: 1,
-                              textAlign: TextAlign.left,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: Colors.black87,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 17.0,
-                              ),
-                            ),
-                            SizedBox(height: 1.6),
-                            CategoryWidget(
-                              categoryId: widget.stock.product.category,
-                              fontSize: 9.0,
-                              padding: 2.0,
-                            ),
-                          ],
-                        ),
-                      ),
-                      ButtonTheme(
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        minWidth: 0,
-                        height: 0,
-                        child: FlatButton(
-                          padding: EdgeInsets.all(0.0),
-                          textColor: Colors.black,
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          child: Text(
-                            '􀆄',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 18.0,
-                            ),
-                          ),
-                          onPressed: widget.onRemove,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Row(
+          ),
+          SizedBox(width: 4.0),
+          Flexible(
+            flex: 3,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Flexible(
+                      fit: FlexFit.loose,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '수량',
+                            widget.stock.product.manufacturer.name,
+                            maxLines: 1,
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
+                              color: Colors.black45,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 13.0,
+                            ),
+                          ),
+                          Text(
+                            widget.stock.product.name,
+                            maxLines: 1,
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.black87,
                               fontWeight: FontWeight.w600,
                               fontSize: 17.0,
                             ),
                           ),
-                          SizedBox(width: 8.0),
-                          Container(
-                            width: 32.0,
-                            height: 24.0,
-                            child: CupertinoPicker.builder(
-                              itemExtent: 24.0,
-                              onSelectedItemChanged: (index) {
-                                setState(() {
-                                  _price = widget.stock.price * (index + 1);
-                                });
-                              },
-                              itemBuilder: (context, index) {
-                                return Text(
-                                  (index + 1).toString(),
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 17.0,
-                                  ),
-                                );
-                              },
-                              childCount: widget.stock.amount + 1,
-                            ),
+                          SizedBox(height: 1.6),
+                          CategoryWidget(
+                            categoryId: widget.stock.product.category,
+                            fontSize: 9.0,
+                            padding: 2.0,
                           ),
                         ],
                       ),
-                      Flexible(
-                        fit: FlexFit.loose,
+                    ),
+                    ButtonTheme(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      minWidth: 0,
+                      height: 0,
+                      child: FlatButton(
+                        padding: EdgeInsets.all(0.0),
+                        textColor: Colors.black,
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         child: Text(
-                          formattedPrice(_price),
-                          maxLines: 1,
-                          textAlign: TextAlign.left,
-                          overflow: TextOverflow.ellipsis,
+                          '􀆄',
                           style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 19.0,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 18.0,
                           ),
                         ),
+                        onPressed: widget.onRemove,
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          '수량',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 17.0,
+                          ),
+                        ),
+                        SizedBox(width: 8.0),
+                        Container(
+                          width: 32.0,
+                          height: 24.0,
+                          child: CupertinoPicker.builder(
+                            scrollController: amountScrollController,
+                            itemExtent: 24.0,
+                            onSelectedItemChanged: (index) {
+                              setState(() {
+                                amount = index + 1;
+
+                                widget.onAmountChange(amount);
+
+                                price = widget.stock.price * amount;
+                              });
+                            },
+                            itemBuilder: (context, index) {
+                              return Text(
+                                (index + 1).toString(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 17.0,
+                                ),
+                              );
+                            },
+                            childCount: widget.stock.amount + 1,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Flexible(
+                      fit: FlexFit.loose,
+                      child: Text(
+                        formattedPrice(price),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 19.0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
