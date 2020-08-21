@@ -1,14 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:Eliverd/ui/widgets/stock.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:Eliverd/models/models.dart';
 
+import 'package:Eliverd/ui/widgets/stock.dart';
+
 import 'package:Eliverd/common/color.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ShoppingCartPage extends StatefulWidget {
   @override
@@ -16,14 +19,16 @@ class ShoppingCartPage extends StatefulWidget {
 }
 
 class _ShoppingCartPageState extends State<ShoppingCartPage> {
-  Future<List<Stock>> products;
+  Future<List<Stock>> cartItems;
+  ValueNotifier<List<int>> amounts;
+
   bool isShoppingCartEmpty = true;
 
   @override
   void initState() {
     super.initState();
 
-    products = _fetchShoppingCart();
+    cartItems = _fetchShoppingCart();
   }
 
   @override
@@ -47,7 +52,12 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
               ),
             ),
             onPressed: () {
-              Navigator.pop(context);
+              if (isShoppingCartEmpty) {
+                Navigator.pop(context);
+                return;
+              }
+
+              showConfirmExitAlertDialog(context);
             },
           ),
         ),
@@ -62,43 +72,47 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
             fontSize: 20.0,
           ),
         ),
-        bottom: PreferredSize(
-          child: Container(
-            color: Colors.black12,
-            height: 1.0,
-          ),
-          preferredSize: Size.fromHeight(0.0),
-        ),
       ),
       body: FutureBuilder<List<Stock>>(
-        future: products,
+        future: cartItems,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
-              return snapshot.data.isEmpty ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(height: 16.0),
-                    Text(
-                      '아무 상품도 없네요.\n얼른 상품을 담으러 둘러보세요! 👀',
-                      style: TextStyle(
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16.0,
+              return snapshot.data.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(height: 16.0),
+                          Text(
+                            '아무 상품도 없네요.\n얼른 상품을 담으러 둘러보세요! 👀',
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16.0,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ) : StockListOnCart(
-                stocks: snapshot.data,
-                removeHandler: (Stock stock) {
-                  setState(() {
-                    products = _removeFromCart(stock);
-                  });
-                },
-              );
+                    )
+                  : StockListOnCart(
+                      stocks: snapshot.data,
+                      amounts: amounts,
+                      removeHandler: (Stock stock) {
+                        int index = snapshot.data.indexOf(stock);
+
+                        setState(() {
+                          cartItems = _removeFromCart(index).whenComplete(() {
+                            List<int> newAmounts = List.of(amounts.value);
+
+                            newAmounts.removeAt(index);
+
+                            amounts.value = newAmounts;
+                          });
+                        });
+                      },
+                    );
             } else if (snapshot.hasError) {
               return Text(
                 '장바구니를 불러오는 중 오류가 발생했습니다.\n다시 시도해주세요.',
@@ -133,38 +147,65 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(8.0),
         child: BottomAppBar(
-          color: Colors.transparent,
-          elevation: 0.0,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                '총합: ₩0',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 20.0,
+            color: Colors.transparent,
+            elevation: 0.0,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                FutureBuilder<List<Stock>>(
+                  future: cartItems,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+                      return ValueListenableBuilder(
+                        valueListenable: amounts,
+                        builder: (BuildContext context, List<int> amounts,
+                            Widget child) {
+                          int total = 0;
+
+                          for (int i = 0; i < amounts.length; i++) {
+                            total += snapshot.data[i].price * amounts[i];
+                          }
+
+                          return Text(
+                            '총합: ${formattedPrice(total)}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20.0,
+                            ),
+                            textAlign: TextAlign.right,
+                          );
+                        },
+                      );
+                    }
+
+                    return Text(
+                      '총합: ${formattedPrice(0)}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 20.0,
+                      ),
+                      textAlign: TextAlign.right,
+                    );
+                  },
                 ),
-                textAlign: TextAlign.right,
-              ),
-              SizedBox(height: 4.0),
-              CupertinoButton(
-                child: Text(
-                  '주문하기',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.0,
+                SizedBox(height: 4.0),
+                CupertinoButton(
+                  child: Text(
+                    '주문하기',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                    ),
                   ),
+                  color: eliverdColor,
+                  borderRadius: BorderRadius.circular(10.0),
+                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  onPressed: isShoppingCartEmpty ? null : () {},
                 ),
-                color: eliverdColor,
-                borderRadius: BorderRadius.circular(5.0),
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-                onPressed: isShoppingCartEmpty ? null : () {},
-              ),
-            ],
-          )
-        ),
+              ],
+            )),
       ),
     );
   }
@@ -184,17 +225,20 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       });
     }
 
+    amounts = ValueNotifier<List<int>>(
+        List<int>.generate(rawProducts.length, (index) => 1));
+
     return rawProducts
         .map((rawProduct) => Stock.fromJson(json.decode(rawProduct)))
         .toList();
   }
 
-  Future<List<Stock>> _removeFromCart(Stock stock) async {
+  Future<List<Stock>> _removeFromCart(int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     List<String> carts = prefs.getStringList('carts') ?? <String>[];
 
-    carts.remove(json.encode(stock.toJson()));
+    carts.removeAt(index);
 
     prefs.setStringList('carts', carts);
 
@@ -207,5 +251,126 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
     return carts
         .map((rawProduct) => Stock.fromJson(json.decode(rawProduct)))
         .toList();
+  }
+
+  String formattedPrice(int price) {
+    return NumberFormat.currency(
+      locale: 'ko',
+      symbol: '₩',
+    )?.format(price);
+  }
+}
+
+showConfirmExitAlertDialog(BuildContext context) {
+  Widget cancelButton = FlatButton(
+    child: Text(
+      '취소',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w400,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  Widget confirmButton = FlatButton(
+    child: Text(
+      '확인',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+      Navigator.pop(context);
+    },
+  );
+
+  Widget cupertinoCancelButton = CupertinoDialogAction(
+    child: Text(
+      '취소',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w400,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  Widget cupertinoConfirmButton = CupertinoDialogAction(
+    child: Text(
+      '확인',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+      Navigator.pop(context);
+    },
+  );
+
+  AlertDialog alertDialog = AlertDialog(
+    title: Text(
+      '정말로 나가시겠습니까?',
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 18.0,
+      ),
+    ),
+    content: Text(
+      '장바구니에서 설정한 수량이 초기화됩니다(단, 장바구니 목록은 삭제되지 않습니다).',
+      style: TextStyle(
+        fontWeight: FontWeight.w400,
+        fontSize: 14.0,
+      ),
+    ),
+    actions: <Widget>[
+      cancelButton,
+      confirmButton,
+    ],
+  );
+
+  CupertinoAlertDialog cupertinoAlertDialog = CupertinoAlertDialog(
+    title: Text(
+      '정말로 나가시겠습니까?',
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 18.0,
+      ),
+    ),
+    content: Text(
+      '장바구니에서 설정한 수량이 초기화됩니다(단, 장바구니 목록은 삭제되지 않습니다).',
+      style: TextStyle(
+        fontWeight: FontWeight.w400,
+        fontSize: 14.0,
+      ),
+    ),
+    actions: <Widget>[
+      cupertinoCancelButton,
+      cupertinoConfirmButton,
+    ],
+  );
+
+  if (Platform.isAndroid) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alertDialog;
+      },
+    );
+  } else if (Platform.isIOS) {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return cupertinoAlertDialog;
+      },
+    );
   }
 }
