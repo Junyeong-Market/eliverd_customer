@@ -6,7 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Markers {
   static Future<BitmapDescriptor> getMarkerIcon(String storeName) async {
-    Uint8List marker = await getBytesFromAsset('assets/images/shop.ico', 50);
+    Uint8List marker = await getBytesFromAsset('assets/images/shop.ico', 100);
 
     return BitmapDescriptor.fromBytes(marker);
   }
