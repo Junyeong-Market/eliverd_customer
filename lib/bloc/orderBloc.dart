@@ -28,7 +28,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Stream<OrderState> _mapProceedOrderToState(ProceedOrder event) async* {
     try {
-      yield OrderInProgress();
+      final redirectURL = await purchaseRepository.getCheckoutByCart(event.items, event.amounts, event.isDelivery);
+
+      yield OrderInProgress(redirectURL);
     } catch (_) {
       yield OrderError();
     }
