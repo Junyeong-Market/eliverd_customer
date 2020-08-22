@@ -73,6 +73,7 @@ class StoreAPIClient {
 
     final stocks = data.map((rawStock) {
       return Stock(
+        id: rawStock['id'],
         store: store,
         product: Product.fromJson(rawStock['product']),
         price: rawStock['price'],
