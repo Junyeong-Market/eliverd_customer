@@ -110,21 +110,24 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                     ),
                     textAlign: TextAlign.right,
                   ),
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (context) => SearchLocationDialog(
-                        onLocationSelected: _onShippingDestinationSelected,
-                      ),
-                      isScrollControlled: true,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30.0),
-                          topRight: Radius.circular(30.0),
-                        ),
-                      ),
-                    );
-                  },
+                  onPressed: _isNotReadyToOrder()
+                      ? null
+                      : () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) => SearchLocationDialog(
+                              onLocationSelected:
+                                  _onShippingDestinationSelected,
+                            ),
+                            isScrollControlled: true,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(30.0),
+                                topRight: Radius.circular(30.0),
+                              ),
+                            ),
+                          );
+                        },
                 ),
               ),
             ],
@@ -232,7 +235,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                                 isPriceExceeded = total >= 1000000;
                               });
 
-                              if (isPriceExceeded && !isExceedLimitAlertDisplayed) {
+                              if (isPriceExceeded &&
+                                  !isExceedLimitAlertDisplayed) {
                                 showExceededLimitAlertDialog(context);
 
                                 setState(() {
@@ -244,7 +248,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                             return Text(
                               '총합: $formatted',
                               style: TextStyle(
-                                color: isPriceExceeded ? Colors.red : Colors.black,
+                                color:
+                                    isPriceExceeded ? Colors.red : Colors.black,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 20.0,
                               ),
@@ -304,7 +309,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                     color: eliverdColor,
                     borderRadius: BorderRadius.circular(10.0),
                     padding: EdgeInsets.symmetric(vertical: 16.0),
-                    onPressed: isShoppingCartEmpty || isPriceExceeded
+                    onPressed: _isNotReadyToOrder()
                         ? null
                         : () {
                             cartItems.then((items) => context
@@ -333,6 +338,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       },
     );
   }
+
+  bool _isNotReadyToOrder() => isShoppingCartEmpty || isPriceExceeded;
 
   Future<List<Stock>> _fetchShoppingCart() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -444,7 +451,7 @@ showExceededLimitAlertDialog(BuildContext context) {
       ),
     ),
     content: Text(
-      'Eliverd는 현재 백만 원(1,000,000원) 이상의 결제를 지원하지 않습니다. 원하신다면 미래의 Eliverd에게 부탁하세요!🤪',
+      'Eliverd는 현재 백만 원(1,000,000원) 이상의 결제를 지원하지 않습니다. 한도 이상의 주문을 원하시면 여러 차례 나누어 진행해주세요.',
       style: TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: 14.0,
@@ -464,7 +471,7 @@ showExceededLimitAlertDialog(BuildContext context) {
       ),
     ),
     content: Text(
-      'Eliverd는 현재 백만 원(1,000,000원) 이상의 결제를 지원하지 않습니다. 원하신다면 미래의 Eliverd에게 부탁하세요!🤪',
+      'Eliverd는 현재 백만 원(1,000,000원) 이상의 결제를 지원하지 않습니다. 한도 이상의 주문을 원하시면 여러 차례 나누어 진행해주세요.',
       style: TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: 14.0,
