@@ -1,13 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:Eliverd/ui/widgets/shopping_cart_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:Eliverd/models/models.dart';
+
 import 'package:Eliverd/ui/widgets/stock.dart';
+import 'package:Eliverd/ui/pages/cart.dart';
+import 'package:Eliverd/ui/widgets/shopping_cart_button.dart';
 
 import 'package:Eliverd/common/color.dart';
 
@@ -235,12 +237,45 @@ showDuplicatedShoppingCartAlertDialog(BuildContext context, Stock stock) {
 }
 
 showItemAddedAlertDialog(BuildContext context, Stock stock) {
+  Widget cancelButton = FlatButton(
+    child: Text(
+      '취소',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w400,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
   Widget confirmButton = FlatButton(
     child: Text(
-      '확인',
+      '이동',
       style: TextStyle(
         color: eliverdColor,
         fontWeight: FontWeight.w700,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ShoppingCartPage(),
+        ),
+      );
+    },
+  );
+
+  Widget cupertinoCancelButton = CupertinoDialogAction(
+    child: Text(
+      '취소',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w400,
       ),
     ),
     onPressed: () {
@@ -250,7 +285,7 @@ showItemAddedAlertDialog(BuildContext context, Stock stock) {
 
   Widget cupertinoConfirmButton = CupertinoDialogAction(
     child: Text(
-      '확인',
+      '이동',
       style: TextStyle(
         color: eliverdColor,
         fontWeight: FontWeight.w700,
@@ -258,6 +293,13 @@ showItemAddedAlertDialog(BuildContext context, Stock stock) {
     ),
     onPressed: () {
       Navigator.pop(context);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ShoppingCartPage(),
+        ),
+      );
     },
   );
 
@@ -270,13 +312,14 @@ showItemAddedAlertDialog(BuildContext context, Stock stock) {
       ),
     ),
     content: Text(
-      '\'' + stock.product.name + '\' 상품이 장바구니에 성공적으로 추가되었습니다.',
+      '상품이 장바구니에 추가되었습니다. 바로 장바구니로 이동하시겠습니까?',
       style: TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: 14.0,
       ),
     ),
     actions: <Widget>[
+      cancelButton,
       confirmButton,
     ],
   );
@@ -290,13 +333,14 @@ showItemAddedAlertDialog(BuildContext context, Stock stock) {
       ),
     ),
     content: Text(
-      '\'' + stock.product.name + '\' 상품이 장바구니에 성공적으로 추가되었습니다.',
+      '상품이 장바구니에 추가되었습니다. 바로 장바구니로 이동하시겠습니까?',
       style: TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: 14.0,
       ),
     ),
     actions: <Widget>[
+      cupertinoCancelButton,
       cupertinoConfirmButton,
     ],
   );
@@ -317,3 +361,4 @@ showItemAddedAlertDialog(BuildContext context, Stock stock) {
     );
   }
 }
+
