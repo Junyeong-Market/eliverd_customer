@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:Eliverd/bloc/orderBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
@@ -39,6 +40,15 @@ class EliverdCustomer extends StatelessWidget {
           create: (_) => StoreBloc(
             storeRepository: StoreRepository(
               storeAPIClient: StoreAPIClient(
+                httpClient: http.Client(),
+              ),
+            ),
+          ),
+        ),
+        BlocProvider<OrderBloc>(
+          create: (_) => OrderBloc(
+            purchaseRepository: PurchaseRepository(
+              purchaseAPIClient: PurchaseAPIClient(
                 httpClient: http.Client(),
               ),
             ),
