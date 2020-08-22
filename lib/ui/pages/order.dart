@@ -1,16 +1,22 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class OrderPage extends StatefulWidget {
   final String redirectURL;
 
-  const OrderPage({Key key, this.redirectURL}) : super(key: key);
+  const OrderPage({Key key, @required this.redirectURL}) : super(key: key);
 
   @override
   _OrderPageState createState() => _OrderPageState();
 }
 
 class _OrderPageState extends State<OrderPage> {
+  final Completer<WebViewController> _controller =
+      Completer<WebViewController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,12 +53,12 @@ class _OrderPageState extends State<OrderPage> {
           ),
         ),
       ),
-      body: ListView(
-        children: [
-          Text(
-            widget.redirectURL,
-          ),
-        ],
+      body: WebView(
+        initialUrl: widget.redirectURL,
+        javascriptMode: JavascriptMode.unrestricted,
+        onWebViewCreated: (WebViewController webViewController) {
+          _controller.complete(webViewController);
+        },
       ),
     );
   }
