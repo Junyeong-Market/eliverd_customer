@@ -90,22 +90,24 @@ class Store extends Equatable {
 }
 
 class Stock extends Equatable {
+  final int id;
   final Store store;
   final Product product;
   final int price;
   final int amount;
 
-  const Stock({this.store, this.product, this.price, this.amount});
+  const Stock({this.id, this.store, this.product, this.price, this.amount});
 
   @override
-  List<Object> get props => [store, product, price, amount];
+  List<Object> get props => [id, store, product, price, amount];
 
   @override
   String toString() =>
-      'Stock{store: $store, product: $product, price: $price, amount: $amount}';
+      'Stock{ id: $id, store: $store, product: $product, price: $price, amount: $amount }';
 
-  Stock copyWith({Store store, Product product, int price, int amount}) =>
+  Stock copyWith({int id, Store store, Product product, int price, int amount}) =>
       Stock(
+        id: id,
         store: store,
         product: product,
         price: price,
@@ -113,6 +115,7 @@ class Stock extends Equatable {
       );
 
   static Stock fromJson(dynamic json) => Stock(
+        id: json['id'],
         store: Store.fromJson(json['store']),
         product: Product.fromJson(json['product']),
         price: json['price'],
@@ -120,6 +123,7 @@ class Stock extends Equatable {
       );
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'store': store,
         'product': product,
         'price': price,
