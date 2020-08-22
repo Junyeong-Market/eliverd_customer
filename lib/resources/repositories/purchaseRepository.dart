@@ -11,8 +11,9 @@ class PurchaseRepository {
   PurchaseRepository({@required this.purchaseAPIClient})
       : assert(PurchaseAPIClient != null);
 
-  Future<Map<String, dynamic>> getCheckoutByCart(List<Map<String, dynamic>> carts) async {
-    final data = purchaseAPIClient.getCheckoutByCart(carts);
+  Future<String> getCheckoutByCart(
+      List<Stock> items, List<int> amounts, bool isDelivery) async {
+    final data = purchaseAPIClient.getCheckoutByCart(items, amounts, isDelivery);
 
     return data;
   }

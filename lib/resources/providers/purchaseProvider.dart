@@ -2,8 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:collection/collection.dart';
 
 import 'package:Eliverd/models/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,30 +19,42 @@ class PurchaseAPIClient {
     @required this.httpClient,
   }) : assert(httpClient != null);
 
-  Future<Map<String, dynamic>> getCheckoutByCart(
-      List<Map<String, dynamic>> carts) async {
+  Future<String> getCheckoutByCart(
+      List<Stock> items, List<int> amounts, bool isDelivery) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<Map<String, dynamic>> body = [];
 
     final session = prefs.getString('session');
+    final grouped = groupBy(items, (Stock item) => item.store);
 
-    final url = '$baseUrl/purchase/';
+    grouped.forEach((store, stocks) {
+      body.add({
+        'store': store.id,
+        'stocks': stocks.map((stock) => {
+          'id': stock.id,
+          'amount': amounts[items.indexOf(stock)],
+        }).toList(),
+      });
+    });
+
+    final url = '$baseUrl/purchase/?is_delivery=$isDelivery';
     final res = await httpClient.post(
       url,
       headers: {
         HttpHeaders.authorizationHeader: session,
         HttpHeaders.contentTypeHeader: 'application/json',
       },
-      body: json.encode(carts),
+      body: json.encode(body),
       encoding: Encoding.getByName('utf-8'),
     );
 
-    if (res.statusCode != 200) {
-      throw Exception('Error occurred while processing carts');
+    if (res.statusCode != 201) {
+      throw Exception('Error occurred while requesting order');
     }
 
     final decoded = utf8.decode(res.bodyBytes);
 
-    final data = json.decode(decoded);
+    final data = json.decode(decoded)['next_redirect_mobile_url'];
 
     return data;
   }
