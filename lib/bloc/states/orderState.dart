@@ -10,7 +10,14 @@ abstract class OrderState extends Equatable {
 
 class OrderInitial extends OrderState {}
 
-class OrderInProgress extends OrderState {}
+class OrderInProgress extends OrderState {
+  final String redirectURL;
+
+  const OrderInProgress(this.redirectURL);
+
+  @override
+  List<Object> get props => [redirectURL];
+}
 
 class OrderApproved extends OrderState {
   final Order order;
