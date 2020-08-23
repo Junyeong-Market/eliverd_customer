@@ -70,8 +70,6 @@ class _OrderPageState extends State<OrderPage> {
               _controller.complete(webViewController);
             },
             navigationDelegate: (NavigationRequest request) {
-              print(request.url);
-
               if (request.url.startsWith('kakaotalk')) {
                 _launchURL(request.url);
 
