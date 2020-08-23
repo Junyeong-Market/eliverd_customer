@@ -83,12 +83,11 @@ class PurchaseAPIClient {
     return data;
   }
 
-  Future<Order> approveOrder(String orderId) async {
+  Future<Order> approveOrder(String url) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final session = prefs.getString('session');
 
-    final url = '$baseUrl/purchase/$orderId/approve/';
     final res = await httpClient.get(
       url,
       headers: {
@@ -102,17 +101,14 @@ class PurchaseAPIClient {
 
     final decoded = utf8.decode(res.bodyBytes);
 
-    final data = json.decode(decoded) as Order;
-
-    return data;
+    return Order.fromJson(json.decode(decoded));
   }
 
-  Future<Order> cancelOrder(String orderId) async {
+  Future<Order> cancelOrder(String url) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final session = prefs.getString('session');
 
-    final url = '$baseUrl/purchase/$orderId/cancel/';
     final res = await httpClient.get(
       url,
       headers: {
@@ -126,17 +122,14 @@ class PurchaseAPIClient {
 
     final decoded = utf8.decode(res.bodyBytes);
 
-    final data = json.decode(decoded) as Order;
-
-    return data;
+    return Order.fromJson(json.decode(decoded));
   }
 
-  Future<Order> failOrder(String orderId) async {
+  Future<Order> failOrder(String url) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final session = prefs.getString('session');
 
-    final url = '$baseUrl/purchase/$orderId/fail/';
     final res = await httpClient.get(
       url,
       headers: {
@@ -150,8 +143,6 @@ class PurchaseAPIClient {
 
     final decoded = utf8.decode(res.bodyBytes);
 
-    final data = json.decode(decoded) as Order;
-
-    return data;
+    return Order.fromJson(json.decode(decoded));
   }
 }
