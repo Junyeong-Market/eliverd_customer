@@ -11,6 +11,10 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/google_api_availability-2.0.4" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter-0.5.29" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/webview_flutter-0.3.22+1" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/url_launcher_linux-0.0.1+1" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/url_launcher-5.5.0" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/url_launcher_macos-0.0.1+7" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/url_launcher_web-0.1.2+1" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

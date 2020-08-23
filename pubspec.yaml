@@ -21,6 +21,7 @@ dependencies:
   shared_preferences: ^0.5.8
   google_maps_flutter: ^0.5.29
   webview_flutter: ^0.3.22+1
+  url_launcher: ^5.5.0
   geolocator: ^5.3.2+2
 
 dev_dependencies:
