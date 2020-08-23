@@ -36,17 +36,9 @@ class StoreAPIClient {
 
     final decoded = utf8.decode(res.bodyBytes);
 
-    final data = json.decode(decoded) as List;
-
-    return data
-        .map(
-          (rawStore) => Store(
-            id: rawStore['id'],
-            name: rawStore['name'],
-            description: rawStore['description'],
-            location: Store.getStoreCoordinate(rawStore['location']),
-          ),
-        )
+    return json
+        .decode(decoded)
+        .map<Store>((rawStore) => Store.fromJson(rawStore))
         .toList();
   }
 
@@ -69,18 +61,9 @@ class StoreAPIClient {
 
     final decoded = utf8.decode(res.bodyBytes);
 
-    final data = json.decode(decoded)['results'] as List;
-
-    final stocks = data.map((rawStock) {
-      return Stock(
-        id: rawStock['id'],
-        store: store,
-        product: Product.fromJson(rawStock['product']),
-        price: rawStock['price'],
-        amount: rawStock['amount'],
-      );
-    }).toList();
-
-    return stocks;
+    return json
+        .decode(decoded)['results']
+        .map<Stock>((rawStock) => Stock.fromJson(rawStock, store))
+        .toList();
   }
 }
