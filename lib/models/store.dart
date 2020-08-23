@@ -21,6 +21,21 @@ class Coordinate extends Equatable {
         'lat': lat,
         'lng': lng,
       };
+
+  static Coordinate fromString(String location) {
+    final rawCoordinate = location
+        .substring(location.indexOf('(') + 1, location.indexOf(')'))
+        .split(' ');
+
+    return Coordinate(
+      lat: double.parse(rawCoordinate[0]),
+      lng: double.parse(rawCoordinate[1]),
+    );
+  }
+
+  static String toJsonString(Coordinate location) {
+    return 'SRID=4326;POINT(${location.lat} ${location.lng})';
+  }
 }
 
 class Store extends Equatable {
@@ -48,44 +63,24 @@ class Store extends Equatable {
     return 'Store { id: $id, name: $name, description: $description, registerers: $registerers, registeredNumber: $registeredNumber, location: $location}';
   }
 
-  Store copyWith(
-          {int id,
-          String name,
-          String description,
-          List<User> registerers,
-          String registeredNumber,
-          Coordinate location}) =>
-      Store(
-          id: id,
-          name: name,
-          description: description,
-          registerers: registerers,
-          registeredNumber: registeredNumber,
-          location: location);
-
   static Store fromJson(dynamic json) => Store(
-      id: json['id'],
-      name: json['name'],
-      description: json['description'],
-      registerers: json['registerer'],
-      registeredNumber: json['registered_number'],
-      location: json['location']);
-
-  static Coordinate getStoreCoordinate(String location) {
-    final rawCoordinate = location
-        .substring(location.indexOf('(') + 1, location.indexOf(')'))
-        .split(' ');
-
-    return Coordinate(
-      lat: double.parse(rawCoordinate[0]),
-      lng: double.parse(rawCoordinate[1]),
-    );
-  }
+        id: json['id'],
+        name: json['name'],
+        description: json['description'],
+        registerers: json['registerer']
+            .map<User>((registerer) => User.fromJson(registerer))
+            .toList(),
+        registeredNumber: json['registered_number'],
+        location: Coordinate.fromString(json['location']),
+      );
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,
         'description': description,
+        'registerer': registerers.map((User registerer) => registerer.toJson()).toList(),
+        'registered_number': registeredNumber,
+        'location': Coordinate.toJsonString(location),
       };
 }
 
@@ -105,18 +100,9 @@ class Stock extends Equatable {
   String toString() =>
       'Stock{ id: $id, store: $store, product: $product, price: $price, amount: $amount }';
 
-  Stock copyWith({int id, Store store, Product product, int price, int amount}) =>
-      Stock(
-        id: id,
-        store: store,
-        product: product,
-        price: price,
-        amount: amount,
-      );
-
-  static Stock fromJson(dynamic json) => Stock(
+  static Stock fromJson(dynamic json, [Store store]) => Stock(
         id: json['id'],
-        store: Store.fromJson(json['store']),
+        store: store ?? Store.fromJson(json['store']),
         product: Product.fromJson(json['product']),
         price: json['price'],
         amount: json['amount'],
@@ -124,7 +110,7 @@ class Stock extends Equatable {
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'store': store,
+        'store': store.toJson(),
         'product': product,
         'price': price,
         'amount': amount,

@@ -16,20 +16,6 @@ class Product extends Equatable {
   String toString() =>
       'Product { id: $id, name: $name, manufacturer: $manufacturer, ian: $ian, category: $category }';
 
-  Product copyWith(
-          {int id,
-          String name,
-          Manufacturer manufacturer,
-          String ian,
-          String category}) =>
-      Product(
-        id: id,
-        name: name,
-        manufacturer: manufacturer,
-        ian: ian,
-        category: category,
-      );
-
   static Product fromJson(dynamic json) => Product(
         id: json['id'],
         name: json['name'],
@@ -41,7 +27,7 @@ class Product extends Equatable {
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,
-        'manufacturer': manufacturer,
+        'manufacturer': manufacturer.toJson(),
         'ian': ian,
         'category': category,
       };
@@ -58,11 +44,6 @@ class Manufacturer extends Equatable {
 
   @override
   String toString() => 'Manufacturer { id: $id, name: $name }';
-
-  Manufacturer copyWith({int id, String name}) => Manufacturer(
-        id: id,
-        name: name,
-      );
 
   static Manufacturer fromJson(dynamic json) => Manufacturer(
         id: json['id'],

@@ -25,23 +25,6 @@ class User extends Equatable {
     return 'User{ pid: $pid, userId: $userId, password: $password, nickname: $nickname, realname: $realname, isSeller: $isSeller }';
   }
 
-  User copyWith(
-      {int pid,
-      String userId,
-      String password,
-      String nickname,
-      String realname,
-      bool isSeller}) {
-    return User(
-      pid: pid,
-      userId: userId,
-      password: password,
-      nickname: nickname,
-      realname: realname,
-      isSeller: isSeller,
-    );
-  }
-
   static User fromJson(dynamic json) {
     return User(
       pid: json['pid'],
@@ -51,6 +34,14 @@ class User extends Equatable {
       isSeller: json['is_seller'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'pid': pid,
+    'user_id': userId,
+    'password': password,
+    'nickname': nickname,
+    'is_seller': isSeller,
+  };
 }
 
 class Session extends Equatable {
@@ -66,13 +57,5 @@ class Session extends Equatable {
   @override
   String toString() {
     return 'Session{ id: $id, pid: $pid, expireAt: $expireAt }';
-  }
-
-  Session copyWith({int id, int pid, DateTime expireAt}) {
-    return Session(
-      id: id,
-      pid: pid,
-      expireAt: expireAt,
-    );
   }
 }
