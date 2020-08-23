@@ -26,43 +26,43 @@ class ProceedOrder extends OrderEvent {
 }
 
 class ApproveOrder extends OrderEvent {
-  final String orderId;
+  final String url;
 
-  const ApproveOrder(this.orderId);
+  const ApproveOrder(this.url);
 
   @override
-  List<Object> get props => [orderId];
+  List<Object> get props => [url];
 
   @override
   String toString() {
-    return 'ApproveOrder{ orderId: $orderId }';
+    return 'ApproveOrder{ orderId: $url }';
   }
 }
 
 class CancelOrder extends OrderEvent {
-  final String orderId;
+  final String url;
 
-  const CancelOrder(this.orderId);
+  const CancelOrder(this.url);
 
   @override
-  List<Object> get props => [orderId];
+  List<Object> get props => [url];
 
   @override
   String toString() {
-    return 'CancelOrder{ orderId: $orderId }';
+    return 'CancelOrder{ orderId: $url }';
   }
 }
 
 class FailOrder extends OrderEvent {
-  final String orderId;
+  final String url;
 
-  const FailOrder(this.orderId);
+  const FailOrder(this.url);
 
   @override
-  List<Object> get props => [orderId];
+  List<Object> get props => [url];
 
   @override
   String toString() {
-    return 'FailOrder{ orderId: $orderId }';
+    return 'FailOrder{ orderId: $url }';
   }
 }

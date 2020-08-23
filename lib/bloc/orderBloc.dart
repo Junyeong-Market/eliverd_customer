@@ -38,7 +38,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Stream<OrderState> _mapApproveOrderToState(ApproveOrder event) async* {
     try {
-      final order = await purchaseRepository.approveOrder(event.orderId);
+      final order = await purchaseRepository.approveOrder(event.url);
 
       yield OrderApproved(order);
     } catch (_) {
@@ -48,7 +48,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Stream<OrderState> _mapCancelOrderToState(CancelOrder event) async* {
     try {
-      final order = await purchaseRepository.cancelOrder(event.orderId);
+      final order = await purchaseRepository.cancelOrder(event.url);
 
       yield OrderCanceled(order);
     } catch (_) {
@@ -58,7 +58,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Stream<OrderState> _mapFailOrderToState(FailOrder event) async* {
     try {
-      final order = await purchaseRepository.failOrder(event.orderId);
+      final order = await purchaseRepository.failOrder(event.url);
 
       yield OrderFailed(order);
     } catch (_) {
