@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:Eliverd/bloc/orderBloc.dart';
 import 'package:Eliverd/bloc/states/orderState.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderDisplayPage extends StatefulWidget {
   @override
@@ -42,19 +43,38 @@ class _OrderDisplayPageState extends State<OrderDisplayPage> {
             backgroundColor: Colors.transparent,
             elevation: 0.0,
             title: Text(
-              '주문 ${state is OrderApproved ? '완료' : (state is OrderCanceled ? '취소' : (state is OrderFailed ? '실패' : ''))}',
+              '주문 ${state is OrderApproved ? '완료' : (state is OrderCanceled ? '취소' : (state is OrderFailed ? '실패' : '중 오류 발생'))}',
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.w800,
               ),
             ),
           ),
-          body: Text(
-            state is OrderApproved
-                ? state.order.toString()
-                : (state is OrderCanceled
+          body: ListView(
+            children: [
+              Text(
+                state is OrderApproved
                     ? state.order.toString()
-                    : (state is OrderFailed ? state.order.toString() : '')),
+                    : (state is OrderCanceled
+                        ? state.order.toString()
+                        : (state is OrderFailed ? state.order.toString() : '')),
+              ),
+              Visibility(
+                child: Center(
+                  child: Text(
+                    '주문 중 예기치 않은 오류가 발생했습니다.\n나중에 다시 시도해주세요.',
+                    style: TextStyle(
+                      color: Colors.black26,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                visible: state is OrderError,
+                maintainSize: false,
+                maintainState: false,
+              ),
+            ],
           ),
         );
       },
@@ -62,7 +82,17 @@ class _OrderDisplayPageState extends State<OrderDisplayPage> {
         if (state is OrderInProgress) {
           Navigator.pop(context);
         }
+
+        if (state is OrderApproved) {
+          _removeShoppingCart();
+        }
       },
     );
+  }
+
+  Future<void> _removeShoppingCart() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.remove('carts');
   }
 }
