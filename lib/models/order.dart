@@ -1,7 +1,6 @@
-import 'dart:convert';
+import 'package:equatable/equatable.dart';
 
 import 'package:Eliverd/models/models.dart';
-import 'package:equatable/equatable.dart';
 
 class Order extends Equatable {
   final int id;
