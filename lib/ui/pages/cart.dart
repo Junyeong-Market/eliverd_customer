@@ -232,7 +232,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
 
                             SchedulerBinding.instance.addPostFrameCallback((_) {
                               setState(() {
-                                isPriceExceeded = total >= 1000000;
+                                isPriceExceeded = total > 1000000;
                               });
 
                               if (isPriceExceeded &&
@@ -451,7 +451,7 @@ showExceededLimitAlertDialog(BuildContext context) {
       ),
     ),
     content: Text(
-      'Eliverd는 현재 백만 원(1,000,000원) 이상의 결제를 지원하지 않습니다. 한도 이상의 주문을 원하시면 여러 차례 나누어 진행해주세요.',
+      'Eliverd는 현재 백만 원(1,000,000원)까지만 결제할 수 있습니다. 한도 이상의 금액은 주문을 여러 차례 나누어 진행해주세요.',
       style: TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: 14.0,
@@ -471,7 +471,7 @@ showExceededLimitAlertDialog(BuildContext context) {
       ),
     ),
     content: Text(
-      'Eliverd는 현재 백만 원(1,000,000원) 이상의 결제를 지원하지 않습니다. 한도 이상의 주문을 원하시면 여러 차례 나누어 진행해주세요.',
+      'Eliverd는 현재 백만 원(1,000,000원)까지만 결제할 수 있습니다. 한도 이상의 금액은 주문을 여러 차례 나누어 진행해주세요.',
       style: TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: 14.0,
