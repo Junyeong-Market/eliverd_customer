@@ -1,12 +1,10 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:Eliverd/models/models.dart';
-
 class Order extends Equatable {
   final int id;
   final String tid;
-  final User customer;
-  final List<int> partials;
+  final int customer;
+  final List<dynamic> partials;
   final String status;
   final bool isDelivery;
 
@@ -24,4 +22,9 @@ class Order extends Equatable {
         status: json['status'],
         isDelivery: json['is_delivery'],
       );
+
+  @override
+  String toString() {
+    return 'Order{id: $id, tid: $tid, customer: $customer, partials: $partials, status: $status, isDelivery: $isDelivery}';
+  }
 }
