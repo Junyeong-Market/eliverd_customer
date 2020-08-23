@@ -174,13 +174,15 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                           },
                         );
                 } else if (snapshot.hasError) {
-                  return Text(
-                    '장바구니를 불러오는 중 오류가 발생했습니다.\n다시 시도해주세요.',
-                    style: TextStyle(
-                      color: Colors.black26,
-                      fontWeight: FontWeight.w600,
+                  return Center(
+                    child: Text(
+                      '장바구니를 불러오는 중 오류가 발생했습니다.\n다시 시도해주세요.${snapshot.error}',
+                      style: TextStyle(
+                        color: Colors.black26,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   );
                 }
               }
@@ -563,7 +565,7 @@ showConfirmExitAlertDialog(BuildContext context) {
       ),
     ),
     content: Text(
-      '장바구니에서 설정한 수량이 초기화됩니다(단, 장바구니 목록은 삭제되지 않습니다).',
+      '장바구니에서 설정한 수량과 배송지 정보가 초기화됩니다(단, 장바구니 목록은 삭제되지 않습니다).',
       style: TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: 14.0,
@@ -584,7 +586,7 @@ showConfirmExitAlertDialog(BuildContext context) {
       ),
     ),
     content: Text(
-      '장바구니에서 설정한 수량이 초기화됩니다(단, 장바구니 목록은 삭제되지 않습니다).',
+      '장바구니에서 설정한 수량과 배송지 정보가 초기화됩니다(단, 장바구니 목록은 삭제되지 않습니다).',
       style: TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: 14.0,
