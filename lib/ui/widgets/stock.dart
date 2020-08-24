@@ -36,7 +36,10 @@ class StockListOnCart extends StatelessWidget {
   final Function removeHandler;
 
   const StockListOnCart(
-      {Key key, @required this.stocks, @required this.amounts, @required this.removeHandler})
+      {Key key,
+      @required this.stocks,
+      @required this.amounts,
+      @required this.removeHandler})
       : super(key: key);
 
   @override
@@ -58,6 +61,22 @@ class StockListOnCart extends StatelessWidget {
         previousAmount: amounts.value.isEmpty ? 1 : amounts.value[index],
       ),
       itemCount: stocks.length,
+    );
+  }
+}
+
+class StockListOnOrder extends StatelessWidget {
+  final List<OrderedStock> orderedStocks;
+
+  const StockListOnOrder({Key key, @required this.orderedStocks})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemBuilder: (context, index) =>
+          StockOnOrder(orderedStock: orderedStocks[index]),
+      itemCount: orderedStocks.length,
     );
   }
 }
@@ -144,10 +163,42 @@ class SimplifiedStock extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 1.6),
-                  CategoryWidget(
-                    categoryId: stock.product.category,
-                    fontSize: 9.0,
-                    padding: 2.0,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CategoryWidget(
+                        categoryId: stock.product.category,
+                        fontSize: 9.0,
+                        padding: 2.0,
+                      ),
+                      SizedBox(width: 1.6),
+                      Visibility(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(5.0)),
+                          ),
+                          padding: EdgeInsets.all(2.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text(
+                                '􀋙 품절 임박!',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 9.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        visible: stock.amount <= 3,
+                        maintainSize: false,
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -160,9 +211,13 @@ class SimplifiedStock extends StatelessWidget {
 
   String formattedPrice(int price) {
     if (price >= 100000000) {
-      return '₩' + (price / 100000000).toStringAsFixed(price % 100000000 == 0 ? 0 : 1) + '억';
+      return '₩' +
+          (price / 100000000).toStringAsFixed(price % 100000000 == 0 ? 0 : 1) +
+          '억';
     } else if (price >= 10000000) {
-      return '₩' + (price / 10000).toStringAsFixed(price % 10000 == 0 ? 0 : 1) + '만';
+      return '₩' +
+          (price / 10000).toStringAsFixed(price % 10000 == 0 ? 0 : 1) +
+          '만';
     }
 
     return NumberFormat.currency(
@@ -250,9 +305,39 @@ class SpecifiedStock extends StatelessWidget {
                       fontSize: 24.0,
                     ),
                   ),
-                  SizedBox(width: 4.0),
-                  CategoryWidget(
-                    categoryId: stock.product.category,
+                  Row(
+                    children: [
+                      CategoryWidget(
+                        categoryId: stock.product.category,
+                      ),
+                      SizedBox(width: 4.0),
+                      Visibility(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(5.0)),
+                          ),
+                          padding: EdgeInsets.all(4.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text(
+                                '􀋙 품절 임박!',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        visible: stock.amount <= 3,
+                        maintainSize: false,
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -278,7 +363,11 @@ class SimplifiedStockOnCart extends StatefulWidget {
   final int previousAmount;
 
   const SimplifiedStockOnCart(
-      {Key key, @required this.stock, @required this.onAmountChange, @required this.onRemove, this.previousAmount})
+      {Key key,
+      @required this.stock,
+      @required this.onAmountChange,
+      @required this.onRemove,
+      this.previousAmount})
       : super(key: key);
 
   @override
@@ -297,7 +386,8 @@ class _SimplifiedStockOnCartState extends State<SimplifiedStockOnCart> {
 
     amount = widget.previousAmount ?? 1;
     price = widget.stock.price * amount;
-    amountScrollController = FixedExtentScrollController(initialItem: amount - 1);
+    amountScrollController =
+        FixedExtentScrollController(initialItem: amount - 1);
   }
 
   @override
@@ -473,9 +563,153 @@ class _SimplifiedStockOnCartState extends State<SimplifiedStockOnCart> {
 
   String formattedPrice(int price) {
     if (price >= 100000000) {
-      return '₩' + (price / 100000000).toStringAsFixed(price % 100000000 == 0 ? 0 : 1) + '억';
+      return '₩' +
+          (price / 100000000).toStringAsFixed(price % 100000000 == 0 ? 0 : 1) +
+          '억';
     } else if (price >= 10000000) {
-      return '₩' + (price / 10000).toStringAsFixed(price % 10000 == 0 ? 0 : 1) + '만';
+      return '₩' +
+          (price / 10000).toStringAsFixed(price % 10000 == 0 ? 0 : 1) +
+          '만';
+    }
+
+    return NumberFormat.currency(
+      locale: 'ko',
+      symbol: '₩',
+    )?.format(price);
+  }
+}
+
+class StockOnOrder extends StatelessWidget {
+  final OrderedStock orderedStock;
+
+  const StockOnOrder({Key key, this.orderedStock}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 0.0,
+        right: 8.0,
+        top: 8.0,
+        bottom: 0.0,
+      ),
+      child: Row(
+        children: <Widget>[
+          Flexible(
+            flex: 1,
+            child: ConstrainedBox(
+              constraints: BoxConstraints.expand(
+                height: width * 0.25,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black12,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Text(
+                    '사진 없음',
+                    style: const TextStyle(
+                      color: Colors.black45,
+                      fontSize: 12.0,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 4.0),
+          Flexible(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      orderedStock.stock.product.manufacturer.name,
+                      maxLines: 1,
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.black45,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 13.0,
+                      ),
+                    ),
+                    Text(
+                      orderedStock.stock.product.name,
+                      maxLines: 1,
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 17.0,
+                      ),
+                    ),
+                    SizedBox(height: 1.6),
+                    CategoryWidget(
+                      categoryId: orderedStock.stock.product.category,
+                      fontSize: 9.0,
+                      padding: 2.0,
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          '수량 ${orderedStock.amount}개',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 17.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Flexible(
+                      fit: FlexFit.loose,
+                      child: Text(
+                        formattedPrice(
+                            orderedStock.stock.price * orderedStock.amount),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 19.0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String formattedPrice(int price) {
+    if (price >= 100000000) {
+      return '₩' +
+          (price / 100000000).toStringAsFixed(price % 100000000 == 0 ? 0 : 1) +
+          '억';
+    } else if (price >= 10000000) {
+      return '₩' +
+          (price / 10000).toStringAsFixed(price % 10000 == 0 ? 0 : 1) +
+          '만';
     }
 
     return NumberFormat.currency(
