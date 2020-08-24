@@ -31,6 +31,7 @@ class User extends Equatable {
       userId: json['user_id'],
       password: json['password'],
       nickname: json['nickname'],
+      realname: json['realname'],
       isSeller: json['is_seller'],
     );
   }
@@ -40,6 +41,7 @@ class User extends Equatable {
     'user_id': userId,
     'password': password,
     'nickname': nickname,
+    'realname': realname,
     'is_seller': isSeller,
   };
 }
