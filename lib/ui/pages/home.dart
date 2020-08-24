@@ -43,6 +43,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -58,34 +59,35 @@ class _HomePageState extends State<HomePage> {
               child: _buildMap(),
             ),
             Positioned(
-              top: 96.0,
+              top: height * 0.05,
               left: width * 0.05,
-              child: Container(
-                width: width * 0.9,
-                height: 24.0,
-                padding: EdgeInsets.symmetric(
-                  vertical: 1.0,
-                ),
-                child: GridView.builder(
-                  scrollDirection: Axis.horizontal,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    mainAxisSpacing: 8.0,
-                    childAspectRatio: 0.2,
+              child: Column(
+                children: [
+                  _buildSearchBox(width),
+                  SizedBox(height: 8.0),
+                  Container(
+                    width: width * 0.9,
+                    height: 24.0,
+                    padding: EdgeInsets.symmetric(
+                      vertical: 1.0,
+                    ),
+                    child: GridView.builder(
+                      scrollDirection: Axis.horizontal,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 1,
+                        mainAxisSpacing: 8.0,
+                        childAspectRatio: 0.2,
+                      ),
+                      itemBuilder: (context, index) {
+                        return CategoryWidget(
+                          categoryId: Categories.listByViewPOV[index].id,
+                        );
+                      },
+                      itemCount: Categories.listByViewPOV.length,
+                    ),
                   ),
-                  itemBuilder: (context, index) {
-                    return CategoryWidget(
-                      categoryId: Categories.listByViewPOV[index].id,
-                    );
-                  },
-                  itemCount: Categories.listByViewPOV.length,
-                ),
+                ],
               ),
-            ),
-            Positioned(
-              top: 48.0,
-              left: width * 0.05,
-              child: _buildSearchBox(width),
             ),
           ],
         ),
