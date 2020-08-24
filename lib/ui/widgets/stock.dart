@@ -591,7 +591,7 @@ class StockOnOrder extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(
         left: 0.0,
-        right: 8.0,
+        right: 0.0,
         top: 8.0,
         bottom: 0.0,
       ),
@@ -661,7 +661,6 @@ class StockOnOrder extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 16.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -679,16 +678,32 @@ class StockOnOrder extends StatelessWidget {
                     ),
                     Flexible(
                       fit: FlexFit.loose,
-                      child: Text(
-                        formattedPrice(
-                            orderedStock.stock.price * orderedStock.amount),
-                        maxLines: 1,
-                        textAlign: TextAlign.left,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 19.0,
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '${formattedPrice(orderedStock.stock.price)} * ${orderedStock.amount}',
+                            maxLines: 1,
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.black45,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 10.0,
+                            ),
+                          ),
+                          Text(
+                            formattedPrice(
+                                orderedStock.stock.price * orderedStock.amount),
+                            maxLines: 1,
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 19.0,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],

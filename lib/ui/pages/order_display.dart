@@ -53,11 +53,17 @@ class _OrderDisplayPageState extends State<OrderDisplayPage> {
             ),
           ),
           body: state is OrderApproved
-              ? OrderWidget(order: state.order)
+              ? ListView(
+                  children: [OrderWidget(order: state.order)],
+                )
               : (state is OrderCanceled
-                  ? OrderWidget(order: state.order)
+                  ? ListView(
+                      children: [OrderWidget(order: state.order)],
+                    )
                   : (state is OrderFailed
-                      ? OrderWidget(order: state.order)
+                      ? ListView(
+                          children: [OrderWidget(order: state.order)],
+                        )
                       : Center(
                           child: Text(
                             '주문 중 예기치 않은 오류가 발생했습니다.\n나중에 다시 시도해주세요.',
