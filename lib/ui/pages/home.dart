@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:Eliverd/ui/pages/my_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,6 +20,9 @@ import 'package:Eliverd/common/string.dart';
 import 'package:Eliverd/common/marker.dart';
 
 import 'package:Eliverd/ui/pages/store_display.dart';
+import 'package:Eliverd/ui/pages/eliverd_info.dart';
+import 'package:Eliverd/ui/pages/my_page.dart';
+import 'package:Eliverd/ui/pages/order_lookup.dart';
 import 'package:Eliverd/ui/widgets/category.dart';
 import 'package:Eliverd/ui/widgets/shopping_cart_button.dart';
 
@@ -341,7 +343,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MyPagePage(),
+                      builder: (context) => OrderLookupPage(),
                     ),
                   );
                 },
@@ -375,7 +377,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MyPagePage(),
+                      builder: (context) => EliverdInfoPage(),
                     ),
                   );
                 },
