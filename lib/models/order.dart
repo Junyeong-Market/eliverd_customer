@@ -88,7 +88,7 @@ class PartialOrder extends Equatable {
 class OrderedStock extends Equatable {
   final int soid;
   final int amount;
-  final String status;
+  final int status;
   final Stock stock;
 
   const OrderedStock({this.soid, this.amount, this.status, this.stock});
