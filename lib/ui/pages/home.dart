@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:Eliverd/ui/pages/my_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -88,6 +89,11 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
+            ),
+            Positioned(
+              bottom: height * 0.05,
+              left: width * 0.05,
+              child: _buildBottomNavigationBar(width),
             ),
           ],
         ),
@@ -267,6 +273,135 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ShoppingCartButton(),
+          ],
+        ),
+      );
+
+  Widget _buildBottomNavigationBar(double width) => Container(
+        width: width * 0.9,
+        height: 60.0,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 1,
+              blurRadius: 1,
+              offset: Offset(0, 1),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: 8.0,
+          vertical: 4.0,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              flex: 1,
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyPagePage(),
+                    ),
+                  );
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      '􀉩',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w200,
+                        fontSize: 24.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      '마이페이지',
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyPagePage(),
+                    ),
+                  );
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      '􀈫',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w200,
+                        fontSize: 24.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      '주문 내역',
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyPagePage(),
+                    ),
+                  );
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      '􀅴',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w200,
+                        fontSize: 24.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      '오늘의 혜택',
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       );
