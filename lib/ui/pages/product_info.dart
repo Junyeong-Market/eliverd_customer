@@ -131,15 +131,15 @@ class ProductInfoPage extends StatelessWidget {
     );
   }
 
-  Future<void> _addToCart(BuildContext context, Stock product) async {
+  Future<void> _addToCart(BuildContext context, Stock stock) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     List<String> carts = prefs.getStringList('carts') ?? <String>[];
 
-    String encoded = json.encode(product.toJson());
+    String encoded = json.encode(stock.toJson());
 
     if (carts.contains(encoded)) {
-      showDuplicatedShoppingCartAlertDialog(context, stock);
+      showDuplicatedShoppingCartAlertDialog(context);
 
       return;
     }
@@ -148,11 +148,11 @@ class ProductInfoPage extends StatelessWidget {
 
     prefs.setStringList('carts', carts);
 
-    showItemAddedAlertDialog(context, stock);
+    showItemAddedAlertDialog(context);
   }
 }
 
-showDuplicatedShoppingCartAlertDialog(BuildContext context, Stock stock) {
+showDuplicatedShoppingCartAlertDialog(BuildContext context) {
   Widget confirmButton = FlatButton(
     child: Text(
       '확인',
@@ -188,7 +188,7 @@ showDuplicatedShoppingCartAlertDialog(BuildContext context, Stock stock) {
       ),
     ),
     content: Text(
-      '\'' + stock.product.name + '\'상품은 이미 장바구니에 있는 상품입니다.',
+      '이미 장바구니에 있는 상품입니다.',
       style: TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: 14.0,
@@ -208,7 +208,7 @@ showDuplicatedShoppingCartAlertDialog(BuildContext context, Stock stock) {
       ),
     ),
     content: Text(
-      '\'' + stock.product.name + '\' 상품은 이미 장바구니에 있는 상품입니다.',
+      '이미 장바구니에 있는 상품입니다.',
       style: TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: 14.0,
@@ -236,7 +236,7 @@ showDuplicatedShoppingCartAlertDialog(BuildContext context, Stock stock) {
   }
 }
 
-showItemAddedAlertDialog(BuildContext context, Stock stock) {
+showItemAddedAlertDialog(BuildContext context) {
   Widget cancelButton = FlatButton(
     child: Text(
       '취소',
