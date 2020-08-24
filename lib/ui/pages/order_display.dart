@@ -15,6 +15,13 @@ class OrderDisplayPage extends StatefulWidget {
 
 class _OrderDisplayPageState extends State<OrderDisplayPage> {
   @override
+  void initState() {
+    super.initState();
+
+    _removeShoppingCart();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<OrderBloc, OrderState>(
       builder: (context, state) {
@@ -54,15 +61,21 @@ class _OrderDisplayPageState extends State<OrderDisplayPage> {
           ),
           body: state is OrderApproved
               ? ListView(
-                  children: [OrderWidget(order: state.order)],
+                  children: [
+                    OrderWidget(order: state.order),
+                  ],
                 )
               : (state is OrderCanceled
                   ? ListView(
-                      children: [OrderWidget(order: state.order)],
+                      children: [
+                        OrderWidget(order: state.order),
+                      ],
                     )
                   : (state is OrderFailed
                       ? ListView(
-                          children: [OrderWidget(order: state.order)],
+                          children: [
+                            OrderWidget(order: state.order),
+                          ],
                         )
                       : Center(
                           child: Text(
@@ -79,10 +92,6 @@ class _OrderDisplayPageState extends State<OrderDisplayPage> {
       listener: (context, state) {
         if (state is OrderInProgress) {
           Navigator.pop(context);
-        }
-
-        if (state is OrderApproved) {
-          _removeShoppingCart();
         }
       },
     );
