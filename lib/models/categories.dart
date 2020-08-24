@@ -45,7 +45,7 @@ class Categories {
   // ignore: non_constant_identifier_names
   static final LIVING = Category(
     id: 'living',
-    icon: '􀙩',
+    icon: '􀍣',
     color: Colors.lightGreen,
     text: '생활용품',
   );
@@ -53,7 +53,7 @@ class Categories {
   // ignore: non_constant_identifier_names
   static final FURNITURE = Category(
     id: 'furniture',
-    icon: '􀎲',
+    icon: '􀙩',
     color: Colors.green,
     text: '가구',
   );

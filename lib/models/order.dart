@@ -51,7 +51,7 @@ class Order extends Equatable {
 class PartialOrder extends Equatable {
   final int poid;
   final Store store;
-  final OrderedStock stocks;
+  final List<OrderedStock> stocks;
   final String status;
   final bool isDelivery;
 
@@ -67,7 +67,7 @@ class PartialOrder extends Equatable {
   }
 
   static PartialOrder fromJson(dynamic json) => PartialOrder(
-        poid: json['id'],
+        poid: json['poid'],
         store: Store.fromJson(json['store']),
         stocks: json['stocks']
             .map<OrderedStock>((stock) => OrderedStock.fromJson(stock))
@@ -79,32 +79,37 @@ class PartialOrder extends Equatable {
   Map<String, dynamic> toJson() => {
         'poid': poid,
         'store': store.toJson(),
-        'stocks': stocks.toJson(),
+        'stocks': stocks.map((OrderedStock stock) => stock.toJson()).toList(),
         'status': status,
         'is_delivery': isDelivery,
       };
 }
 
 class OrderedStock extends Equatable {
-  final int soid;
+  final int osid;
   final int amount;
   final int status;
   final Stock stock;
 
-  const OrderedStock({this.soid, this.amount, this.status, this.stock});
+  const OrderedStock({this.osid, this.amount, this.status, this.stock});
 
   @override
-  List<Object> get props => [soid, amount, status, stock];
+  List<Object> get props => [osid, amount, status, stock];
+
+  @override
+  String toString() {
+    return 'OrderedStock{soid: $osid, amount: $amount, status: $status, stock: $stock}';
+  }
 
   static OrderedStock fromJson(dynamic json) => OrderedStock(
-        soid: json['soid'],
+        osid: json['osid'],
         amount: json['amount'],
         status: json['status'],
-        stock: Stock.fromJson(json['stock']),
+        stock: Stock.fromJsonWithoutStore(json['stock']),
       );
 
   Map<String, dynamic> toJson() => {
-        'soid': soid,
+        'osid': osid,
         'amount': amount,
         'status': status,
         'stock': stock.toJson(),

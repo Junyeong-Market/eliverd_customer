@@ -78,7 +78,8 @@ class Store extends Equatable {
         'id': id,
         'name': name,
         'description': description,
-        'registerer': registerers.map((User registerer) => registerer.toJson()).toList(),
+        'registerer':
+            registerers.map((User registerer) => registerer.toJson()).toList(),
         'registered_number': registeredNumber,
         'location': Coordinate.toJsonString(location),
       };
@@ -103,6 +104,13 @@ class Stock extends Equatable {
   static Stock fromJson(dynamic json, [Store store]) => Stock(
         id: json['id'],
         store: store ?? Store.fromJson(json['store']),
+        product: Product.fromJson(json['product']),
+        price: json['price'],
+        amount: json['amount'],
+      );
+
+  static Stock fromJsonWithoutStore(dynamic json) => Stock(
+        id: json['id'],
         product: Product.fromJson(json['product']),
         price: json['price'],
         amount: json['amount'],
