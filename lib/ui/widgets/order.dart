@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
 
 import 'package:Eliverd/models/models.dart';
@@ -24,7 +23,10 @@ class OrderWidget extends StatelessWidget {
         .reduce((a, b) => a + b);
 
     return Padding(
-      padding: EdgeInsets.all(16.0),
+      padding: EdgeInsets.symmetric(
+        horizontal: 16.0,
+        vertical: 8.0,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
