@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:Eliverd/bloc/orderBloc.dart';
 import 'package:Eliverd/bloc/states/orderState.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:Eliverd/ui/widgets/order.dart';
 
 class OrderDisplayPage extends StatefulWidget {
   @override
@@ -50,32 +52,22 @@ class _OrderDisplayPageState extends State<OrderDisplayPage> {
               ),
             ),
           ),
-          body: ListView(
-            children: [
-              Text(
-                state is OrderApproved
-                    ? state.order.toString()
-                    : (state is OrderCanceled
-                        ? state.order.toString()
-                        : (state is OrderFailed ? state.order.toString() : '')),
-              ),
-              Visibility(
-                child: Center(
-                  child: Text(
-                    '주문 중 예기치 않은 오류가 발생했습니다.\n나중에 다시 시도해주세요.',
-                    style: TextStyle(
-                      color: Colors.black26,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                visible: state is OrderError,
-                maintainSize: false,
-                maintainState: false,
-              ),
-            ],
-          ),
+          body: state is OrderApproved
+              ? OrderWidget(order: state.order)
+              : (state is OrderCanceled
+                  ? OrderWidget(order: state.order)
+                  : (state is OrderFailed
+                      ? OrderWidget(order: state.order)
+                      : Center(
+                          child: Text(
+                            '주문 중 예기치 않은 오류가 발생했습니다.\n나중에 다시 시도해주세요.',
+                            style: TextStyle(
+                              color: Colors.black26,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ))),
         );
       },
       listener: (context, state) {
