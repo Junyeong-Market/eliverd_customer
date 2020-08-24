@@ -141,6 +141,35 @@ class OrderWidget extends StatelessWidget {
               ),
             ],
           ),
+          SizedBox(height: 4.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '배송 여부',
+                maxLines: 1,
+                textAlign: TextAlign.right,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: Colors.black45,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.0,
+                ),
+              ),
+              Text(
+                order.isDelivery ? '􀀀' : '􀆄',
+                maxLines: 1,
+                textAlign: TextAlign.right,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16.0,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
