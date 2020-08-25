@@ -10,6 +10,25 @@ abstract class OrderState extends Equatable {
 
 class OrderInitial extends OrderState {}
 
+class OrderFetched extends OrderState {
+  final List<Order> orders;
+  final bool isAllFetched;
+  final int page;
+
+  const OrderFetched({this.orders, this.isAllFetched, this.page = 1});
+
+  OrderFetched copyWith({List<Order> orders, bool isAllFetched, int page}) {
+    return OrderFetched(
+      orders: orders,
+      isAllFetched: isAllFetched,
+      page: page,
+    );
+  }
+
+  @override
+  List<Object> get props => [orders, isAllFetched, page];
+}
+
 class OrderInProgress extends OrderState {
   final String redirectURL;
 

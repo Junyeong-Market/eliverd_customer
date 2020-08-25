@@ -9,6 +9,8 @@ abstract class OrderEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class FetchOrder extends OrderEvent {}
+
 class ProceedOrder extends OrderEvent {
   final List<Stock> items;
   final List<int> amounts;
