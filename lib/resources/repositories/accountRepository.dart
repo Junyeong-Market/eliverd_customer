@@ -21,6 +21,12 @@ class AccountRepository {
     return validation;
   }
 
+  Future<User> getUser() async {
+    final user = await accountAPIClient.getUser();
+
+    return user;
+  }
+
   Future<List<User>> searchUser(String keyword) async {
     final users = await accountAPIClient.searchUser(keyword);
 

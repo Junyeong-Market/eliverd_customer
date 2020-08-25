@@ -30,10 +30,12 @@ class PurchaseAPIClient {
     grouped.forEach((store, stocks) {
       body.add({
         'store': store.id,
-        'stocks': stocks.map((stock) => {
-          'id': stock.id,
-          'amount': amounts[items.indexOf(stock)],
-        }).toList(),
+        'stocks': stocks
+            .map((stock) => {
+                  'id': stock.id,
+                  'amount': amounts[items.indexOf(stock)],
+                })
+            .toList(),
       });
     });
 
@@ -144,5 +146,28 @@ class PurchaseAPIClient {
     final decoded = utf8.decode(res.bodyBytes);
 
     return Order.fromJson(json.decode(decoded));
+  }
+
+  Future<List<Order>> fetchOrder(int pid, [int page]) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final session = prefs.getString('session');
+
+    final url = '$baseUrl/account/user/$pid/orders/' +
+        ((page != null) ? '?page=$page' : '');
+    final res = await this.httpClient.get(
+      url,
+      headers: {
+        HttpHeaders.authorizationHeader: session,
+      },
+    );
+
+    final decoded = utf8.decode(res.bodyBytes);
+
+    final orders = json.decode(decoded)['results'];
+
+    return orders != null
+        ? orders.map<Order>((order) => Order.fromJson(order)).toList()
+        : [];
   }
 }

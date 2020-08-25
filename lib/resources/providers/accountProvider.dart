@@ -167,4 +167,22 @@ class AccountAPIClient {
       );
     }).toList();
   }
+
+  Future<User> getUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final session = prefs.getString('session');
+
+    final url = '$baseUrl/account/session/';
+    final res = await this.httpClient.get(
+      url,
+      headers: {
+        HttpHeaders.authorizationHeader: session,
+      },
+    );
+
+    final decoded = utf8.decode(res.bodyBytes);
+
+    return User.fromJson(json.decode(decoded));
+  }
 }

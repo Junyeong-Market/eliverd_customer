@@ -13,31 +13,37 @@ class PurchaseRepository {
 
   Future<String> getCheckoutByCart(
       List<Stock> items, List<int> amounts, bool isDelivery) async {
-    final data = purchaseAPIClient.getCheckoutByCart(items, amounts, isDelivery);
+    final data = await purchaseAPIClient.getCheckoutByCart(items, amounts, isDelivery);
 
     return data;
   }
 
   Future<Order> getOrderInfo(String orderId) async {
-    final data = purchaseAPIClient.getOrderInfo(orderId);
+    final data = await purchaseAPIClient.getOrderInfo(orderId);
+
+    return data;
+  }
+
+  Future<List<Order>> fetchOrder(int pid, [int page]) async {
+    final data = await purchaseAPIClient.fetchOrder(pid, page ?? 1);
 
     return data;
   }
 
   Future<Order> approveOrder(String url) async {
-    final data = purchaseAPIClient.approveOrder(url);
+    final data = await purchaseAPIClient.approveOrder(url);
 
     return data;
   }
 
   Future<Order> cancelOrder(String url) async {
-    final data = purchaseAPIClient.cancelOrder(url);
+    final data = await purchaseAPIClient.cancelOrder(url);
 
     return data;
   }
 
   Future<Order> failOrder(String url) async {
-    final data = purchaseAPIClient.failOrder(url);
+    final data = await purchaseAPIClient.failOrder(url);
 
     return data;
   }
