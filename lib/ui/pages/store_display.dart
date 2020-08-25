@@ -150,7 +150,7 @@ class _StoreDisplayState extends State<StoreDisplay> {
 
   // ignore: non_constant_identifier_names
   Widget _buildCategoriesList() => Container(
-    width: 88.0,
+    width: 80.0,
     height: 16.0,
     child: GridView.builder(
       padding: EdgeInsets.zero,
