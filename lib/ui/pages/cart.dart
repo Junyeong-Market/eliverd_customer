@@ -317,7 +317,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                             cartItems.then((items) => context
                                 .bloc<OrderBloc>()
                                 .add(ProceedOrder(
-                                    items, amounts.value, isDelivery)));
+                                    items, amounts.value, shippingDestination)));
                           },
                   ),
                 ],
