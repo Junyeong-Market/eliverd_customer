@@ -1,109 +1,75 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:Eliverd/bloc/userBloc.dart';
 import 'package:Eliverd/bloc/events/userEvent.dart';
 import 'package:Eliverd/bloc/states/userState.dart';
 
-import 'package:Eliverd/resources/providers/accountProvider.dart';
-import 'package:Eliverd/resources/repositories/accountRepository.dart';
-
 class UserProfile extends StatefulWidget {
+  final UserBloc userBloc;
+
+  const UserProfile({Key key, @required this.userBloc}) : super(key: key);
+
   @override
   _UserProfileState createState() => _UserProfileState();
 }
 
 class _UserProfileState extends State<UserProfile> {
-  UserBloc _userBloc;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _userBloc = UserBloc(
-      accountRepository: AccountRepository(
-        accountAPIClient: AccountAPIClient(
-          httpClient: http.Client(),
-        ),
-      ),
-    );
-
-    _userBloc.add(FetchUser());
-  }
-
-  @override
-  void dispose() {
-    _userBloc.close();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
 
     return BlocBuilder<UserBloc, UserState>(
-      cubit: _userBloc,
+      cubit: widget.userBloc,
       builder: (context, state) {
         if (state is UserFetched) {
-          return InkWell(
-            onTap: () {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: null));
-            },
-            child: Row(
-              children: <Widget>[
-                Container(
-                  width: width * 0.25,
-                  height: width * 0.25,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        colors: [Colors.black54, Colors.black26],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight),
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  child: Center(
-                    child: Text(
-                      state.user.nickname,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0,
-                      ),
-                      textAlign: TextAlign.center,
+          return Column(
+            children: <Widget>[
+              Container(
+                width: width * 0.3,
+                height: width * 0.3,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: [Colors.black54, Colors.black26],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight),
+                  borderRadius: BorderRadius.circular(100.0),
+                ),
+                child: Center(
+                  child: Text(
+                    state.user.nickname,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22.0,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
-                SizedBox(
-                  width: 4.0,
+              ),
+              SizedBox(
+                height: 4.0,
+              ),
+              Text(
+                state.user.realname,
+                maxLines: 1,
+                style: TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 20.0,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      state.user.realname,
-                      maxLines: 1,
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20.0,
-                      ),
-                    ),
-                    Text(
-                      state.user.isSeller ? '사업자' : '고객',
-                      maxLines: 1,
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  ],
+              ),
+              Text(
+                state.user.isSeller ? '사업자' : '고객',
+                maxLines: 1,
+                style: TextStyle(
+                  color: Colors.black45,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16.0,
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         } else if (state is UserError) {
           return Center(
@@ -124,7 +90,7 @@ class _UserProfileState extends State<UserProfile> {
                       ),
                     ),
                     onPressed: () {
-                      _userBloc.add(FetchUser());
+                      widget.userBloc.add(FetchUser());
                     },
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(25.0)),
