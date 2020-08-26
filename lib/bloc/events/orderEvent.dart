@@ -14,16 +14,16 @@ class FetchOrder extends OrderEvent {}
 class ProceedOrder extends OrderEvent {
   final List<Stock> items;
   final List<int> amounts;
-  final bool isDelivery;
+  final Coordinate shippingDestination;
 
-  const ProceedOrder(this.items, this.amounts, this.isDelivery);
+  const ProceedOrder(this.items, this.amounts, this.shippingDestination);
 
   @override
-  List<Object> get props => [items, isDelivery];
+  List<Object> get props => [items, shippingDestination];
 
   @override
   String toString() {
-    return 'ProceedOrder{ items: $items, amounts: $amounts, isDelivery: $isDelivery }';
+    return 'ProceedOrder{ items: $items, amounts: $amounts, shippingDestination: $shippingDestination }';
   }
 }
 
