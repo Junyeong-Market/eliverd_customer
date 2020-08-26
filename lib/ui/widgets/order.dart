@@ -147,7 +147,7 @@ class OrderWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '배송 여부',
+                '배송지',
                 maxLines: 1,
                 textAlign: TextAlign.right,
                 overflow: TextOverflow.ellipsis,
@@ -157,15 +157,18 @@ class OrderWidget extends StatelessWidget {
                   fontSize: 14.0,
                 ),
               ),
-              Text(
-                order.isDelivery ? '􀀀' : '􀆄',
-                maxLines: 1,
-                textAlign: TextAlign.right,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16.0,
+              Flexible(
+                fit: FlexFit.loose,
+                child: Text(
+                  order.destination != null ? order.destination.toJsonString() : '없음',
+                  maxLines: 2,
+                  textAlign: TextAlign.right,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13.0,
+                  ),
                 ),
               ),
             ],
