@@ -20,15 +20,17 @@ class PurchaseAPIClient {
   }) : assert(httpClient != null);
 
   Future<String> getCheckoutByCart(
-      List<Stock> items, List<int> amounts, bool isDelivery) async {
+      List<Stock> items, List<int> amounts, Coordinate shippingDestination) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<Map<String, dynamic>> body = [];
+    List<Map<String, dynamic>> orders = [];
+
+    final body = {};
 
     final session = prefs.getString('session');
     final grouped = groupBy(items, (Stock item) => item.store);
 
     grouped.forEach((store, stocks) {
-      body.add({
+      orders.add({
         'store': store.id,
         'stocks': stocks
             .map((stock) => {
@@ -39,7 +41,16 @@ class PurchaseAPIClient {
       });
     });
 
-    final url = '$baseUrl/purchase/?is_delivery=$isDelivery';
+    body['orders'] = orders;
+
+    if (shippingDestination != null) {
+      body['deliver_to'] = {
+        'lat': shippingDestination.lat,
+        'lng': shippingDestination.lng,
+      };
+    }
+
+    final url = '$baseUrl/purchase/';
     final res = await httpClient.post(
       url,
       headers: {

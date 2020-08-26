@@ -24,7 +24,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       TransitionFunction<OrderEvent, OrderState> transitionFn,
       ) {
     return super.transformEvents(
-      events.debounceTime(const Duration(milliseconds: 500)),
+      events.debounceTime(const Duration(seconds: 1)),
       transitionFn,
     );
   }
@@ -83,7 +83,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   Stream<OrderState> _mapProceedOrderToState(ProceedOrder event) async* {
     try {
       final redirectURL = await purchaseRepository.getCheckoutByCart(
-          event.items, event.amounts, event.isDelivery);
+          event.items, event.amounts, event.shippingDestination);
 
       yield OrderInProgress(redirectURL);
     } catch (_) {

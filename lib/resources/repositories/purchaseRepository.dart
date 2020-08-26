@@ -12,8 +12,8 @@ class PurchaseRepository {
       : assert(PurchaseAPIClient != null);
 
   Future<String> getCheckoutByCart(
-      List<Stock> items, List<int> amounts, bool isDelivery) async {
-    final data = await purchaseAPIClient.getCheckoutByCart(items, amounts, isDelivery);
+      List<Stock> items, List<int> amounts, Coordinate shippingDestination) async {
+    final data = await purchaseAPIClient.getCheckoutByCart(items, amounts, shippingDestination);
 
     return data;
   }
