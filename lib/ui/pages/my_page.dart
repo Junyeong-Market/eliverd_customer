@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:Eliverd/ui/widgets/user_profile.dart';
+
 class MyPagePage extends StatefulWidget {
   @override
   _MyPagePageState createState() => _MyPagePageState();
@@ -9,6 +11,9 @@ class MyPagePage extends StatefulWidget {
 class _MyPagePageState extends State<MyPagePage> {
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         leading: ButtonTheme(
@@ -43,7 +48,18 @@ class _MyPagePageState extends State<MyPagePage> {
           ),
         ),
       ),
-      body: ListView(),
+      body: ListView(
+        padding: EdgeInsets.symmetric(
+          horizontal: 8.0,
+        ),
+        children: [
+          Container(
+            width: width,
+            height: height * 0.15,
+            child: UserProfile(),
+          )
+        ],
+      ),
     );
   }
 }
