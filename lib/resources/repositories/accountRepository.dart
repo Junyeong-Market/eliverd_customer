@@ -27,6 +27,16 @@ class AccountRepository {
     return user;
   }
 
+  Future<Map<String, dynamic>> updateUser(int pid, Map<String, dynamic> updateForm) async {
+    final data = await accountAPIClient.updateUser(pid, updateForm);
+
+    return data;
+  }
+
+  Future<void> closeUser(int pid) async {
+    await accountAPIClient.closeUser(pid);
+  }
+
   Future<List<User>> searchUser(String keyword) async {
     final users = await accountAPIClient.searchUser(keyword);
 
