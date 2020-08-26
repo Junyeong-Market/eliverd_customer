@@ -181,8 +181,58 @@ class AccountAPIClient {
       },
     );
 
+    if (res.statusCode != 200) {
+      throw Exception('Error occurred while fetching user');
+    }
+
     final decoded = utf8.decode(res.bodyBytes);
 
     return User.fromJson(json.decode(decoded));
+  }
+
+  Future<Map<String, dynamic>> updateUser(
+      int pid, Map<String, dynamic> updateForm) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final session = prefs.getString('session');
+
+    final url = '$baseUrl/account/user/$pid/';
+    final res = await this.httpClient.put(
+          url,
+          headers: {
+            HttpHeaders.authorizationHeader: session,
+            HttpHeaders.contentTypeHeader: 'application/json',
+          },
+          body: json.encode(updateForm),
+          encoding: Encoding.getByName('utf-8'),
+        );
+
+    if (res.statusCode != 200) {
+      throw Exception('Error occurred while updating user');
+    }
+
+    final decoded = utf8.decode(res.bodyBytes);
+
+    final data = json.decode(decoded);
+
+    return data;
+  }
+
+  Future<void> closeUser(int pid) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final session = prefs.getString('session');
+
+    final url = '$baseUrl/account/user/$pid/';
+    final res = await this.httpClient.delete(
+      url,
+      headers: {
+        HttpHeaders.authorizationHeader: session,
+      },
+    );
+
+    if (res.statusCode != 204) {
+      throw Exception('Error occurred while closing user account');
+    }
   }
 }
