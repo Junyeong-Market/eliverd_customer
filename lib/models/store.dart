@@ -22,7 +22,15 @@ class Coordinate extends Equatable {
         'lng': lng,
       };
 
+  String toJsonString() {
+    return 'SRID=4326;POINT($lat $lng)';
+  }
+
   static Coordinate fromString(String location) {
+    if (location == null || location.isEmpty) {
+      return null;
+    }
+
     final rawCoordinate = location
         .substring(location.indexOf('(') + 1, location.indexOf(')'))
         .split(' ');
@@ -31,10 +39,6 @@ class Coordinate extends Equatable {
       lat: double.parse(rawCoordinate[0]),
       lng: double.parse(rawCoordinate[1]),
     );
-  }
-
-  static String toJsonString(Coordinate location) {
-    return 'SRID=4326;POINT(${location.lat} ${location.lng})';
   }
 }
 
@@ -81,7 +85,7 @@ class Store extends Equatable {
         'registerer':
             registerers.map((User registerer) => registerer.toJson()).toList(),
         'registered_number': registeredNumber,
-        'location': Coordinate.toJsonString(location),
+        'location': location.toJsonString(),
       };
 }
 

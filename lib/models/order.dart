@@ -8,7 +8,7 @@ class Order extends Equatable {
   final User customer;
   final List<PartialOrder> partials;
   final String status;
-  final bool isDelivery;
+  final Coordinate destination;
 
   Order(
       {this.id,
@@ -16,10 +16,10 @@ class Order extends Equatable {
       this.customer,
       this.partials,
       this.status,
-      this.isDelivery});
+      this.destination});
 
   @override
-  List<Object> get props => [id, tid, customer, partials, status, isDelivery];
+  List<Object> get props => [id, tid, customer, partials, status, destination];
 
   static Order fromJson(dynamic json) => Order(
         id: json['oid'],
@@ -29,12 +29,12 @@ class Order extends Equatable {
             .map<PartialOrder>((partial) => PartialOrder.fromJson(partial))
             .toList(),
         status: json['status'],
-        isDelivery: json['is_delivery'],
+        destination: Coordinate.fromString(json['destination']),
       );
 
   @override
   String toString() {
-    return 'Order{id: $id, tid: $tid, customer: $customer, partials: $partials, status: $status, isDelivery: $isDelivery}';
+    return 'Order{id: $id, tid: $tid, customer: $customer, partials: $partials, status: $status, destination: $destination }';
   }
 
   Map<String, dynamic> toJson() => {
@@ -44,7 +44,7 @@ class Order extends Equatable {
         'partials':
             partials.map((PartialOrder partial) => partial.toJson()).toList(),
         'status': status,
-        'is_delivery': isDelivery,
+        'destination': destination.toJsonString(),
       };
 }
 
