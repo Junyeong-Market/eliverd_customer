@@ -2,20 +2,12 @@ import 'package:Eliverd/ui/pages/order_display.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-
-import 'package:Eliverd/bloc/events/orderEvent.dart';
-import 'package:Eliverd/bloc/orderBloc.dart';
-import 'package:Eliverd/bloc/states/orderState.dart';
 
 import 'package:Eliverd/models/models.dart';
 
 import 'package:Eliverd/ui/widgets/stock.dart';
-import 'package:Eliverd/ui/pages/order.dart';
-
-import 'package:Eliverd/common/color.dart';
 
 class OrderWidget extends StatefulWidget {
   final Order order;
