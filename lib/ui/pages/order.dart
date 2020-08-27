@@ -5,6 +5,7 @@ import 'package:Eliverd/common/color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -33,6 +34,7 @@ class _OrderPageState extends State<OrderPage> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             brightness: Brightness.light,
             backgroundColor: Colors.transparent,
             elevation: 0.0,
@@ -73,20 +75,27 @@ class _OrderPageState extends State<OrderPage> {
         );
       },
       listener: (context, state) {
-        if (state is! OrderInProgress) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OrderDisplayPage(),
-            ),
-          );
+        if (state is OrderError) {
+          Navigator.pop(context);
+        } else if (state is! OrderInProgress) {
+          _removeShoppingCart().then((value) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OrderDisplayPage(
+                  order: (state as OrderDone).order,
+                ),
+              ),
+            );
+          });
         }
       },
     );
   }
 
+  bool _isEliverdHandlerURL(String url) =>
+      url.contains('SECRET:8000/purchase');
 
-  bool _isEliverdHandlerURL(String url) => url.contains('SECRET:8000/purchase');
   bool _isKakaoPayScheme(String url) => url.startsWith('kakaotalk:');
 
   void _launchFromDeviceBrowser(String url) async {
@@ -95,6 +104,12 @@ class _OrderPageState extends State<OrderPage> {
     } else {
       showNotSupportedDeviceAlertDialog(context);
     }
+  }
+
+  Future<void> _removeShoppingCart() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.remove('carts');
   }
 }
 
