@@ -158,7 +158,7 @@ class _HomePageState extends State<HomePage> {
 
               final cameraPosition = CameraPosition(
                 target: LatLng(coordinate.lat, coordinate.lng),
-                zoom: 20.0,
+                zoom: 16.0,
               );
 
               context.bloc<StoreBloc>().add(FetchStore(coordinate));
