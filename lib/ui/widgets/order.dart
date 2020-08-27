@@ -1,20 +1,37 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
 import 'package:Eliverd/models/models.dart';
 
 import 'package:Eliverd/ui/widgets/stock.dart';
 
-class OrderWidget extends StatelessWidget {
+class OrderWidget extends StatefulWidget {
   final Order order;
 
   const OrderWidget({Key key, @required this.order}) : super(key: key);
 
   @override
+  _OrderWidgetState createState() => _OrderWidgetState();
+}
+
+class _OrderWidgetState extends State<OrderWidget> {
+  Future<String> shippingAddress;
+
+  @override
+  void initState() {
+    super.initState();
+
+
+    shippingAddress = _getAddressFromCoordinate(widget.order.destination);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final total = order.partials
+    final total = widget.order.partials
         .map((PartialOrder partial) => partial.stocks)
         .expand((e) => e)
         .toList()
@@ -31,7 +48,7 @@ class OrderWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
-            '주문 번호 ${order.id}번(${order.tid})',
+            '주문 번호 ${widget.order.id}번(${widget.order.tid})',
             maxLines: 1,
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -40,7 +57,7 @@ class OrderWidget extends StatelessWidget {
               fontSize: 16.0,
             ),
           ),
-          for (var partialOrder in order.partials)
+          for (var partialOrder in widget.order.partials)
             PartialOrderWidget(
               partialOrder: partialOrder,
             ),
@@ -96,7 +113,7 @@ class OrderWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                order.customer.realname,
+                widget.order.customer.realname,
                 maxLines: 1,
                 textAlign: TextAlign.right,
                 overflow: TextOverflow.ellipsis,
@@ -125,11 +142,11 @@ class OrderWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                order.status == 'processed'
+                widget.order.status == 'processed'
                     ? '결제 완료'
-                    : (order.status == 'canceled'
+                    : (widget.order.status == 'canceled'
                         ? '결제 취소'
-                        : (order.status == 'failed' ? '결제 실패' : '')),
+                        : (widget.order.status == 'failed' ? '결제 실패' : '확인 불가')),
                 maxLines: 1,
                 textAlign: TextAlign.right,
                 overflow: TextOverflow.ellipsis,
@@ -159,16 +176,26 @@ class OrderWidget extends StatelessWidget {
               ),
               Flexible(
                 fit: FlexFit.loose,
-                child: Text(
-                  order.destination != null ? order.destination.toJsonString() : '없음',
-                  maxLines: 2,
-                  textAlign: TextAlign.right,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13.0,
-                  ),
+                child: FutureBuilder<String>(
+                  future: shippingAddress,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done &&
+                        snapshot.hasData) {
+                      return Text(
+                        snapshot.data.isEmpty ? '없음' : snapshot.data,
+                        maxLines: 2,
+                        textAlign: TextAlign.right,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14.0,
+                        ),
+                      );
+                    }
+
+                    return CupertinoActivityIndicator();
+                  },
                 ),
               ),
             ],
@@ -183,6 +210,23 @@ class OrderWidget extends StatelessWidget {
       locale: 'ko',
       symbol: '₩',
     )?.format(price);
+  }
+
+  Future<String> _getAddressFromCoordinate(Coordinate coordinate) async {
+    if (coordinate == null) {
+      return '';
+    }
+
+    List<Placemark> placemarks = await Geolocator().placemarkFromCoordinates(
+      coordinate.lat,
+      coordinate.lng,
+      localeIdentifier: 'ko_KR',
+    );
+
+    return placemarks
+        .map((placemark) =>
+            '${placemark.country} ${placemark.administrativeArea} ${placemark.locality} ${placemark.name} ${placemark.postalCode}')
+        .join(',');
   }
 }
 
