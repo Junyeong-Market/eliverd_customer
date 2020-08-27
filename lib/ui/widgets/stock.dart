@@ -88,6 +88,8 @@ class SimplifiedStock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -109,96 +111,90 @@ class SimplifiedStock extends StatelessWidget {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Flexible(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black12,
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Center(
-                    child: Text(
-                      '사진 없음',
-                      style: const TextStyle(
-                        color: Colors.black45,
-                        fontSize: 12.0,
-                      ),
+              Container(
+                width: width * 0.33,
+                height: width * 0.33,
+                decoration: BoxDecoration(
+                  color: Colors.black12,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Text(
+                    '사진 없음',
+                    style: const TextStyle(
+                      color: Colors.black45,
+                      fontSize: 12.0,
                     ),
                   ),
                 ),
               ),
               SizedBox(height: 4.0),
-              Column(
+              Text(
+                stock.product.manufacturer.name,
+                maxLines: 1,
+                textAlign: TextAlign.left,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: Colors.black45,
+                  fontSize: 11.0,
+                ),
+              ),
+              Text(
+                stock.product.name,
+                maxLines: 1,
+                textAlign: TextAlign.left,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: Colors.black87,
+                  fontSize: 13.0,
+                ),
+              ),
+              Text(
+                formattedPrice(stock.price),
+                maxLines: 1,
+                textAlign: TextAlign.left,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 17.0,
+                ),
+              ),
+              SizedBox(height: 1.6),
+              Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    stock.product.manufacturer.name,
-                    maxLines: 1,
-                    textAlign: TextAlign.left,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Colors.black45,
-                      fontSize: 11.0,
-                    ),
+                children: [
+                  CategoryWidget(
+                    categoryId: stock.product.category,
+                    fontSize: 9.0,
+                    padding: 2.0,
                   ),
-                  Text(
-                    stock.product.name,
-                    maxLines: 1,
-                    textAlign: TextAlign.left,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 13.0,
-                    ),
-                  ),
-                  Text(
-                    formattedPrice(stock.price),
-                    maxLines: 1,
-                    textAlign: TextAlign.left,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 17.0,
-                    ),
-                  ),
-                  SizedBox(height: 1.6),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CategoryWidget(
-                        categoryId: stock.product.category,
-                        fontSize: 9.0,
-                        padding: 2.0,
+                  SizedBox(width: 1.6),
+                  Visibility(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(5.0)),
                       ),
-                      SizedBox(width: 1.6),
-                      Visibility(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(5.0)),
+                      padding: EdgeInsets.all(2.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text(
+                            '􀋙 ${stock.amount}개 남음!',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 9.0,
+                            ),
                           ),
-                          padding: EdgeInsets.all(2.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Text(
-                                '􀋙 품절 임박!',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 9.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        visible: stock.amount <= 3,
-                        maintainSize: false,
+                        ],
                       ),
-                    ],
+                    ),
+                    visible: stock.amount <= 3,
+                    maintainSize: false,
                   ),
                 ],
               ),
