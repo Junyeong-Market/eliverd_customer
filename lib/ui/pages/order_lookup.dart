@@ -95,7 +95,9 @@ class _OrderLookupPageState extends State<OrderLookupPage> {
                                   )
                                 : CupertinoActivityIndicator(),
                           )
-                        : OrderWidget(order: state.orders[index]);
+                        : SimplifiedOrderWidget(
+                            order: state.orders[index],
+                          );
                   },
                   itemCount: state.isAllFetched
                       ? state.orders.length

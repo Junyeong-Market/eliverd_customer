@@ -1,12 +1,21 @@
+import 'package:Eliverd/ui/pages/order_display.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
+
+import 'package:Eliverd/bloc/events/orderEvent.dart';
+import 'package:Eliverd/bloc/orderBloc.dart';
+import 'package:Eliverd/bloc/states/orderState.dart';
 
 import 'package:Eliverd/models/models.dart';
 
 import 'package:Eliverd/ui/widgets/stock.dart';
+import 'package:Eliverd/ui/pages/order.dart';
+
+import 'package:Eliverd/common/color.dart';
 
 class OrderWidget extends StatefulWidget {
   final Order order;
@@ -23,7 +32,6 @@ class _OrderWidgetState extends State<OrderWidget> {
   @override
   void initState() {
     super.initState();
-
 
     shippingAddress = _getAddressFromCoordinate(widget.order.destination);
   }
@@ -44,7 +52,7 @@ class _OrderWidgetState extends State<OrderWidget> {
         vertical: 8.0,
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Text(
             '주문 번호 ${widget.order.id}번(${widget.order.tid})',
@@ -145,7 +153,11 @@ class _OrderWidgetState extends State<OrderWidget> {
                     ? '결제 완료'
                     : (widget.order.status == 'canceled'
                         ? '결제 취소'
-                        : (widget.order.status == 'failed' ? '결제 실패' : '확인 불가')),
+                        : (widget.order.status == 'failed'
+                            ? '결제 실패'
+                            : (widget.order.status == 'pending'
+                                ? '결제 보류'
+                                : '확인 불가'))),
                 maxLines: 1,
                 textAlign: TextAlign.right,
                 overflow: TextOverflow.ellipsis,
@@ -409,5 +421,169 @@ class PartialOrderWidget extends StatelessWidget {
         value.substring(3, 5) +
         '-' +
         value.substring(5);
+  }
+}
+
+class SimplifiedOrderWidget extends StatefulWidget {
+  final Order order;
+
+  const SimplifiedOrderWidget({Key key, @required this.order})
+      : super(key: key);
+
+  @override
+  _SimplifiedOrderWidgetState createState() => _SimplifiedOrderWidgetState();
+}
+
+class _SimplifiedOrderWidgetState extends State<SimplifiedOrderWidget> {
+  @override
+  Widget build(BuildContext context) {
+    final items = widget.order.partials
+        .map((PartialOrder partial) => partial.stocks)
+        .expand((e) => e)
+        .toList();
+
+    final total = items
+        .map((OrderedStock orderedStock) =>
+            orderedStock.stock.price * orderedStock.amount)
+        .reduce((a, b) => a + b);
+
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderDisplayPage(
+              order: widget.order,
+            ),
+          ),
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.0,
+          vertical: 8.0,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text(
+              '주문 번호 ${widget.order.id}번(${widget.order.tid})',
+              maxLines: 1,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                fontSize: 16.0,
+              ),
+            ),
+            Divider(
+              height: 4.0,
+              thickness: 1.0,
+              color: Colors.black,
+            ),
+            for (var orderedStock
+                in items.length > 2 ? items.sublist(0, 2) : items)
+              StockOnOrder(
+                orderedStock: orderedStock,
+              ),
+            Visibility(
+              child: Text(
+                '외 상품 ${items.length - 2}개',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18.0,
+                ),
+              ),
+              visible: items.length > 2,
+            ),
+            SizedBox(
+              height: 8.0,
+            ),
+            Divider(
+              height: 4.0,
+              thickness: 1.0,
+            ),
+            SizedBox(
+              height: 8.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  '총 결제 금액',
+                  maxLines: 1,
+                  textAlign: TextAlign.right,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14.0,
+                  ),
+                ),
+                Text(
+                  '${formattedPrice(total)}',
+                  maxLines: 1,
+                  textAlign: TextAlign.right,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w700,
+                    decoration: TextDecoration.underline,
+                    fontSize: 22.0,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 4.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  '승인 상태',
+                  maxLines: 1,
+                  textAlign: TextAlign.right,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14.0,
+                  ),
+                ),
+                Text(
+                  widget.order.status == 'processed'
+                      ? '결제 완료'
+                      : (widget.order.status == 'canceled'
+                          ? '결제 취소'
+                          : (widget.order.status == 'failed'
+                              ? '결제 실패'
+                              : (widget.order.status == 'pending'
+                                  ? '결제 보류'
+                                  : '확인 불가'))),
+                  maxLines: 1,
+                  textAlign: TextAlign.right,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String formattedPrice(int price) {
+    return NumberFormat.currency(
+      locale: 'ko',
+      symbol: '₩',
+    )?.format(price);
   }
 }
