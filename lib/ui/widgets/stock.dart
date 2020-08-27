@@ -320,7 +320,7 @@ class SpecifiedStock extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               Text(
-                                '􀋙 품절 임박!',
+                                '􀋙 ${stock.amount}개 남음!',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
