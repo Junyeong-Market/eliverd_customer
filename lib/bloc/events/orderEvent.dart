@@ -68,3 +68,18 @@ class FailOrder extends OrderEvent {
     return 'FailOrder{ orderId: $url }';
   }
 }
+
+
+class ContinueOrder extends OrderEvent {
+  final int orderId;
+
+  const ContinueOrder(this.orderId);
+
+  @override
+  List<Object> get props => [orderId];
+
+  @override
+  String toString() {
+    return 'ContinueOrder{ orderId: $orderId }';
+  }
+}

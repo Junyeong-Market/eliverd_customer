@@ -41,6 +41,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       yield* _mapCancelOrderToState(event);
     } else if (event is FailOrder) {
       yield* _mapFailOrderToState(event);
+    } else if (event is ContinueOrder) {
+      yield* _mapContinueOrderToState(event);
     }
   }
 
@@ -52,7 +54,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         final pid = (await accountRepository.getUser()).pid;
 
         if (currentState is! OrderFetched) {
-          final orders = await purchaseRepository.fetchOrder(pid);
+          final orders = await purchaseRepository.fetchOrdersFromUser(pid);
 
           yield OrderFetched(
             orders: orders,
@@ -60,7 +62,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
             page: 2,
           );
         } else if (currentState is OrderFetched) {
-          final orders = await purchaseRepository.fetchOrder(pid, currentState.page);
+          final orders = await purchaseRepository.fetchOrdersFromUser(pid, currentState.page);
 
           yield orders.isEmpty
               ? currentState.copyWith(
@@ -82,7 +84,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Stream<OrderState> _mapProceedOrderToState(ProceedOrder event) async* {
     try {
-      final redirectURL = await purchaseRepository.getCheckoutByCart(
+      final redirectURL = await purchaseRepository.createOrder(
           event.items, event.amounts, event.shippingDestination);
 
       yield OrderInProgress(redirectURL);
@@ -116,6 +118,16 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       final order = await purchaseRepository.failOrder(event.url);
 
       yield OrderFailed(order);
+    } catch (_) {
+      yield OrderError();
+    }
+  }
+
+  Stream<OrderState> _mapContinueOrderToState(ContinueOrder event) async* {
+    try {
+      final url = await purchaseRepository.continueOrder(event.orderId);
+
+      yield OrderInResume(url);
     } catch (_) {
       yield OrderError();
     }

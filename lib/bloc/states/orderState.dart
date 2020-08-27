@@ -38,34 +38,49 @@ class OrderInProgress extends OrderState {
   List<Object> get props => [redirectURL];
 }
 
-class OrderApproved extends OrderState {
+class OrderInResume extends OrderState {
+  final String redirectURL;
+
+  const OrderInResume(this.redirectURL);
+
+  @override
+  List<Object> get props => [redirectURL];
+}
+
+class OrderDone extends OrderState {
   final Order order;
 
-  const OrderApproved(this.order);
+  const OrderDone(this.order);
 
   @override
   List<Object> get props => [order];
 }
 
-class OrderCanceled extends OrderState {
+class OrderApproved extends OrderDone {
   final Order order;
 
-  const OrderCanceled(this.order);
+  const OrderApproved(this.order) : super(order);
 
   @override
   List<Object> get props => [order];
 }
 
-class OrderFailed extends OrderState {
+class OrderCanceled extends OrderDone {
   final Order order;
 
-  const OrderFailed(this.order);
+  const OrderCanceled(this.order) : super(order);
 
   @override
   List<Object> get props => [order];
 }
 
-class OrderDone extends OrderState {}
+class OrderFailed extends OrderDone {
+  final Order order;
+
+  const OrderFailed(this.order) : super(order);
+
+  @override
+  List<Object> get props => [order];
+}
 
 class OrderError extends OrderState {}
-
