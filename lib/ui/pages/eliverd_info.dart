@@ -75,6 +75,7 @@ class _EliverdInfoPageState extends State<EliverdInfoPage> {
                 Flexible(
                   flex: 1,
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
                         '요즘 같은 때, 손소독제 어떠세요?',
@@ -85,7 +86,7 @@ class _EliverdInfoPageState extends State<EliverdInfoPage> {
                         ),
                       ),
                       Text(
-                        '지금 사면 단 ₩5,000원에!',
+                        '지금 사면 단돈 ₩5,000원에!',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
                           color: Colors.white,
