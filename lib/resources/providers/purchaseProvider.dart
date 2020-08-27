@@ -19,7 +19,7 @@ class PurchaseAPIClient {
     @required this.httpClient,
   }) : assert(httpClient != null);
 
-  Future<String> getCheckoutByCart(
+  Future<String> createOrder(
       List<Stock> items, List<int> amounts, Coordinate shippingDestination) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<Map<String, dynamic>> orders = [];
@@ -72,7 +72,31 @@ class PurchaseAPIClient {
     return data;
   }
 
-  Future<Order> getOrderInfo(String orderId) async {
+  Future<String> continueOrder(int orderId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final session = prefs.getString('session');
+
+    final url = '$baseUrl/purchase/$orderId/continue/';
+    final res = await httpClient.get(
+      url,
+      headers: {
+        HttpHeaders.authorizationHeader: session,
+      },
+    );
+
+    if (res.statusCode != 201) {
+      throw Exception('Error occurred while resuming order');
+    }
+
+    final decoded = utf8.decode(res.bodyBytes);
+
+    final data = json.decode(decoded)['next_redirect_mobile_url'];
+
+    return data;
+  }
+
+  Future<Order> fetchOrder(String orderId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final session = prefs.getString('session');
@@ -91,9 +115,30 @@ class PurchaseAPIClient {
 
     final decoded = utf8.decode(res.bodyBytes);
 
-    final data = json.decode(decoded) as Order;
+    return Order.fromJson(json.decode(decoded));
+  }
 
-    return data;
+  Future<List<Order>> fetchOrdersFromUser(int pid, [int page]) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final session = prefs.getString('session');
+
+    final url = '$baseUrl/account/user/$pid/orders/' +
+        ((page != null) ? '?page=$page' : '');
+    final res = await this.httpClient.get(
+      url,
+      headers: {
+        HttpHeaders.authorizationHeader: session,
+      },
+    );
+
+    final decoded = utf8.decode(res.bodyBytes);
+
+    final orders = json.decode(decoded)['results'];
+
+    return orders != null
+        ? orders.map<Order>((order) => Order.fromJson(order)).toList()
+        : [];
   }
 
   Future<Order> approveOrder(String url) async {
@@ -157,28 +202,5 @@ class PurchaseAPIClient {
     final decoded = utf8.decode(res.bodyBytes);
 
     return Order.fromJson(json.decode(decoded));
-  }
-
-  Future<List<Order>> fetchOrder(int pid, [int page]) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    final session = prefs.getString('session');
-
-    final url = '$baseUrl/account/user/$pid/orders/' +
-        ((page != null) ? '?page=$page' : '');
-    final res = await this.httpClient.get(
-      url,
-      headers: {
-        HttpHeaders.authorizationHeader: session,
-      },
-    );
-
-    final decoded = utf8.decode(res.bodyBytes);
-
-    final orders = json.decode(decoded)['results'];
-
-    return orders != null
-        ? orders.map<Order>((order) => Order.fromJson(order)).toList()
-        : [];
   }
 }
