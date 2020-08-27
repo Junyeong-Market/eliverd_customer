@@ -21,7 +21,7 @@ class MyPagePage extends StatefulWidget {
 
 class _MyPagePageState extends State<MyPagePage> {
   UserBloc _userBloc;
-  int _selectedTab = 0;
+  int _selectedTab = 2;
 
   @override
   void initState() {
@@ -136,9 +136,6 @@ class _MyPagePageState extends State<MyPagePage> {
                 ),
               ),
             ],
-          ),
-          SizedBox(
-            height: 4.0,
           ),
           Padding(
             padding: EdgeInsets.only(
