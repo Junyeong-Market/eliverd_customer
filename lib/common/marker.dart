@@ -64,7 +64,7 @@ class Markers {
       fit: BoxFit.fitWidth,
       alignment: Alignment.topCenter,
     );
-    
+
     tp.layout();
     tp.paint(canvas, Offset(80.0, 40.0));
 
