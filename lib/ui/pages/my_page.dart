@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -148,14 +150,18 @@ class _MyPagePageState extends State<MyPagePage> {
             height: 4.0,
           ),
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              showConfirmLogoutAlertDialog(context);
+            },
             child: _buildLogoutButton(),
           ),
           SizedBox(
             height: 8.0,
           ),
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              showConfirmCloseAccountAlertDialog(context);
+            },
             child: _buildCloseAccountButton(),
           ),
         ],
@@ -318,4 +324,235 @@ class _MyPagePageState extends State<MyPagePage> {
           ),
         ),
       );
+}
+
+showConfirmLogoutAlertDialog(BuildContext context) {
+  String title = '정말 로그아웃하시겠습니까?';
+  String desc = '로그아웃하면 서비스에 접근하기 위해 다시 로그인해야 합니다.';
+
+  Widget cancelButton = FlatButton(
+    child: Text(
+      '취소',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w400,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  Widget confirmButton = FlatButton(
+    child: Text(
+      '로그아웃',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  Widget cupertinoCancelButton = CupertinoDialogAction(
+    child: Text(
+      '취소',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w400,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  Widget cupertinoConfirmButton = CupertinoDialogAction(
+    child: Text(
+      '로그아웃',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  AlertDialog alertDialog = AlertDialog(
+    title: Text(
+      title,
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 18.0,
+      ),
+    ),
+    content: Text(
+      desc,
+      style: TextStyle(
+        fontWeight: FontWeight.w400,
+        fontSize: 14.0,
+      ),
+    ),
+    actions: <Widget>[
+      cancelButton,
+      confirmButton,
+    ],
+  );
+
+  CupertinoAlertDialog cupertinoAlertDialog = CupertinoAlertDialog(
+    title: Text(
+      title,
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 18.0,
+      ),
+    ),
+    content: Text(
+      desc,
+      style: TextStyle(
+        fontWeight: FontWeight.w400,
+        fontSize: 14.0,
+      ),
+    ),
+    actions: <Widget>[
+      cupertinoCancelButton,
+      cupertinoConfirmButton,
+    ],
+  );
+
+  if (Platform.isAndroid) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alertDialog;
+      },
+    );
+  } else if (Platform.isIOS) {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return cupertinoAlertDialog;
+      },
+    );
+  }
+}
+
+
+showConfirmCloseAccountAlertDialog(BuildContext context) {
+  String title = '정말 탈퇴하시겠습니까?';
+  String desc = '회원을 탈퇴하면 사용자의 프로필, 주문 내역이 모두 삭제됩니다.';
+
+  Widget cancelButton = FlatButton(
+    child: Text(
+      '취소',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w400,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  Widget confirmButton = FlatButton(
+    child: Text(
+      '탈퇴',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  Widget cupertinoCancelButton = CupertinoDialogAction(
+    child: Text(
+      '취소',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w400,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  Widget cupertinoConfirmButton = CupertinoDialogAction(
+    child: Text(
+      '탈퇴',
+      style: TextStyle(
+        color: eliverdColor,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  AlertDialog alertDialog = AlertDialog(
+    title: Text(
+      title,
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 18.0,
+      ),
+    ),
+    content: Text(
+      desc,
+      style: TextStyle(
+        fontWeight: FontWeight.w400,
+        fontSize: 14.0,
+      ),
+    ),
+    actions: <Widget>[
+      cancelButton,
+      confirmButton,
+    ],
+  );
+
+  CupertinoAlertDialog cupertinoAlertDialog = CupertinoAlertDialog(
+    title: Text(
+      title,
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 18.0,
+      ),
+    ),
+    content: Text(
+      desc,
+      style: TextStyle(
+        fontWeight: FontWeight.w400,
+        fontSize: 14.0,
+      ),
+    ),
+    actions: <Widget>[
+      cupertinoCancelButton,
+      cupertinoConfirmButton,
+    ],
+  );
+
+  if (Platform.isAndroid) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alertDialog;
+      },
+    );
+  } else if (Platform.isIOS) {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return cupertinoAlertDialog;
+      },
+    );
+  }
 }
