@@ -25,6 +25,7 @@ import 'package:Eliverd/ui/pages/my_page.dart';
 import 'package:Eliverd/ui/pages/order_lookup.dart';
 import 'package:Eliverd/ui/widgets/category.dart';
 import 'package:Eliverd/ui/widgets/shopping_cart_button.dart';
+import 'package:Eliverd/ui/pages/search_items.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -86,11 +87,22 @@ class _HomePageState extends State<HomePage> {
               child: _buildMap(),
             ),
             Positioned(
-              top: height * 0.05,
+              top: kToolbarHeight,
               left: width * 0.05,
               child: Column(
                 children: [
-                  _buildSearchBox(width),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (_, __, ___) => SearchItems(),
+                          transitionDuration: Duration(seconds: 0),
+                        ),
+                      );
+                    },
+                    child: _buildSearchBox(width),
+                  ),
                   SizedBox(height: 8.0),
                   Container(
                     width: width * 0.9,
@@ -186,50 +198,85 @@ class _HomePageState extends State<HomePage> {
               );
 
               return BlocConsumer<StoreBloc, StoreState>(
-                  listener: (context, state) {
-                if (state is StoreFetched) {
-                  _storeMarkers = _getStoreMarkers(state.stocks);
-                }
-              }, builder: (context, state) {
-                return FutureBuilder<Set<Marker>>(
-                  future: _storeMarkers,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done &&
-                        snapshot.hasData) {
-                      return GoogleMap(
-                        mapType: MapType.normal,
-                        initialCameraPosition: cameraPosition,
-                        zoomGesturesEnabled: true,
-                        tiltGesturesEnabled: false,
-                        myLocationButtonEnabled: false,
-                        myLocationEnabled: true,
-                        onMapCreated: (GoogleMapController controller) {
-                          googleMapController.complete(controller);
-                        },
-                        gestureRecognizers: _gesterRecognizer,
-                        markers: snapshot.data ?? Set.of([]),
-                      );
-                    }
-
+                listener: (context, state) {
+                  if (state is StoreFetched) {
+                    _storeMarkers = _getStoreMarkers(state.stocks);
+                  }
+                },
+                builder: (context, state) {
+                  if (state is StoreError) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
+                        children: [
+                          ButtonTheme(
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            minWidth: 0,
+                            height: 0,
+                            child: FlatButton(
+                              padding: EdgeInsets.all(0.0),
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              textColor: Colors.black12,
+                              child: Text(
+                                '⟳',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 48.0,
+                                ),
+                              ),
+                              onPressed: () {
+                                context
+                                    .bloc<StoreBloc>()
+                                    .add(FetchStore(coordinate));
+                              },
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(25.0)),
+                              ),
+                            ),
+                          ),
                           Text(
-                            HomePageStrings.googleMapLoading,
+                            '지도를 불러오는 중 오류가 발생했습니다.\n다시 시도해주세요.',
                             style: TextStyle(
                               color: Colors.black26,
                               fontWeight: FontWeight.w600,
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          CupertinoActivityIndicator(),
                         ],
                       ),
                     );
-                  },
-                );
-              });
+                  }
+
+                  return FutureBuilder<Set<Marker>>(
+                    future: _storeMarkers,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done &&
+                          snapshot.hasData) {
+                        return GoogleMap(
+                          mapType: MapType.normal,
+                          initialCameraPosition: cameraPosition,
+                          zoomGesturesEnabled: true,
+                          tiltGesturesEnabled: false,
+                          myLocationButtonEnabled: false,
+                          myLocationEnabled: true,
+                          onMapCreated: (GoogleMapController controller) {
+                            googleMapController.complete(controller);
+                          },
+                          gestureRecognizers: _gesterRecognizer,
+                          markers: snapshot.data ?? Set.of([]),
+                        );
+                      }
+
+                      return Center(
+                        child: CupertinoActivityIndicator(),
+                      );
+                    },
+                  );
+                },
+              );
             }
 
             return Center(
@@ -254,7 +301,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildSearchBox(double width) => Container(
         width: width * 0.9,
-        height: 40.0,
+        height: 48.0,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(5.0)),
@@ -267,7 +314,10 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        padding: EdgeInsets.all(4.0),
+        padding: EdgeInsets.symmetric(
+          vertical: 4.0,
+          horizontal: 8.0,
+        ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -279,21 +329,17 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.black,
               ),
             ),
-            Flexible(
-              fit: FlexFit.loose,
-              child: CupertinoTextField(
-                placeholder: HomePageStrings.searchProductHelperText,
-                placeholderStyle: TextStyle(
-                  color: Colors.black87,
+            SizedBox(
+              width: 4.0,
+            ),
+            Expanded(
+              child: Text(
+                HomePageStrings.searchProductHelperText,
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 17.0,
+                  color: Colors.black,
                 ),
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                ),
-                onTap: () {},
-                onChanged: (value) {
-                  // TO-DO: 상품 검색 BLOC 이벤트 요청하기
-                },
-                onSubmitted: (value) {},
               ),
             ),
             ShoppingCartButton(),
