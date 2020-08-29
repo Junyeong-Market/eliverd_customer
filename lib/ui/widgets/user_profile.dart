@@ -224,6 +224,8 @@ class _UserProfileState extends State<UserProfile> {
                   height: 0,
                   child: FlatButton(
                     padding: EdgeInsets.all(0.0),
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
                     textColor: Colors.black12,
                     child: Text(
                       '⟳',
