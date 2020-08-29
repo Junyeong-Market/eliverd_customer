@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<Coordinate> _getCurrentLocation() async {
     Position position = await Geolocator().getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.bestForNavigation);
+        desiredAccuracy: LocationAccuracy.medium);
 
     return Coordinate(
       lat: position.latitude,
