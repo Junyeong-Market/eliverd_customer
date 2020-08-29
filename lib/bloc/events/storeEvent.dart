@@ -17,12 +17,3 @@ class FetchStore extends StoreEvent {
   @override
   List<Object> get props => [coordinate];
 }
-
-class SelectStore extends StoreEvent {
-  final Store store;
-
-  const SelectStore(this.store);
-
-  @override
-  List<Object> get props => [store];
-}

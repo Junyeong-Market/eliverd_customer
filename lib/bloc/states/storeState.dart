@@ -20,13 +20,4 @@ class StoreFetched extends StoreState {
   List<Object> get props => [stocks];
 }
 
-class StoreSelected extends StoreState {
-  final Store store;
-
-  const StoreSelected(this.store);
-
-  @override
-  List<Object> get props => [store];
-}
-
 class StoreError extends StoreState {}

@@ -18,8 +18,6 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
   Stream<StoreState> mapEventToState(StoreEvent event) async* {
     if (event is FetchStore) {
       yield* _mapFetchStoreToState(event);
-    } else if (event is SelectStore) {
-      yield* _mapSelectStoreToState(event);
     }
   }
 
@@ -35,14 +33,6 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
       final stocks = stockList.fold(<Stock>[], (previous, stocks) => previous + stocks);
 
       yield StoreFetched(stocks);
-    } catch (_) {
-      yield StoreError();
-    }
-  }
-
-  Stream<StoreState> _mapSelectStoreToState(StoreEvent event) async* {
-    try {
-      yield StoreSelected((event as SelectStore).store);
     } catch (_) {
       yield StoreError();
     }
