@@ -14,7 +14,8 @@ import 'package:Eliverd/common/color.dart';
 class SearchLocationDialog extends StatefulWidget {
   final ValueChanged<Coordinate> onLocationSelected;
 
-  const SearchLocationDialog({Key key, this.onLocationSelected}) : super(key: key);
+  const SearchLocationDialog({Key key, this.onLocationSelected})
+      : super(key: key);
 
   @override
   _SearchLocationDialogState createState() => _SearchLocationDialogState();
@@ -103,17 +104,19 @@ class _SearchLocationDialogState extends State<SearchLocationDialog> {
                         children: <Widget>[
                           ButtonTheme(
                             materialTapTargetSize:
-                            MaterialTapTargetSize.shrinkWrap,
+                                MaterialTapTargetSize.shrinkWrap,
                             minWidth: 0,
                             height: 0,
                             child: FlatButton(
                               padding: EdgeInsets.all(0.0),
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
                               textColor: Colors.black12,
                               child: Text(
                                 '⟳',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 56.0,
+                                  fontSize: 48.0,
                                 ),
                               ),
                               onPressed: () {
@@ -121,12 +124,12 @@ class _SearchLocationDialogState extends State<SearchLocationDialog> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(25.0)),
+                                    BorderRadius.all(Radius.circular(25.0)),
                               ),
                             ),
                           ),
                           Text(
-                            '오류',
+                            '지도를 불러오는 중 오류가 발생했습니다.\n다시 시도해주세요.',
                             style: TextStyle(
                               color: Colors.black26,
                               fontWeight: FontWeight.w600,
@@ -144,21 +147,7 @@ class _SearchLocationDialogState extends State<SearchLocationDialog> {
               }
 
               return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    CupertinoActivityIndicator(),
-                    SizedBox(height: 8.0),
-                    Text(
-                      '지도 로드 중',
-                      style: TextStyle(
-                        color: Colors.black26,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+                child: CupertinoActivityIndicator(),
               );
             },
           ),
@@ -241,7 +230,7 @@ class _SearchLocationDialogState extends State<SearchLocationDialog> {
 
   Future<CameraPosition> _getCurrentLocation() async {
     Position position = await Geolocator().getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.bestForNavigation);
+        desiredAccuracy: LocationAccuracy.medium);
 
     LatLng latlng = LatLng(position.latitude, position.longitude);
     String address = await _getAddressFromPosition(latlng);
@@ -250,9 +239,7 @@ class _SearchLocationDialogState extends State<SearchLocationDialog> {
       _selectedMarker = Marker(
           markerId: MarkerId('Selected'),
           position: latlng,
-          infoWindow: InfoWindow(
-              title: '배송 위치',
-              snippet: address),
+          infoWindow: InfoWindow(title: '배송 위치', snippet: address),
           draggable: true,
           onDragEnd: (position) {
             _selectedMarker = _selectedMarker.copyWith(
@@ -263,7 +250,7 @@ class _SearchLocationDialogState extends State<SearchLocationDialog> {
 
     return CameraPosition(
       target: LatLng(position.latitude, position.longitude),
-      zoom: 20.0,
+      zoom: 16.0,
     );
   }
 
