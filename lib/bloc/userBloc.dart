@@ -15,8 +15,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   @override
   Stream<UserState> mapEventToState(UserEvent event) async* {
-    if (event is FetchUser) {
-      yield* _mapFetchUserToState(event);
+    if (event is FetchUserInfo) {
+      yield* _mapFetchUserInfoToState(event);
     } else if (event is UpdateUser) {
       yield* _mapUpdateUserToState(event);
     } else if (event is CloseUserAccount) {
@@ -24,11 +24,17 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
   }
 
-  Stream<UserState> _mapFetchUserToState(FetchUser event) async* {
+  Stream<UserState> _mapFetchUserInfoToState(FetchUserInfo event) async* {
     try {
       final user = await accountRepository.getUser();
+      final summary =
+          await accountRepository.fetchUserOrderSummary(user.pid, event.month);
 
-      yield UserFetched(user);
+      yield UserInfoFetched(
+        user: user,
+        count: summary['count'],
+        total: summary['total'],
+      );
     } catch (_) {
       yield UserError();
     }

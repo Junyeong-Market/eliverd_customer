@@ -11,13 +11,15 @@ abstract class UserState extends Equatable {
 
 class UserInitial extends UserState {}
 
-class UserFetched extends UserState {
+class UserInfoFetched extends UserState {
   final User user;
+  final int count;
+  final int total;
 
-  const UserFetched(this.user);
+  const UserInfoFetched({@required this.user, @required this.count, @required this.total});
 
   @override
-  List<Object> get props => [user];
+  List<Object> get props => [user, count, total];
 }
 
 class UserUpdated extends UserState {

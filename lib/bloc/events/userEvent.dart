@@ -8,7 +8,14 @@ abstract class UserEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class FetchUser extends UserEvent {}
+class FetchUserInfo extends UserEvent {
+  final int month;
+
+  const FetchUserInfo({@required this.month});
+
+  @override
+  List<Object> get props => [month];
+}
 
 class UpdateUser extends UserEvent {
   final String nickname;
