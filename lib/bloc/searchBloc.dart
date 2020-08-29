@@ -21,7 +21,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   Stream<SearchState> _mapSearchNearbyItemsToState(SearchNearbyItems event) async* {
     try {
-      final items = await storeRepository.fetchSearchedItems(event.coordinate, event.name);
+      final items = await storeRepository.fetchSearchedItems(event.coordinate, event.name, event.category);
 
       yield NearbyItemsSearched(items);
     } catch (_) {

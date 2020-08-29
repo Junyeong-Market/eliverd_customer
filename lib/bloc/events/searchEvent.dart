@@ -13,14 +13,15 @@ abstract class SearchEvent extends Equatable {
 class SearchNearbyItems extends SearchEvent {
   final Coordinate coordinate;
   final String name;
+  final String category;
 
-  const SearchNearbyItems({@required this.coordinate, @required this.name});
+  const SearchNearbyItems({@required this.coordinate, @required this.name, this.category});
 
   @override
-  List<Object> get props => [coordinate, name];
+  List<Object> get props => [coordinate, name, category];
 
   @override
   String toString() {
-    return 'SearchNearbyItems{ coordinate: $coordinate, name: $name }';
+    return 'SearchNearbyItems{ coordinate: $coordinate, name: $name, category: $category }';
   }
 }
