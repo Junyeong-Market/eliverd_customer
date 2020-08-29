@@ -26,7 +26,6 @@ class EventBloc extends Bloc<EventEvent, EventState> {
     try {
       final items = await storeRepository.fetchEventItems(event.currentLocation);
 
-      print(items);
       yield EventItemFetched(items);
     } catch (_) {
       yield EventError();
