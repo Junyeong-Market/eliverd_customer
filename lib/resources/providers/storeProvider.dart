@@ -66,4 +66,29 @@ class StoreAPIClient {
         .map<Stock>((rawStock) => Stock.fromJson(rawStock, store))
         .toList();
   }
+
+  Future<List<Stock>> fetchEventItems(Coordinate coordinate) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final session = prefs.getString('session');
+
+    final url = '$baseUrl/product/recommended/?lat=${coordinate.lat}&lng=${coordinate.lng}';
+    final res = await this.httpClient.get(
+      url,
+      headers: {
+        HttpHeaders.authorizationHeader: session,
+      },
+    );
+
+    if (res.statusCode != 200) {
+      throw Exception('Error occurred while fetching recommended items');
+    }
+
+    final decoded = utf8.decode(res.bodyBytes);
+
+    return json
+        .decode(decoded)
+        .map<Stock>((rawStock) => Stock.fromJson(rawStock))
+        .toList();
+  }
 }
