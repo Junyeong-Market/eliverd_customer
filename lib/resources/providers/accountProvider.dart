@@ -190,6 +190,26 @@ class AccountAPIClient {
     return User.fromJson(json.decode(decoded));
   }
 
+  Future<Map<String, dynamic>> fetchUserOrderSummary(int pid, int month) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final session = prefs.getString('session');
+
+    final url = '$baseUrl/account/user/$pid/summary/?month=$month';
+    final res = await this.httpClient.get(
+      url,
+      headers: {
+        HttpHeaders.authorizationHeader: session,
+      },
+    );
+
+    if (res.statusCode != 200) {
+      throw Exception('Error occurred while fetching user\'s order summary');
+    }
+
+    return json.decode(utf8.decode(res.bodyBytes));
+  }
+
   Future<Map<String, dynamic>> updateUser(
       int pid, Map<String, dynamic> updateForm) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

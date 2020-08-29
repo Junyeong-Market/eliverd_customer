@@ -27,6 +27,12 @@ class AccountRepository {
     return user;
   }
 
+  Future<Map<String, dynamic>> fetchUserOrderSummary(int pid, [int month]) async {
+    final summary = await accountAPIClient.fetchUserOrderSummary(pid, month);
+
+    return summary;
+  }
+
   Future<Map<String, dynamic>> updateUser(int pid, Map<String, dynamic> updateForm) async {
     final data = await accountAPIClient.updateUser(pid, updateForm);
 
