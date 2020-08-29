@@ -22,7 +22,7 @@ class StoreAPIClient {
     final session = prefs.getString('session');
 
     final url =
-        '$baseUrl/store/by-radius/?lat=${coordinate.lat}&lng=${coordinate.lng}&distance=1000.0';
+        '$baseUrl/store/by-radius/?lat=${coordinate.lat}&lng=${coordinate.lng}&distance=0.02';
     final res = await this.httpClient.get(
       url,
       headers: {
@@ -67,12 +67,17 @@ class StoreAPIClient {
         .toList();
   }
 
-  Future<List<Stock>> fetchSearchedItems(Coordinate coordinate, String name) async {
+  Future<List<Stock>> fetchSearchedItems(Coordinate coordinate, String name, [String category]) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final session = prefs.getString('session');
 
-    final url = '$baseUrl/product/by-radius/?lat=${coordinate.lat}&lng=${coordinate.lng}&distance=100.0&name=$name';
+    String url = '$baseUrl/product/by-radius/?lat=${coordinate.lat}&lng=${coordinate.lng}&distance=0.02&name=$name';
+
+    if (category != null) {
+      url += '&category=$category';
+    }
+
     final res = await this.httpClient.get(
       url,
       headers: {
