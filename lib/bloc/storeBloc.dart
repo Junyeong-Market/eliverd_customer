@@ -25,6 +25,8 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
 
   Stream<StoreState> _mapFetchStoreToState(StoreEvent event) async* {
     try {
+      yield StoreNotFetched();
+
       final stores =
           await storeRepository.fetchStores((event as FetchStore).coordinate);
 

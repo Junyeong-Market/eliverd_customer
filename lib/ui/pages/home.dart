@@ -32,15 +32,39 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Completer<GoogleMapController> _controller = Completer();
   Future<Coordinate> _coordinate;
   Future<Set<Marker>> _storeMarkers;
+
+  Completer<GoogleMapController> googleMapController = Completer();
+  Timer timer;
 
   @override
   void initState() {
     super.initState();
 
     _coordinate = _getCurrentLocation();
+
+    _coordinate.then((location) {
+      context.bloc<StoreBloc>().add(FetchStore(location));
+    });
+
+    timer = Timer.periodic(
+      Duration(
+        minutes: 1,
+      ),
+      (Timer t) {
+        _coordinate.then((location) {
+          context.bloc<StoreBloc>().add(FetchStore(location));
+        });
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+
+    super.dispose();
   }
 
   @override
@@ -110,8 +134,8 @@ class _HomePageState extends State<HomePage> {
   ].toSet();
 
   Future<Coordinate> _getCurrentLocation() async {
-    Position position = await Geolocator().getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.medium);
+    Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
 
     return Coordinate(
       lat: position.latitude,
@@ -161,8 +185,6 @@ class _HomePageState extends State<HomePage> {
                 zoom: 16.0,
               );
 
-              context.bloc<StoreBloc>().add(FetchStore(coordinate));
-
               return BlocConsumer<StoreBloc, StoreState>(
                   listener: (context, state) {
                 if (state is StoreFetched) {
@@ -182,7 +204,7 @@ class _HomePageState extends State<HomePage> {
                         myLocationButtonEnabled: false,
                         myLocationEnabled: true,
                         onMapCreated: (GoogleMapController controller) {
-                          _controller.complete(controller);
+                          googleMapController.complete(controller);
                         },
                         gestureRecognizers: _gesterRecognizer,
                         markers: snapshot.data ?? Set.of([]),
