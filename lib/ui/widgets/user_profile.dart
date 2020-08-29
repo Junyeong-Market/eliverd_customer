@@ -231,7 +231,7 @@ class _UserProfileState extends State<UserProfile> {
                       '⟳',
                       style: TextStyle(
                         fontWeight: FontWeight.w400,
-                        fontSize: 56.0,
+                        fontSize: 48.0,
                       ),
                     ),
                     onPressed: () {
@@ -243,9 +243,6 @@ class _UserProfileState extends State<UserProfile> {
                       borderRadius: BorderRadius.all(Radius.circular(25.0)),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 4.0,
                 ),
                 Text(
                   '유저 프로필을 불러오는 중 오류가 발생했습니다.\n다시 시도해주세요.',
@@ -261,21 +258,7 @@ class _UserProfileState extends State<UserProfile> {
         }
 
         return Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                '유저 프로필을 불러오고 있습니다.\n잠시만 기다려주세요.',
-                style: TextStyle(
-                  color: Colors.black26,
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 4.0),
-              CupertinoActivityIndicator(),
-            ],
-          ),
+          child: CupertinoActivityIndicator(),
         );
       },
     );

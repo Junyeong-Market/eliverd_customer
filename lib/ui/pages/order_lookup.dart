@@ -116,11 +116,13 @@ class _OrderLookupPageState extends State<OrderLookupPage> {
                             child: FlatButton(
                               padding: EdgeInsets.all(0.0),
                               textColor: Colors.black12,
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
                               child: Text(
                                 '⟳',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 56.0,
+                                  fontSize: 48.0,
                                 ),
                               ),
                               onPressed: () {
@@ -131,9 +133,6 @@ class _OrderLookupPageState extends State<OrderLookupPage> {
                                     BorderRadius.all(Radius.circular(25.0)),
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 4.0,
                           ),
                           Text(
                             '주문 내역을 불러오는 중 오류가 발생했습니다.\n다시 시도해주세요.',
@@ -147,21 +146,7 @@ class _OrderLookupPageState extends State<OrderLookupPage> {
                       ),
                     )
                   : Center(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            '주문 내역을 불러오고 있습니다.\n잠시만 기다려주세요.',
-                            style: TextStyle(
-                              color: Colors.black26,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 4.0),
-                          CupertinoActivityIndicator(),
-                        ],
-                      ),
+                      child: CupertinoActivityIndicator(),
                     )),
         );
       },

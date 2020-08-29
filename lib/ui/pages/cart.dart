@@ -175,34 +175,49 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                         );
                 } else if (snapshot.hasError) {
                   return Center(
-                    child: Text(
-                      '장바구니를 불러오는 중 오류가 발생했습니다.\n다시 시도해주세요.${snapshot.error}',
-                      style: TextStyle(
-                        color: Colors.black26,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      textAlign: TextAlign.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ButtonTheme(
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          minWidth: 0,
+                          height: 0,
+                          child: FlatButton(
+                            padding: EdgeInsets.all(0.0),
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            textColor: Colors.black12,
+                            child: Text(
+                              '⟳',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 48.0,
+                              ),
+                            ),
+                            onPressed: () {
+                              cartItems = _fetchShoppingCart();
+                            },
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          '장바구니를 불러오는 중 오류가 발생했습니다.\n다시 시도해주세요.',
+                          style: TextStyle(
+                            color: Colors.black26,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
                   );
                 }
               }
 
               return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    CupertinoActivityIndicator(),
-                    SizedBox(height: 4.0),
-                    Text(
-                      '장바구니를 불러오고 있습니다.\n잠시만 기다려주세요!',
-                      style: TextStyle(
-                        color: Colors.black26,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+                child: CupertinoActivityIndicator(),
               );
             },
           ),
@@ -316,8 +331,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                         : () {
                             cartItems.then((items) => context
                                 .bloc<OrderBloc>()
-                                .add(ProceedOrder(
-                                    items, amounts.value, shippingDestination)));
+                                .add(ProceedOrder(items, amounts.value,
+                                    shippingDestination)));
                           },
                   ),
                 ],
