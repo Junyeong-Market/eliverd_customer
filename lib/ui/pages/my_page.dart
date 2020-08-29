@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 
 import 'package:Eliverd/bloc/userBloc.dart';
-import 'package:Eliverd/bloc/events/userEvent.dart';
 
 import 'package:Eliverd/resources/providers/accountProvider.dart';
 import 'package:Eliverd/resources/repositories/accountRepository.dart';
@@ -21,7 +19,6 @@ class MyPagePage extends StatefulWidget {
 
 class _MyPagePageState extends State<MyPagePage> {
   UserBloc _userBloc;
-  int _selectedTab = 2;
 
   @override
   void initState() {
@@ -34,8 +31,6 @@ class _MyPagePageState extends State<MyPagePage> {
         ),
       ),
     );
-
-    _userBloc.add(FetchUser());
   }
 
   @override
@@ -46,9 +41,6 @@ class _MyPagePageState extends State<MyPagePage> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
-
     return Scaffold(
       appBar: AppBar(
         leading: ButtonTheme(
@@ -88,131 +80,8 @@ class _MyPagePageState extends State<MyPagePage> {
           horizontal: 8.0,
         ),
         children: [
-          Container(
-            width: width,
-            height: height * 0.25,
-            child: UserProfile(
-              userBloc: _userBloc,
-            ),
-          ),
-          SizedBox(
-            height: 16.0,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              SizedBox(
-                width: 8.0,
-              ),
-              Text(
-                '주문 아카이브',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0,
-                ),
-              ),
-              Expanded(
-                child: CupertinoSegmentedControl(
-                  unselectedColor: Colors.white,
-                  pressedColor: eliverdDarkColor,
-                  selectedColor: eliverdDarkColor,
-                  borderColor: eliverdDarkColor,
-                  children: const <int, Widget>{
-                    0: Text(
-                      '최근 6개월',
-                    ),
-                    1: Text(
-                      '최근 1년',
-                    ),
-                    2: Text(
-                      '전체',
-                    ),
-                  },
-                  groupValue: this._selectedTab,
-                  onValueChanged: (value) {
-                    this.setState(() => this._selectedTab = value);
-                  },
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              top: 8.0,
-              left: 8.0,
-              right: 16.0,
-            ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      '최근 주문 횟수',
-                      maxLines: 1,
-                      textAlign: TextAlign.right,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16.0,
-                      ),
-                    ),
-                    Flexible(
-                      fit: FlexFit.loose,
-                      child: Text(
-                        NumberFormat.compact(
-                          locale: 'ko',
-                        )?.format(1020025430).toString(),
-                        maxLines: 2,
-                        textAlign: TextAlign.right,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 22.0,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      '사용 총액',
-                      maxLines: 1,
-                      textAlign: TextAlign.right,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16.0,
-                      ),
-                    ),
-                    Flexible(
-                      fit: FlexFit.loose,
-                      child: Text(
-                        NumberFormat.compact(
-                          locale: 'ko',
-                        )?.format(1000000000000).toString(),
-                        maxLines: 2,
-                        textAlign: TextAlign.right,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 22.0,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+          UserProfile(
+            userBloc: _userBloc,
           ),
           SizedBox(
             height: 16.0,

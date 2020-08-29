@@ -1,3 +1,4 @@
+import 'package:Eliverd/common/color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Eliverd/bloc/userBloc.dart';
 import 'package:Eliverd/bloc/events/userEvent.dart';
 import 'package:Eliverd/bloc/states/userState.dart';
+import 'package:intl/intl.dart';
 
 class UserProfile extends StatefulWidget {
   final UserBloc userBloc;
@@ -16,6 +18,22 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+  Map<int, int> maximumMonth = {
+    0: 3,
+    1: 6,
+    2: 0,
+  };
+  int _selectedTab = 2;
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.userBloc.add(FetchUserInfo(
+      month: maximumMonth[_selectedTab],
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -23,7 +41,7 @@ class _UserProfileState extends State<UserProfile> {
     return BlocBuilder<UserBloc, UserState>(
       cubit: widget.userBloc,
       builder: (context, state) {
-        if (state is UserFetched) {
+        if (state is UserInfoFetched) {
           return Column(
             children: <Widget>[
               Container(
@@ -69,6 +87,131 @@ class _UserProfileState extends State<UserProfile> {
                   fontSize: 16.0,
                 ),
               ),
+              SizedBox(
+                height: 16.0,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  SizedBox(
+                    width: 8.0,
+                  ),
+                  Text(
+                    '주문 아카이브',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  Expanded(
+                    child: CupertinoSegmentedControl(
+                      unselectedColor: Colors.white,
+                      pressedColor: eliverdDarkColor,
+                      selectedColor: eliverdDarkColor,
+                      borderColor: eliverdDarkColor,
+                      children: const <int, Widget>{
+                        0: Text(
+                          '최근 3개월',
+                        ),
+                        1: Text(
+                          '최근 6개월',
+                        ),
+                        2: Text(
+                          '최근 1년',
+                        ),
+                      },
+                      groupValue: this._selectedTab,
+                      onValueChanged: (value) {
+                        setState(() {
+                          _selectedTab = value;
+                        });
+
+                        widget.userBloc.add(FetchUserInfo(
+                          month: maximumMonth[_selectedTab],
+                        ));
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  top: 8.0,
+                  left: 8.0,
+                  right: 16.0,
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '최근 주문 횟수',
+                          maxLines: 1,
+                          textAlign: TextAlign.right,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        Flexible(
+                          fit: FlexFit.loose,
+                          child: Text(
+                            NumberFormat.compact(
+                              locale: 'ko',
+                            )?.format(state.count).toString(),
+                            maxLines: 2,
+                            textAlign: TextAlign.right,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 22.0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '사용 총액',
+                          maxLines: 1,
+                          textAlign: TextAlign.right,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        Flexible(
+                          fit: FlexFit.loose,
+                          child: Text(
+                            NumberFormat.compact(
+                              locale: 'ko',
+                            )?.format(state.total).toString(),
+                            maxLines: 2,
+                            textAlign: TextAlign.right,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 22.0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ],
           );
         } else if (state is UserError) {
@@ -90,7 +233,9 @@ class _UserProfileState extends State<UserProfile> {
                       ),
                     ),
                     onPressed: () {
-                      widget.userBloc.add(FetchUser());
+                      widget.userBloc.add(FetchUserInfo(
+                        month: maximumMonth[_selectedTab],
+                      ));
                     },
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(25.0)),
