@@ -5,7 +5,6 @@ import 'package:bloc/bloc.dart';
 import 'package:Eliverd/bloc/events/authEvent.dart';
 import 'package:Eliverd/bloc/states/authState.dart';
 
-import 'package:Eliverd/models/models.dart';
 import 'package:Eliverd/resources/repositories/repositories.dart';
 
 class AuthenticationBloc
@@ -33,20 +32,13 @@ class AuthenticationBloc
   Stream<AuthenticationState> _mapValidateAuthenticationToState(
       ValidateAuthentication event) async* {
     try {
-      final data = await accountRepository.validateSession();
+      final user = await accountRepository.validateSession();
 
-      if (data.isEmpty) {
+      if (user == null) {
         yield NotAuthenticated();
       }
 
-      final authenticatedUser = User(
-        userId: data['user_id'],
-        nickname: data['nickname'],
-        realname: data['realname'],
-        isSeller: data['is_seller'],
-      );
-
-      yield Authenticated(authenticatedUser);
+      yield Authenticated(user);
     } catch (_) {
       yield AuthenticationError(ErrorMessages.loginErrorMessage);
     }
@@ -55,16 +47,13 @@ class AuthenticationBloc
   Stream<AuthenticationState> _mapCheckAuthenticationToState(
       CheckAuthentication event) async* {
     try {
-      final data = await accountRepository.validateSession();
+      final user = await accountRepository.validateSession();
 
-      final authenticatedUser = User(
-        userId: data['user_id'],
-        nickname: data['nickname'],
-        realname: data['realname'],
-        isSeller: data['is_seller'],
-      );
+      if (user == null) {
+        yield NotAuthenticated();
+      }
 
-      yield Authenticated(authenticatedUser);
+      yield Authenticated(user);
     } catch (_) {
       yield NotAuthenticated();
     }
@@ -80,16 +69,13 @@ class AuthenticationBloc
         yield NotAuthenticated();
       }
 
-      final data = await accountRepository.validateSession();
+      final user = await accountRepository.validateSession();
 
-      final authenticatedUser = User(
-        userId: data['user_id'],
-        nickname: data['nickname'],
-        realname: data['realname'],
-        isSeller: data['is_seller'],
-      );
+      if (user == null) {
+        yield NotAuthenticated();
+      }
 
-      yield Authenticated(authenticatedUser);
+      yield Authenticated(user);
     } catch (_) {
       yield AuthenticationError(ErrorMessages.loginErrorMessage);
     }

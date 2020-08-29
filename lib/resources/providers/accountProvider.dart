@@ -70,7 +70,7 @@ class AccountAPIClient {
     return session;
   }
 
-  Future<Map<String, dynamic>> validateSession() async {
+  Future<User> validateSession() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final session = prefs.getString('session');
@@ -94,9 +94,7 @@ class AccountAPIClient {
 
     final decoded = utf8.decode(res.bodyBytes);
 
-    final data = json.decode(decoded);
-
-    return data;
+    return User.fromJson(json.decode(decoded));
   }
 
   Future<void> deleteSession() async {

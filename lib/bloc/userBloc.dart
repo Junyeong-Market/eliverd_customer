@@ -48,9 +48,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         'is_seller': event.isSeller,
       };
 
-      final pid = (await accountRepository.getUser()).pid;
-
-      final updated = await accountRepository.updateUser(pid, form);
+      final user = await accountRepository.getUser();
+      final updated = await accountRepository.updateUser(user.pid, form);
 
       yield UserUpdated(
         nickname: updated['nickname'],
@@ -64,9 +63,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   Stream<UserState> _mapCloseUserAccountToState(CloseUserAccount event) async* {
     try {
-      final pid = (await accountRepository.getUser()).pid;
+      final user = await accountRepository.getUser();
 
-      await accountRepository.closeUser(pid);
+      await accountRepository.closeUser(user.pid);
 
       yield UserClosed();
     } catch (_) {
