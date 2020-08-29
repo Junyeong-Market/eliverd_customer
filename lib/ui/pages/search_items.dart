@@ -1,4 +1,3 @@
-import 'package:Eliverd/bloc/events/searchEvent.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:Eliverd/bloc/searchBloc.dart';
 import 'package:Eliverd/bloc/states/searchState.dart';
+import 'package:Eliverd/bloc/events/searchEvent.dart';
 
 import 'package:Eliverd/resources/providers/providers.dart';
 import 'package:Eliverd/resources/repositories/repositories.dart';
@@ -14,6 +14,7 @@ import 'package:Eliverd/resources/repositories/repositories.dart';
 import 'package:Eliverd/models/models.dart';
 
 import 'package:Eliverd/ui/widgets/stock.dart';
+import 'package:Eliverd/ui/widgets/category.dart';
 
 class SearchItems extends StatefulWidget {
   @override
@@ -23,10 +24,15 @@ class SearchItems extends StatefulWidget {
 class _SearchItemsState extends State<SearchItems> {
   SearchBloc _searchBloc;
   Future<Coordinate> _currentLocation;
+  TextEditingController _keyword;
+  List<String> _categories;
 
   @override
   void initState() {
     super.initState();
+
+    _keyword = TextEditingController();
+    _categories = [];
 
     _searchBloc = SearchBloc(
       storeRepository: StoreRepository(
@@ -41,7 +47,7 @@ class _SearchItemsState extends State<SearchItems> {
     _currentLocation.then((location) {
       _searchBloc.add(SearchNearbyItems(
         coordinate: location,
-        name: '',
+        name: _keyword.text,
       ));
     });
   }
@@ -114,6 +120,7 @@ class _SearchItemsState extends State<SearchItems> {
                     Expanded(
                       child: CupertinoTextField(
                         autofocus: true,
+                        controller: _keyword,
                         padding: EdgeInsets.symmetric(
                           horizontal: 4.0,
                           vertical: 2.0,
@@ -125,7 +132,6 @@ class _SearchItemsState extends State<SearchItems> {
                           fontSize: 18.0,
                         ),
                         textAlignVertical: TextAlignVertical.center,
-                        onTap: () {},
                         onChanged: (value) {
                           _currentLocation.then((location) {
                             _searchBloc.add(SearchNearbyItems(
@@ -158,6 +164,53 @@ class _SearchItemsState extends State<SearchItems> {
                       ),
                     ),
                   ],
+                ),
+              ),
+              SizedBox(
+                height: 4.0,
+              ),
+              Container(
+                width: width * 0.9,
+                height: 24.0,
+                padding: EdgeInsets.symmetric(
+                  vertical: 1.0,
+                ),
+                child: GridView.builder(
+                  scrollDirection: Axis.horizontal,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 1,
+                    mainAxisSpacing: 8.0,
+                    childAspectRatio: 0.2,
+                  ),
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        final category = Categories.listByViewPOV[index].id;
+
+                        if (_categories.contains(category)) {
+                          _categories.clear();
+                        } else if (_categories.isNotEmpty) {
+                          _categories.clear();
+
+                          _categories.add(category);
+                        } else {
+                          _categories.add(category);
+                        }
+
+                        _currentLocation.then((location) {
+                          _searchBloc.add(SearchNearbyItems(
+                            coordinate: location,
+                            name: _keyword.text,
+                            category: _categories.join(','),
+                          ));
+                        });
+                      },
+                      child: CategoryWidget(
+                        categoryId: Categories.listByViewPOV[index].id,
+                      ),
+                    );
+                  },
+                  itemCount: Categories.listByViewPOV.length,
                 ),
               ),
               SizedBox(
