@@ -230,7 +230,7 @@ class _SearchItemsState extends State<SearchItems> {
                       )
                     : Container(
                         width: width,
-                        height: height,
+                        height: height * 0.83 - kBottomNavigationBarHeight,
                         child: GridView.builder(
                           padding: EdgeInsets.all(0.0),
                           gridDelegate:
