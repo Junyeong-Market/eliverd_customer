@@ -190,17 +190,20 @@ class _EliverdInfoPageState extends State<EliverdInfoPage> {
                         child: Column(
                           children: [
                             ButtonTheme(
-                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
                               minWidth: 0,
                               height: 0,
                               child: FlatButton(
                                 padding: EdgeInsets.all(0.0),
                                 textColor: Colors.black12,
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
                                 child: Text(
                                   '⟳',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w400,
-                                    fontSize: 56.0,
+                                    fontSize: 48.0,
                                   ),
                                 ),
                                 onPressed: () {
@@ -209,15 +212,13 @@ class _EliverdInfoPageState extends State<EliverdInfoPage> {
                                   });
                                 },
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(25.0)),
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              height: 4.0,
-                            ),
                             Text(
-                              '유저 프로필을 불러오는 중 오류가 발생했습니다.\n다시 시도해주세요.',
+                              '추천 상품을 불러오는 중 오류가 발생했습니다.\n다시 시도해주세요.',
                               style: TextStyle(
                                 color: Colors.black26,
                                 fontWeight: FontWeight.w600,
@@ -230,20 +231,7 @@ class _EliverdInfoPageState extends State<EliverdInfoPage> {
                     }
 
                     return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            '추천 상품을 불러오고 있습니다.\n잠시 기다려주세요.',
-                            style: TextStyle(
-                              color: Colors.black26,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          CupertinoActivityIndicator(),
-                        ],
-                      ),
+                      child: CupertinoActivityIndicator(),
                     );
                   },
                 ),
@@ -256,8 +244,8 @@ class _EliverdInfoPageState extends State<EliverdInfoPage> {
   }
 
   Future<Coordinate> _getCurrentLocation() async {
-    Position position = await Geolocator().getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.medium);
+    Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
 
     return Coordinate(
       lat: position.latitude,
