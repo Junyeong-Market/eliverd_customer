@@ -67,6 +67,31 @@ class StoreAPIClient {
         .toList();
   }
 
+  Future<List<Stock>> fetchSearchedItems(Coordinate coordinate, String name) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final session = prefs.getString('session');
+
+    final url = '$baseUrl/product/by-radius/?lat=${coordinate.lat}&lng=${coordinate.lng}&distance=100.0&name=$name';
+    final res = await this.httpClient.get(
+      url,
+      headers: {
+        HttpHeaders.authorizationHeader: session,
+      },
+    );
+
+    if (res.statusCode != 200) {
+      throw Exception('Error occurred while fetching searched items');
+    }
+
+    final decoded = utf8.decode(res.bodyBytes);
+
+    return json
+        .decode(decoded)
+        .map<Stock>((rawStock) => Stock.fromJson(rawStock))
+        .toList();
+  }
+
   Future<List<Stock>> fetchEventItems(Coordinate coordinate) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 

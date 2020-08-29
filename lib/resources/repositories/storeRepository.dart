@@ -23,6 +23,12 @@ class StoreRepository {
     return stocks;
   }
 
+  Future<List<Stock>> fetchSearchedItems(Coordinate coordinate, String name) async {
+    final items = await storeAPIClient.fetchSearchedItems(coordinate, name);
+
+    return items;
+  }
+
   Future<List<Stock>> fetchEventItems(Coordinate coordinate) async {
     final items = await storeAPIClient.fetchEventItems(coordinate);
 
