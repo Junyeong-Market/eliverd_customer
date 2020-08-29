@@ -16,6 +16,7 @@ class StockList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
+      padding: EdgeInsets.all(0.0),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         crossAxisSpacing: 4,
