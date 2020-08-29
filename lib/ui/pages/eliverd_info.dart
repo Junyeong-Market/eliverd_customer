@@ -1,11 +1,20 @@
+import 'package:Eliverd/ui/widgets/stock.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
 
-import 'package:Eliverd/common/color.dart';
+import 'package:Eliverd/resources/providers/providers.dart';
+import 'package:Eliverd/resources/repositories/repositories.dart';
+
+import 'package:Eliverd/bloc/eventBloc.dart';
+import 'package:Eliverd/bloc/events/eventEvent.dart';
+import 'package:Eliverd/bloc/states/eventState.dart';
 
 import 'package:Eliverd/models/models.dart';
 
-import 'package:Eliverd/ui/widgets/stock.dart';
+import 'package:Eliverd/common/color.dart';
 
 class EliverdInfoPage extends StatefulWidget {
   @override
@@ -13,6 +22,32 @@ class EliverdInfoPage extends StatefulWidget {
 }
 
 class _EliverdInfoPageState extends State<EliverdInfoPage> {
+  EventBloc _eventBloc;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _eventBloc = EventBloc(
+      storeRepository: StoreRepository(
+        storeAPIClient: StoreAPIClient(
+          httpClient: http.Client(),
+        ),
+      ),
+    );
+
+    _getCurrentLocation().then((location) {
+      _eventBloc.add(FetchEventItem(location));
+    });
+  }
+
+  @override
+  void dispose() {
+    _eventBloc.close();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -114,73 +149,119 @@ class _EliverdInfoPageState extends State<EliverdInfoPage> {
               Container(
                 width: width,
                 height: 212.0,
-                child: GridView(
-                  scrollDirection: Axis.horizontal,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    childAspectRatio: 1.8,
-                    mainAxisSpacing: 4.0,
-                  ),
-                  children: [
-                    SimplifiedStock(
-                      stock: Stock(
-                        amount: 2,
-                        price: 100,
-                        product: Product(
-                          name: '끔찍한 손소독제',
-                          manufacturer: Manufacturer(
-                            name: '아모레퍼시픽',
+                child: BlocBuilder<EventBloc, EventState>(
+                  cubit: _eventBloc,
+                  builder: (context, state) {
+                    if (state is EventItemFetched) {
+                      if (state.items.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                '오늘의 추천 상품이 없습니다.',
+                                style: TextStyle(
+                                  color: Colors.black26,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
                           ),
-                          category: 'living',
+                        );
+                      }
+
+                      return GridView.builder(
+                        scrollDirection: Axis.horizontal,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 1,
+                          childAspectRatio: 1.8,
+                          mainAxisSpacing: 4.0,
                         ),
-                      ),
-                    ),
-                    SimplifiedStock(
-                      stock: Stock(
-                        amount: 9,
-                        price: 5000,
-                        product: Product(
-                          name: '평범한 손소독제',
-                          manufacturer: Manufacturer(
-                            name: '평범한 회사',
+                        itemBuilder: (context, index) {
+                          return SimplifiedStock(
+                            stock: state.items[index],
+                          );
+                        },
+                        itemCount: state.items.length,
+                      );
+                    } else if (state is EventError) {
+                      return Center(
+                        child: Column(
+                          children: [
+                            ButtonTheme(
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              minWidth: 0,
+                              height: 0,
+                              child: FlatButton(
+                                padding: EdgeInsets.all(0.0),
+                                textColor: Colors.black12,
+                                child: Text(
+                                  '⟳',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 56.0,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  _getCurrentLocation().then((location) {
+                                    _eventBloc.add(FetchEventItem(location));
+                                  });
+                                },
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 4.0,
+                            ),
+                            Text(
+                              '유저 프로필을 불러오는 중 오류가 발생했습니다.\n다시 시도해주세요.',
+                              style: TextStyle(
+                                color: Colors.black26,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            '추천 상품을 불러오고 있습니다.\n잠시 기다려주세요.',
+                            style: TextStyle(
+                              color: Colors.black26,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          category: 'living',
-                        ),
+                          CupertinoActivityIndicator(),
+                        ],
                       ),
-                    ),
-                    SimplifiedStock(
-                      stock: Stock(
-                        amount: 100,
-                        price: 1000000000,
-                        product: Product(
-                          name: '비싸보이는 손소독제',
-                          manufacturer: Manufacturer(
-                            name: '아모레퍼시픽',
-                          ),
-                          category: 'living',
-                        ),
-                      ),
-                    ),
-                    SimplifiedStock(
-                      stock: Stock(
-                        amount: 2,
-                        price: 10000,
-                        product: Product(
-                          name: '끔찍한 손소독제',
-                          manufacturer: Manufacturer(
-                            name: '아모레퍼시픽',
-                          ),
-                          category: 'food',
-                        ),
-                      ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Future<Coordinate> _getCurrentLocation() async {
+    Position position = await Geolocator().getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.medium);
+
+    return Coordinate(
+      lat: position.latitude,
+      lng: position.longitude,
     );
   }
 }
