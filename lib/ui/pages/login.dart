@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:Eliverd/ui/pages/splash_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,11 +26,15 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   final _idController = TextEditingController();
   final _passwordController = TextEditingController();
 
   bool errorOccurred = false;
+  bool isLoggedInOnce = false;
   String errorMessage = '';
+
+  Timer timer;
 
   @override
   void initState() {
@@ -39,6 +46,22 @@ class _LoginPageState extends State<LoginPage> {
 
       context.bloc<AuthenticationBloc>().add(CheckAuthentication());
     });
+
+    timer = Timer.periodic(
+      Duration(
+        minutes: 10,
+      ),
+      (Timer t) {
+        context.bloc<AuthenticationBloc>().add(CheckAuthentication());
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+
+    super.dispose();
   }
 
   @override
@@ -55,9 +78,23 @@ class _LoginPageState extends State<LoginPage> {
         }
 
         if (state is Authenticated) {
-          Navigator.pushReplacement(
+          setState(() {
+            isLoggedInOnce = true;
+          });
+
+          Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => HomePage()),
+          );
+        }
+
+        if (state is NotAuthenticated && isLoggedInOnce) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SplashScreenPage(),
+            ),
+            (route) => false,
           );
         }
       },
@@ -72,21 +109,18 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  _buildLoginPageLogo(width),
-                  SizedBox(height: height / 48.0),
-                  CupertinoActivityIndicator(),
-                  SizedBox(height: height / 64.0),
-                  Center(
-                    child: Text(
-                      SignInStrings.alreadyLoggedIn,
-                      style: TextStyle(
-                        color: Colors.black38,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      textAlign: TextAlign.center,
+                  Text(
+                    SignInStrings.alreadyLoggedIn,
+                    style: TextStyle(
+                      color: Colors.black26,
+                      fontWeight: FontWeight.w600,
                     ),
+                    textAlign: TextAlign.center,
                   ),
+                  SizedBox(
+                    height: 4.0,
+                  ),
+                  CupertinoActivityIndicator(),
                 ],
               ),
             ),
