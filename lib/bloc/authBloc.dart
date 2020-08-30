@@ -18,29 +18,12 @@ class AuthenticationBloc
   @override
   Stream<AuthenticationState> mapEventToState(
       AuthenticationEvent event) async* {
-    if (event is ValidateAuthentication) {
-      yield* _mapValidateAuthenticationToState(event);
-    } else if (event is CheckAuthentication) {
+    if (event is CheckAuthentication) {
       yield* _mapCheckAuthenticationToState(event);
     } else if (event is GrantAuthentication) {
       yield* _mapGrantAuthenticationToState(event);
     } else if (event is RevokeAuthentication) {
       yield* _mapRevokeAuthenticationToState(event);
-    }
-  }
-
-  Stream<AuthenticationState> _mapValidateAuthenticationToState(
-      ValidateAuthentication event) async* {
-    try {
-      final user = await accountRepository.validateSession();
-
-      if (user == null) {
-        yield NotAuthenticated();
-      }
-
-      yield Authenticated(user);
-    } catch (_) {
-      yield AuthenticationError(ErrorMessages.loginErrorMessage);
     }
   }
 
@@ -51,6 +34,8 @@ class AuthenticationBloc
 
       if (user == null) {
         yield NotAuthenticated();
+
+        return;
       }
 
       yield Authenticated(user);
@@ -67,12 +52,16 @@ class AuthenticationBloc
 
       if (session == null) {
         yield NotAuthenticated();
+
+        return;
       }
 
       final user = await accountRepository.validateSession();
 
       if (user == null) {
         yield NotAuthenticated();
+
+        return;
       }
 
       yield Authenticated(user);
