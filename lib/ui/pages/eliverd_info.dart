@@ -148,7 +148,7 @@ class _EliverdInfoPageState extends State<EliverdInfoPage> {
               ),
               Container(
                 width: width,
-                height: 212.0,
+                height: 228.0,
                 child: BlocBuilder<EventBloc, EventState>(
                   cubit: _eventBloc,
                   builder: (context, state) {
@@ -175,7 +175,7 @@ class _EliverdInfoPageState extends State<EliverdInfoPage> {
                         scrollDirection: Axis.horizontal,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 1,
-                          childAspectRatio: 1.8,
+                          childAspectRatio: 1.9,
                           mainAxisSpacing: 4.0,
                         ),
                         itemBuilder: (context, index) {

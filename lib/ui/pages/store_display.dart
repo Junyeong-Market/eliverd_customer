@@ -75,12 +75,14 @@ class _StoreDisplayState extends State<StoreDisplay> {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Text(
-                  store.name,
-                  style: TextStyle(
-                    color: Colors.black45,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14.0,
+                Flexible(
+                  child: Text(
+                    store.name,
+                    style: TextStyle(
+                      color: Colors.black45,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14.0,
+                    ),
                   ),
                 ),
                 SizedBox(width: 2.0),

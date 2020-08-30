@@ -239,7 +239,7 @@ class _SearchItemsState extends State<SearchItems> {
                             crossAxisCount: 3,
                             crossAxisSpacing: 4,
                             mainAxisSpacing: 4,
-                            childAspectRatio: 0.52,
+                            childAspectRatio: 0.49,
                           ),
                           itemBuilder: (context, index) => SimplifiedStock(
                             stock: state.items[index],

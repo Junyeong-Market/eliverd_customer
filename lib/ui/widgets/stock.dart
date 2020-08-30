@@ -21,7 +21,7 @@ class StockList extends StatelessWidget {
         crossAxisCount: 3,
         crossAxisSpacing: 4,
         mainAxisSpacing: 4,
-        childAspectRatio: 0.55,
+        childAspectRatio: 0.51,
       ),
       itemBuilder: (context, index) => SimplifiedStock(
         stock: stocks[index],
@@ -47,6 +47,7 @@ class StockListOnCart extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       padding: EdgeInsets.all(8.0),
+      physics: ClampingScrollPhysics(),
       itemBuilder: (context, index) => SimplifiedStockOnCart(
         stock: stocks[index],
         onAmountChange: (int newAmount) {
@@ -162,42 +163,37 @@ class SimplifiedStock extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 1.6),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CategoryWidget(
-                    categoryId: stock.product.category,
-                    fontSize: 9.0,
-                    padding: 2.0,
+              CategoryWidget(
+                categoryId: stock.product.category,
+                fontSize: 9.0,
+                padding: 2.0,
+              ),
+              SizedBox(height: 1.6),
+              Visibility(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius:
+                    BorderRadius.all(Radius.circular(5.0)),
                   ),
-                  SizedBox(width: 1.6),
-                  Visibility(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius:
-                        BorderRadius.all(Radius.circular(5.0)),
+                  padding: EdgeInsets.all(2.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        '􀋙 ${stock.amount}개 남음!',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 9.0,
+                        ),
                       ),
-                      padding: EdgeInsets.all(2.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Text(
-                            '􀋙 ${stock.amount}개 남음!',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 9.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    visible: stock.amount <= 3,
-                    maintainSize: false,
+                    ],
                   ),
-                ],
+                ),
+                visible: stock.amount <= 3,
+                maintainSize: false,
               ),
             ],
           ),

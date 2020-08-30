@@ -71,7 +71,7 @@ class Markers {
     Picture picture = recorder.endRecording();
 
     final ui.Image markerAsImage = await picture.toImage(
-      300,
+      500,
       80,
     );
 
