@@ -1,7 +1,12 @@
 import 'dart:io';
 
+import 'package:Eliverd/bloc/authBloc.dart';
+import 'package:Eliverd/bloc/events/authEvent.dart';
+import 'package:Eliverd/bloc/events/userEvent.dart';
+import 'package:Eliverd/bloc/states/authState.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:Eliverd/bloc/userBloc.dart';
@@ -149,20 +154,29 @@ class _MyPagePageState extends State<MyPagePage> {
           SizedBox(
             height: 4.0,
           ),
-          GestureDetector(
-            onTap: () {
-              showConfirmLogoutAlertDialog(context);
+          BlocBuilder<AuthenticationBloc, AuthenticationState>(
+            builder: (context, state) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      showConfirmLogoutAlertDialog(context);
+                    },
+                    child: _buildLogoutButton(),
+                  ),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      showConfirmCloseAccountAlertDialog(context);
+                    },
+                    child: _buildCloseAccountButton(),
+                  ),
+                ],
+              );
             },
-            child: _buildLogoutButton(),
-          ),
-          SizedBox(
-            height: 8.0,
-          ),
-          GestureDetector(
-            onTap: () {
-              showConfirmCloseAccountAlertDialog(context);
-            },
-            child: _buildCloseAccountButton(),
           ),
         ],
       ),
@@ -352,6 +366,8 @@ showConfirmLogoutAlertDialog(BuildContext context) {
       ),
     ),
     onPressed: () {
+      context.bloc<AuthenticationBloc>().add(RevokeAuthentication());
+
       Navigator.pop(context);
     },
   );
@@ -378,6 +394,8 @@ showConfirmLogoutAlertDialog(BuildContext context) {
       ),
     ),
     onPressed: () {
+      context.bloc<AuthenticationBloc>().add(RevokeAuthentication());
+
       Navigator.pop(context);
     },
   );
@@ -441,7 +459,6 @@ showConfirmLogoutAlertDialog(BuildContext context) {
   }
 }
 
-
 showConfirmCloseAccountAlertDialog(BuildContext context) {
   String title = '정말 탈퇴하시겠습니까?';
   String desc = '회원을 탈퇴하면 사용자의 프로필, 주문 내역이 모두 삭제됩니다.';
@@ -468,6 +485,10 @@ showConfirmCloseAccountAlertDialog(BuildContext context) {
       ),
     ),
     onPressed: () {
+      context.bloc<UserBloc>().add(CloseUserAccount());
+
+      context.bloc<AuthenticationBloc>().add(RevokeAuthentication());
+
       Navigator.pop(context);
     },
   );
@@ -494,6 +515,10 @@ showConfirmCloseAccountAlertDialog(BuildContext context) {
       ),
     ),
     onPressed: () {
+      context.bloc<UserBloc>().add(CloseUserAccount());
+
+      context.bloc<AuthenticationBloc>().add(RevokeAuthentication());
+
       Navigator.pop(context);
     },
   );
