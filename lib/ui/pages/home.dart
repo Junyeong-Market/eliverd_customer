@@ -280,20 +280,7 @@ class _HomePageState extends State<HomePage> {
             }
 
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    HomePageStrings.googleMapLoading,
-                    style: TextStyle(
-                      color: Colors.black26,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  CupertinoActivityIndicator(),
-                ],
-              ),
+              child: CupertinoActivityIndicator(),
             );
           },
         ),
