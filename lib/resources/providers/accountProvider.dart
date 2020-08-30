@@ -76,6 +76,7 @@ class AccountAPIClient {
     final session = prefs.getString('session');
 
     if (session == null) {
+      prefs.remove('session');
       return null;
     }
 
@@ -103,6 +104,7 @@ class AccountAPIClient {
     final session = prefs.getString('session');
 
     if (session == null) {
+      prefs.remove('session');
       return;
     }
 
@@ -114,11 +116,11 @@ class AccountAPIClient {
       },
     );
 
+    prefs.remove('session');
+
     if (res.statusCode != 204) {
       throw Exception('Error occurred while deleting session');
     }
-
-    prefs.remove('session');
   }
 
   Future<Map<String, dynamic>> validateUser(Map<String, dynamic> user) async {
@@ -248,6 +250,8 @@ class AccountAPIClient {
         HttpHeaders.authorizationHeader: session,
       },
     );
+
+    prefs.remove('session');
 
     if (res.statusCode != 204) {
       throw Exception('Error occurred while closing user account');
