@@ -121,6 +121,7 @@ class _SearchItemsState extends State<SearchItems> {
                       child: CupertinoTextField(
                         autofocus: true,
                         controller: _keyword,
+                        placeholder: '원하시는 상품을 검색하세요.',
                         padding: EdgeInsets.symmetric(
                           horizontal: 4.0,
                           vertical: 2.0,
@@ -129,7 +130,7 @@ class _SearchItemsState extends State<SearchItems> {
                           color: Colors.transparent,
                         ),
                         style: TextStyle(
-                          fontSize: 18.0,
+                          fontSize: 17.0,
                         ),
                         textAlignVertical: TextAlignVertical.center,
                         onChanged: (value) {
@@ -214,7 +215,7 @@ class _SearchItemsState extends State<SearchItems> {
                 ),
               ),
               SizedBox(
-                height: 8.0,
+                height: 16.0,
               ),
               if (state is NearbyItemsSearched)
                 state.items.isEmpty
@@ -246,6 +247,8 @@ class _SearchItemsState extends State<SearchItems> {
                           itemCount: state.items.length,
                         ),
                       ),
+              if (state is! NearbyItemsSearched)
+                CupertinoActivityIndicator(),
             ],
           ),
         );
