@@ -24,7 +24,7 @@ class SignInStrings {
   static final passwordText = '비밀번호';
   static final login = '로그인';
   static final notSignUp = '아직 회원이 아니십니까?';
-  static final alreadyLoggedIn = '이미 로그인이 되었습니다.\n잠시만 기다려주세요!';
+  static final alreadyLoggedIn = '정상적으로 로그인되었습니다.\n잠시만 기다려주세요.';
 }
 
 class SignUpStrings {
