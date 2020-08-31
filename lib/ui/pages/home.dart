@@ -23,7 +23,6 @@ import 'package:Eliverd/ui/pages/store_display.dart';
 import 'package:Eliverd/ui/pages/eliverd_info.dart';
 import 'package:Eliverd/ui/pages/my_page.dart';
 import 'package:Eliverd/ui/pages/order_lookup.dart';
-import 'package:Eliverd/ui/widgets/category.dart';
 import 'package:Eliverd/ui/widgets/shopping_cart_button.dart';
 import 'package:Eliverd/ui/pages/search_items.dart';
 
@@ -37,6 +36,8 @@ class _HomePageState extends State<HomePage> {
   Future<Set<Marker>> _storeMarkers;
 
   Completer<GoogleMapController> googleMapController = Completer();
+  CameraPosition _cameraPosition;
+
   Timer timer;
 
   @override
@@ -45,18 +46,29 @@ class _HomePageState extends State<HomePage> {
 
     _coordinate = _getCurrentLocation();
 
-    _coordinate.then((location) {
-      context.bloc<StoreBloc>().add(FetchStore(location));
+    _coordinate.then((coordinate) {
+      setState(() {
+        _cameraPosition = _cameraPosition ??
+            CameraPosition(
+              target: LatLng(coordinate.lat, coordinate.lng),
+              zoom: 16.0,
+            );
+      });
+
+      context.bloc<StoreBloc>().add(FetchStore(coordinate));
     });
 
     timer = Timer.periodic(
       Duration(
-        minutes: 1,
+        seconds: 30,
       ),
       (Timer t) {
-        _coordinate.then((location) {
-          context.bloc<StoreBloc>().add(FetchStore(location));
-        });
+        final currentCoordinate = Coordinate(
+          lat: _cameraPosition.target.latitude,
+          lng: _cameraPosition.target.longitude,
+        );
+
+        context.bloc<StoreBloc>().add(FetchStore(currentCoordinate));
       },
     );
   }
@@ -102,28 +114,6 @@ class _HomePageState extends State<HomePage> {
                       );
                     },
                     child: _buildSearchBox(width),
-                  ),
-                  SizedBox(height: 8.0),
-                  Container(
-                    width: width * 0.9,
-                    height: 24.0,
-                    padding: EdgeInsets.symmetric(
-                      vertical: 1.0,
-                    ),
-                    child: GridView.builder(
-                      scrollDirection: Axis.horizontal,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 1,
-                        mainAxisSpacing: 8.0,
-                        childAspectRatio: 0.2,
-                      ),
-                      itemBuilder: (context, index) {
-                        return CategoryWidget(
-                          categoryId: Categories.listByViewPOV[index].id,
-                        );
-                      },
-                      itemCount: Categories.listByViewPOV.length,
-                    ),
                   ),
                 ],
               ),
@@ -185,95 +175,82 @@ class _HomePageState extends State<HomePage> {
   Widget _buildMap() => Container(
         width: double.infinity,
         height: double.infinity,
-        child: FutureBuilder<Coordinate>(
-          future: _coordinate,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done &&
-                snapshot.hasData) {
-              final coordinate = snapshot.data;
-
-              final cameraPosition = CameraPosition(
-                target: LatLng(coordinate.lat, coordinate.lng),
-                zoom: 16.0,
-              );
-
-              return BlocConsumer<StoreBloc, StoreState>(
-                listener: (context, state) {
-                  if (state is StoreFetched) {
-                    _storeMarkers = _getStoreMarkers(state.stocks);
-                  }
-                },
-                builder: (context, state) {
-                  if (state is StoreError) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ButtonTheme(
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                            minWidth: 0,
-                            height: 0,
-                            child: FlatButton(
-                              padding: EdgeInsets.all(0.0),
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              textColor: Colors.black12,
-                              child: Text(
-                                '⟳',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 48.0,
-                                ),
-                              ),
-                              onPressed: () {
-                                context
-                                    .bloc<StoreBloc>()
-                                    .add(FetchStore(coordinate));
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(25.0)),
-                              ),
-                            ),
+        child: BlocBuilder<StoreBloc, StoreState>(
+          builder: (context, state) {
+            if (state is StoreError) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ButtonTheme(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      minWidth: 0,
+                      height: 0,
+                      child: FlatButton(
+                        padding: EdgeInsets.all(0.0),
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        textColor: Colors.black12,
+                        child: Text(
+                          '⟳',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 48.0,
                           ),
-                          Text(
-                            '지도를 불러오는 중 오류가 발생했습니다.\n다시 시도해주세요.',
-                            style: TextStyle(
-                              color: Colors.black26,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                        ),
+                        onPressed: () {
+                          _coordinate.then((coordinate) {
+                            context
+                                .bloc<StoreBloc>()
+                                .add(FetchStore(coordinate));
+                          });
+                        },
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                        ),
                       ),
+                    ),
+                    Text(
+                      '지도를 불러오는 중 오류가 발생했습니다.\n다시 시도해주세요.',
+                      style: TextStyle(
+                        color: Colors.black26,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            if (state is StoreFetched) {
+              _storeMarkers = _getStoreMarkers(state.stocks);
+
+              return FutureBuilder<Set<Marker>>(
+                future: _storeMarkers,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done &&
+                      snapshot.hasData) {
+                    return GoogleMap(
+                      mapType: MapType.normal,
+                      initialCameraPosition: _cameraPosition,
+                      zoomGesturesEnabled: true,
+                      tiltGesturesEnabled: false,
+                      myLocationButtonEnabled: false,
+                      myLocationEnabled: true,
+                      onMapCreated: (GoogleMapController controller) {
+                        googleMapController.complete(controller);
+                      },
+                      onCameraMove: (CameraPosition cameraPosition) {
+                        _cameraPosition = cameraPosition;
+                      },
+                      gestureRecognizers: _gesterRecognizer,
+                      markers: snapshot.data ?? Set.of([]),
                     );
                   }
 
-                  return FutureBuilder<Set<Marker>>(
-                    future: _storeMarkers,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done &&
-                          snapshot.hasData) {
-                        return GoogleMap(
-                          mapType: MapType.normal,
-                          initialCameraPosition: cameraPosition,
-                          zoomGesturesEnabled: true,
-                          tiltGesturesEnabled: false,
-                          myLocationButtonEnabled: false,
-                          myLocationEnabled: true,
-                          onMapCreated: (GoogleMapController controller) {
-                            googleMapController.complete(controller);
-                          },
-                          gestureRecognizers: _gesterRecognizer,
-                          markers: snapshot.data ?? Set.of([]),
-                        );
-                      }
-
-                      return Center(
-                        child: CupertinoActivityIndicator(),
-                      );
-                    },
+                  return Center(
+                    child: CupertinoActivityIndicator(),
                   );
                 },
               );
