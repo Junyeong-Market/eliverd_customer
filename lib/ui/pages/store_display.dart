@@ -24,7 +24,7 @@ class _StoreDisplayState extends State<StoreDisplay> {
   void initState() {
     super.initState();
 
-    store = widget.stocks[0].store;
+    store = widget.stocks.first.store;
     categories = widget.stocks
         .map((stock) => stock.product.category)
         .map((category) => Categories.listByNetworkPOV[category])
@@ -99,7 +99,7 @@ class _StoreDisplayState extends State<StoreDisplay> {
             height: 0,
             child: FlatButton(
               padding: EdgeInsets.only(
-                right: 4.0,
+                right: 16.0,
               ),
               textColor: Colors.black,
               splashColor: Colors.transparent,
@@ -114,27 +114,6 @@ class _StoreDisplayState extends State<StoreDisplay> {
               onPressed: () {
                 Navigator.pop(context);
               },
-            ),
-          ),
-          ButtonTheme(
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            minWidth: 0,
-            height: 0,
-            child: FlatButton(
-              padding: EdgeInsets.only(
-                right: 16.0,
-              ),
-              textColor: Colors.black,
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              child: Text(
-                '􀅴',
-                style: TextStyle(
-                  fontWeight: FontWeight.w200,
-                  fontSize: 24.0,
-                ),
-              ),
-              onPressed: () {},
             ),
           ),
         ],

@@ -143,27 +143,6 @@ class _SearchItemsState extends State<SearchItems> {
                         },
                       ),
                     ),
-                    ButtonTheme(
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      minWidth: 0,
-                      height: 0,
-                      child: FlatButton(
-                        padding: EdgeInsets.all(0.0),
-                        textColor: Colors.black,
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        child: Text(
-                          '􀌆',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w200,
-                            fontSize: 24.0,
-                          ),
-                        ),
-                        onPressed: () {
-                          // TO-DO: 검색 조건 설정
-                        },
-                      ),
-                    ),
                   ],
                 ),
               ),

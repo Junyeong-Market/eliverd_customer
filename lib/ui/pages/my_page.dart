@@ -122,17 +122,6 @@ class _MyPagePageState extends State<MyPagePage> {
             },
             child: _buildOrderLookupButton(),
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => OrderLookupPage(),
-                ),
-              );
-            },
-            child: _buildChangeProfileButton(),
-          ),
           SizedBox(
             height: 16.0,
           ),
@@ -189,6 +178,10 @@ class _MyPagePageState extends State<MyPagePage> {
         color: Colors.transparent,
         shape: Border(
           top: BorderSide(
+            color: Colors.black12,
+            width: 1,
+          ),
+          bottom: BorderSide(
             color: Colors.black12,
             width: 1,
           ),
