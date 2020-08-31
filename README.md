@@ -1,6 +1,6 @@
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 ![Flutter CI](https://github.com/Junyeong-Market/eliverd_customer/workflows/Flutter%20CI/badge.svg)
-![Contributors](https://img.shields.io/badge/Contributors-Unperknown-blue.svg)
+![Contributor](https://img.shields.io/badge/Contributors-Unperknown-blue.svg)
 ![Github top language](https://img.shields.io/github/languages/top/Junyeong-Market/eliverd_customer)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Junyeong-Market/eliverd_customer)
 
@@ -23,9 +23,11 @@ flutter run
 
 Android Studio, Intellij IDEA, VS Code 등의 IDE를 이용하면 더 편리하게 실행할 수 있습니다!
 
-## 🏗️ 디자인
+## 📌 기능 소개
 
-추가 예정입니다.
+|![상품 조회](/docs/a.gif)|![주문](/docs/b.gif)|![결제](/docs/a.gif)|![주문 내역 조회](/docs/a.gif)|![상품 추천](/docs/a.gif)|![검색](/docs/a.gif)|![카테고리 분류](/docs/a.gif)|
+|-|-|-|-|-|-|-|
+|**상품 조회**|**주문**|**결제**|**주문 내역 조회**|**상품 추천**|**검색**|**카테고리 분류**|
 
 ## 👪 기여자
 
