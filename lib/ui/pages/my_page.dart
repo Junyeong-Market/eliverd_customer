@@ -222,56 +222,6 @@ class _MyPagePageState extends State<MyPagePage> {
         ),
       );
 
-  Widget _buildChangeProfileButton() => Card(
-        margin: EdgeInsets.zero,
-        elevation: 0.0,
-        color: Colors.transparent,
-        shape: Border(
-          top: BorderSide(
-            color: Colors.black12,
-            width: 1,
-          ),
-          bottom: BorderSide(
-            color: Colors.black12,
-            width: 1,
-          ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: 8.0,
-            top: 8.0,
-            bottom: 8.0,
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                flex: 15,
-                child: Text(
-                  '프로필 수정',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 17.0,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              Flexible(
-                child: Text(
-                  '􀆊',
-                  style: TextStyle(
-                    color: Colors.black45,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15.0,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-
   Widget _buildLogoutButton() => Card(
         margin: EdgeInsets.zero,
         elevation: 0.0,
