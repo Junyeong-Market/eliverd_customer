@@ -78,15 +78,6 @@ class _UserProfileState extends State<UserProfile> {
                   fontSize: 20.0,
                 ),
               ),
-              Text(
-                state.user.isSeller ? '사업자' : '고객',
-                maxLines: 1,
-                style: TextStyle(
-                  color: Colors.black45,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16.0,
-                ),
-              ),
               SizedBox(
                 height: 16.0,
               ),

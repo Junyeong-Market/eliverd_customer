@@ -6,23 +6,21 @@ class User extends Equatable {
   final String password;
   final String nickname;
   final String realname;
-  final bool isSeller;
 
-  const User(
-      {this.pid,
-      this.userId,
-      this.password,
-      this.nickname,
-      this.realname,
-      this.isSeller});
+  const User({
+    this.pid,
+    this.userId,
+    this.password,
+    this.nickname,
+    this.realname,
+  });
 
   @override
-  List<Object> get props =>
-      [pid, userId, password, nickname, realname, isSeller];
+  List<Object> get props => [pid, userId, password, nickname, realname];
 
   @override
   String toString() {
-    return 'User{ pid: $pid, userId: $userId, password: $password, nickname: $nickname, realname: $realname, isSeller: $isSeller }';
+    return 'User{ pid: $pid, userId: $userId, password: $password, nickname: $nickname, realname: $realname }';
   }
 
   static User fromJson(dynamic json) {
@@ -32,18 +30,16 @@ class User extends Equatable {
       password: json['password'],
       nickname: json['nickname'],
       realname: json['realname'],
-      isSeller: json['is_seller'],
     );
   }
 
   Map<String, dynamic> toJson() => {
-    'pid': pid,
-    'user_id': userId,
-    'password': password,
-    'nickname': nickname,
-    'realname': realname,
-    'is_seller': isSeller,
-  };
+        'pid': pid,
+        'user_id': userId,
+        'password': password,
+        'nickname': nickname,
+        'realname': realname,
+      };
 }
 
 class Session extends Equatable {
