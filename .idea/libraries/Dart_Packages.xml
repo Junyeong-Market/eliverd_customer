@@ -261,6 +261,13 @@
             </list>
           </value>
         </entry>
+        <entry key="qr_code_scanner">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.0.13/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="rxdart">
           <value>
             <list>
@@ -459,6 +466,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/process-3.0.13/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/provider-4.3.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/pub_semver-1.4.4/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/qr_code_scanner-0.0.13/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/rxdart-0.24.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/shared_preferences-0.5.8/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/shared_preferences_linux-0.0.2+1/lib" />

@@ -57,6 +57,12 @@
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/path_provider_linux/example/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/path_provider_linux/example/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/path_provider_linux/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/qr_code_scanner/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/qr_code_scanner/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/qr_code_scanner/build" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/qr_code_scanner/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/qr_code_scanner/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/qr_code_scanner/example/build" />
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/shared_preferences/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/shared_preferences/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/shared_preferences/build" />
