@@ -167,6 +167,35 @@ class _OrderWidgetState extends State<OrderWidget> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
+                '주문 날짜',
+                maxLines: 1,
+                textAlign: TextAlign.right,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: Colors.black45,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.0,
+                ),
+              ),
+              Text(
+                DateFormat.Hm('en-US').format(widget.order.createdAt) + ', ' + DateFormat.yMMMEd('en-US').format(widget.order.createdAt),
+                maxLines: 1,
+                textAlign: TextAlign.right,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16.0,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 4.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
                 '배송지',
                 maxLines: 1,
                 textAlign: TextAlign.right,
