@@ -4,6 +4,7 @@ import 'package:Eliverd/bloc/authBloc.dart';
 import 'package:Eliverd/bloc/events/authEvent.dart';
 import 'package:Eliverd/bloc/events/userEvent.dart';
 import 'package:Eliverd/bloc/states/authState.dart';
+import 'package:Eliverd/ui/pages/delivery_lookup.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +19,7 @@ import 'package:Eliverd/common/color.dart';
 
 import 'package:Eliverd/ui/widgets/user_profile.dart';
 import 'package:Eliverd/ui/pages/order_lookup.dart';
+import 'package:Eliverd/ui/pages/proceed_delivery.dart';
 
 class MyPagePage extends StatefulWidget {
   @override
@@ -122,6 +124,28 @@ class _MyPagePageState extends State<MyPagePage> {
             },
             child: _buildOrderLookupButton(),
           ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DeliveryLookupPage(),
+                ),
+              );
+            },
+            child: _buildDeliveryLookupButton(),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProceedDeliveryPage(),
+                ),
+              );
+            },
+            child: _buildDeliveryQueueButton(),
+          ),
           SizedBox(
             height: 16.0,
           ),
@@ -198,6 +222,98 @@ class _MyPagePageState extends State<MyPagePage> {
                 flex: 15,
                 child: Text(
                   '주문 내역 조회',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 17.0,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              Flexible(
+                child: Text(
+                  '􀆊',
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  Widget _buildDeliveryLookupButton() => Card(
+        margin: EdgeInsets.zero,
+        elevation: 0.0,
+        color: Colors.transparent,
+        shape: Border(
+          bottom: BorderSide(
+            color: Colors.black12,
+            width: 1,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: 8.0,
+            top: 8.0,
+            bottom: 8.0,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 15,
+                child: Text(
+                  '남은 배달 내역',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 17.0,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              Flexible(
+                child: Text(
+                  '􀆊',
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  Widget _buildDeliveryQueueButton() => Card(
+        margin: EdgeInsets.zero,
+        elevation: 0.0,
+        color: Colors.transparent,
+        shape: Border(
+          bottom: BorderSide(
+            color: Colors.black12,
+            width: 1,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: 8.0,
+            top: 8.0,
+            bottom: 8.0,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 15,
+                child: Text(
+                  '배달 완료 요청',
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
