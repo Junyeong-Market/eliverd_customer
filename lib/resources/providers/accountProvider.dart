@@ -35,7 +35,8 @@ class AccountAPIClient {
   Future<String> createSession([String userId, String password]) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if (userId == null || password == null) {
+    if (userId == null || password == null || userId.isEmpty || password.isEmpty) {
+      prefs.remove('session');
       return null;
     }
 
@@ -58,6 +59,7 @@ class AccountAPIClient {
         );
 
     if (res.statusCode != 201) {
+      prefs.remove('session');
       throw Exception('Error occurred while creating session');
     }
 
@@ -156,16 +158,10 @@ class AccountAPIClient {
 
     final decoded = utf8.decode(res.bodyBytes);
 
-    final data = json.decode(decoded)['results'] as List;
-
-    return data.map((rawUser) {
-      return User(
-        userId: rawUser['user_id'],
-        nickname: rawUser['nickname'],
-        realname: rawUser['realname'],
-        isSeller: rawUser['is_seller'],
-      );
-    }).toList();
+    return json
+        .decode(decoded)['results']
+        .map<User>((user) => User.fromJson(user))
+        .toList();
   }
 
   Future<User> getUser() async {

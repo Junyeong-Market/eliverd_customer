@@ -47,6 +47,12 @@ class AuthenticationBloc
   Stream<AuthenticationState> _mapGrantAuthenticationToState(
       GrantAuthentication event) async* {
     try {
+      if (event.userId.isEmpty || event.password.isEmpty) {
+        yield AuthenticationError('먼저 아이디와 비밀번호를 입력해주세요.');
+
+        return;
+      }
+
       final session =
           await accountRepository.createSession(event.userId, event.password);
 
