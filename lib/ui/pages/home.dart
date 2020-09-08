@@ -35,7 +35,6 @@ class _HomePageState extends State<HomePage> {
   Future<Coordinate> _coordinate;
   Future<Set<Marker>> _storeMarkers;
 
-  Completer<GoogleMapController> googleMapController = Completer();
   CameraPosition _cameraPosition;
 
   Timer timer;
@@ -238,9 +237,6 @@ class _HomePageState extends State<HomePage> {
                       tiltGesturesEnabled: false,
                       myLocationButtonEnabled: false,
                       myLocationEnabled: true,
-                      onMapCreated: (GoogleMapController controller) {
-                        googleMapController.complete(controller);
-                      },
                       onCameraMove: (CameraPosition cameraPosition) {
                         _cameraPosition = cameraPosition;
                       },
