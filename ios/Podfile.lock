@@ -1,4 +1,8 @@
 PODS:
+  - barcode_scan (0.0.1):
+    - Flutter
+    - MTBBarcodeScanner
+    - SwiftProtobuf
   - Flutter (1.0.0)
   - "geolocator (5.3.2+2)":
     - Flutter
@@ -13,22 +17,20 @@ PODS:
   - "location_permissions (3.0.0+1)":
     - Flutter
   - MTBBarcodeScanner (5.0.11)
-  - qr_code_scanner (0.0.2):
-    - Flutter
-    - MTBBarcodeScanner
   - shared_preferences (0.0.1):
     - Flutter
+  - SwiftProtobuf (1.12.0)
   - url_launcher (0.0.1):
     - Flutter
   - webview_flutter (0.0.1):
     - Flutter
 
 DEPENDENCIES:
+  - barcode_scan (from `.symlinks/plugins/barcode_scan/ios`)
   - Flutter (from `Flutter`)
   - geolocator (from `.symlinks/plugins/geolocator/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - location_permissions (from `.symlinks/plugins/location_permissions/ios`)
-  - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
@@ -37,8 +39,11 @@ SPEC REPOS:
   trunk:
     - GoogleMaps
     - MTBBarcodeScanner
+    - SwiftProtobuf
 
 EXTERNAL SOURCES:
+  barcode_scan:
+    :path: ".symlinks/plugins/barcode_scan/ios"
   Flutter:
     :path: Flutter
   geolocator:
@@ -47,8 +52,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
   location_permissions:
     :path: ".symlinks/plugins/location_permissions/ios"
-  qr_code_scanner:
-    :path: ".symlinks/plugins/qr_code_scanner/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
   url_launcher:
@@ -57,14 +60,15 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
+  barcode_scan: a5c27959edfafaa0c771905bad0b29d6d39e4479
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   geolocator: f7622e0e7e2a24718285b73916d60c4a54b9f5b6
   google_maps_flutter: df4e7de95264aa0a2f11aac0fc7e313acb8ffc7e
   GoogleMaps: 4b5346bddfe6911bb89155d43c903020170523ac
   location_permissions: 7e0f9aa0f60deb8ff93ddf0e2a164c7e8197bc94
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
-  qr_code_scanner: 16107718bdad7d708cdf6a5eacdca24b56cdf471
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  SwiftProtobuf: 4ef85479c18ca85b5482b343df9c319c62bda699
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96
 
