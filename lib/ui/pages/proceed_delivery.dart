@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class ProceedDeliveryPage extends StatefulWidget {
   @override
@@ -8,18 +7,6 @@ class ProceedDeliveryPage extends StatefulWidget {
 }
 
 class _ProceedDeliveryPageState extends State<ProceedDeliveryPage> {
-  final qrCodeKey = GlobalKey(debugLabel: 'QR');
-
-  String deliveryToken = "";
-
-  QRViewController controller;
-
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,33 +43,7 @@ class _ProceedDeliveryPageState extends State<ProceedDeliveryPage> {
           ),
         ),
       ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            flex: 5,
-            child: QRView(
-              key: qrCodeKey,
-              onQRViewCreated: _onQRViewCreated,
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Center(
-              child: Text('Scan result: $deliveryToken'),
-            ),
-          )
-        ],
-      ),
     );
   }
 
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
-
-    controller.scannedDataStream.listen((scanned) {
-      setState(() {
-        deliveryToken = scanned;
-      });
-    });
-  }
 }
