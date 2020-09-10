@@ -34,7 +34,6 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   ValueNotifier<List<int>> amounts;
 
   bool isShoppingCartEmpty = true;
-  bool isDelivery = false;
   bool isPriceExceeded = false;
   bool isExceedLimitAlertDisplayed = false;
 
@@ -110,24 +109,21 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                     ),
                     textAlign: TextAlign.right,
                   ),
-                  onPressed: _isNotReadyToOrder()
-                      ? null
-                      : () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (context) => SearchLocationDialog(
-                              onLocationSelected:
-                                  _onShippingDestinationSelected,
-                            ),
-                            isScrollControlled: true,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(30.0),
-                                topRight: Radius.circular(30.0),
-                              ),
-                            ),
-                          );
-                        },
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) => SearchLocationDialog(
+                        onLocationSelected: _onShippingDestinationSelected,
+                      ),
+                      isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30.0),
+                          topRight: Radius.circular(30.0),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ],
@@ -179,7 +175,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ButtonTheme(
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
                           minWidth: 0,
                           height: 0,
                           child: FlatButton(
@@ -198,7 +195,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                               cartItems = _fetchShoppingCart();
                             },
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(25.0)),
                             ),
                           ),
                         ),
@@ -326,14 +324,14 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                     color: eliverdColor,
                     borderRadius: BorderRadius.circular(10.0),
                     padding: EdgeInsets.symmetric(vertical: 16.0),
-                    onPressed: _isNotReadyToOrder()
-                        ? null
-                        : () {
+                    onPressed: isReadyToOrder
+                        ? () {
                             cartItems.then((items) => context
                                 .bloc<OrderBloc>()
                                 .add(ProceedOrder(items, amounts.value,
                                     shippingDestination)));
-                          },
+                          }
+                        : null,
                   ),
                 ],
               ),
@@ -356,7 +354,10 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
     );
   }
 
-  bool _isNotReadyToOrder() => isShoppingCartEmpty || isPriceExceeded;
+  bool get isDeliveryDestinationSelected => shippingDestination != null;
+
+  bool get isReadyToOrder =>
+      !isShoppingCartEmpty && !isPriceExceeded && isDeliveryDestinationSelected;
 
   Future<List<Stock>> _fetchShoppingCart() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -407,7 +408,6 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
     setState(() {
       shippingDestination = coordinate;
       shippingAddress = _getAddressFromPosition(position);
-      isDelivery = true;
     });
   }
 
