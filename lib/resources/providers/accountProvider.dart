@@ -35,7 +35,10 @@ class AccountAPIClient {
   Future<String> createSession([String userId, String password]) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if (userId == null || password == null || userId.isEmpty || password.isEmpty) {
+    if (userId == null ||
+        password == null ||
+        userId.isEmpty ||
+        password.isEmpty) {
       prefs.remove('session');
       return null;
     }
@@ -232,6 +235,34 @@ class AccountAPIClient {
     final data = json.decode(decoded);
 
     return data;
+  }
+
+  Future<List<PartialOrder>> fetchProcessingDeliveries(int pid,
+      [int page]) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final session = prefs.getString('session');
+
+    final url = '$baseUrl/account/user/$pid/deliveries' +
+        (page != null ? '?page=$page' : '');
+    final res = await httpClient.get(
+      url,
+      headers: {
+        HttpHeaders.authorizationHeader: session,
+      },
+    );
+
+    if (res.statusCode != 200) {
+      throw Exception('Error occurred while fetching deliveries');
+    }
+
+    final decoded = utf8.decode(res.bodyBytes);
+
+    final deliveries = json.decode(decoded)['results'];
+
+    return deliveries
+        .map<PartialOrder>((delivery) => PartialOrder.fromJson(delivery))
+        .toList();
   }
 
   Future<void> closeUser(int pid) async {

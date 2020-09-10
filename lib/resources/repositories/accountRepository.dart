@@ -33,6 +33,12 @@ class AccountRepository {
     return summary;
   }
 
+  Future<List<PartialOrder>> fetchProcessingDeliveries(int pid, [int page]) async {
+    final deliveries = await accountAPIClient.fetchProcessingDeliveries(pid, page);
+
+    return deliveries;
+  }
+
   Future<Map<String, dynamic>> updateUser(int pid, Map<String, dynamic> updateForm) async {
     final data = await accountAPIClient.updateUser(pid, updateForm);
 
