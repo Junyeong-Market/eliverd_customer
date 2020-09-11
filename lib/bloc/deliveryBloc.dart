@@ -33,7 +33,7 @@ class DeliveryBloc extends Bloc<DeliveryEvent, DeliveryState> {
       FetchDeliveries event) async* {
     final currentState = state;
 
-    if (_isDeliveriesAllFetched(currentState)) {
+    if (!_isDeliveriesAllFetched(currentState)) {
       try {
         final user = await accountRepository.getUser();
 
