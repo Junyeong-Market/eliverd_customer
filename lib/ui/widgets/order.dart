@@ -90,7 +90,7 @@ class _OrderWidgetState extends State<OrderWidget> {
                   color: Colors.black,
                   fontWeight: FontWeight.w700,
                   decoration: TextDecoration.underline,
-                  fontSize: 22.0,
+                  fontSize: 20.0,
                 ),
               ),
             ],
@@ -141,15 +141,7 @@ class _OrderWidgetState extends State<OrderWidget> {
                 ),
               ),
               Text(
-                widget.order.status == 'processed'
-                    ? '결제 완료'
-                    : (widget.order.status == 'canceled'
-                        ? '결제 취소'
-                        : (widget.order.status == 'failed'
-                            ? '결제 실패'
-                            : (widget.order.status == 'pending'
-                                ? '결제 보류'
-                                : '확인 불가'))),
+                OrderStatus.formatOrderStatus(widget.order.status),
                 maxLines: 1,
                 textAlign: TextAlign.right,
                 overflow: TextOverflow.ellipsis,
@@ -178,7 +170,7 @@ class _OrderWidgetState extends State<OrderWidget> {
                 ),
               ),
               Text(
-                DateFormat.Hm('en-US').format(widget.order.createdAt) + ', ' + DateFormat.yMMMEd('en-US').format(widget.order.createdAt),
+                formattedDate(widget.order.createdAt),
                 maxLines: 1,
                 textAlign: TextAlign.right,
                 overflow: TextOverflow.ellipsis,
@@ -221,7 +213,7 @@ class _OrderWidgetState extends State<OrderWidget> {
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w600,
-                          fontSize: 14.0,
+                          fontSize: 16.0,
                         ),
                       );
                     }
@@ -242,6 +234,37 @@ class _OrderWidgetState extends State<OrderWidget> {
       locale: 'ko',
       symbol: '₩',
     )?.format(price);
+  }
+
+  String formattedDate(DateTime dateTime) =>
+      '${dateTime.year}년 ${dateTime.month}월 ${dateTime.day}일(${formattedWeekDay(dateTime.weekday)}) ${DateFormat.Hm('en-US').format(dateTime)}';
+
+  String formattedWeekDay(int weekday) {
+    switch (weekday) {
+      case 1:
+        return '월';
+        break;
+      case 2:
+        return '화';
+        break;
+      case 3:
+        return '수';
+        break;
+      case 4:
+        return '목';
+        break;
+      case 5:
+        return '금';
+        break;
+      case 6:
+        return '토';
+        break;
+      case 7:
+        return '일';
+        break;
+    }
+
+    return '';
   }
 
   Future<String> _getAddressFromCoordinate(Coordinate coordinate) async {
@@ -575,15 +598,7 @@ class _SimplifiedOrderWidgetState extends State<SimplifiedOrderWidget> {
                   ),
                 ),
                 Text(
-                  widget.order.status == 'processed'
-                      ? '결제 완료'
-                      : (widget.order.status == 'canceled'
-                          ? '결제 취소'
-                          : (widget.order.status == 'failed'
-                              ? '결제 실패'
-                              : (widget.order.status == 'pending'
-                                  ? '결제 보류'
-                                  : '확인 불가'))),
+                  OrderStatus.formatOrderStatus(widget.order.status),
                   maxLines: 1,
                   textAlign: TextAlign.right,
                   overflow: TextOverflow.ellipsis,

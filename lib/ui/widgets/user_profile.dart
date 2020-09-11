@@ -75,7 +75,7 @@ class _UserProfileState extends State<UserProfile> {
                 style: TextStyle(
                   color: Colors.black87,
                   fontWeight: FontWeight.w700,
-                  fontSize: 20.0,
+                  fontSize: 19.0,
                 ),
               ),
               SizedBox(
