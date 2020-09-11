@@ -243,7 +243,7 @@ class AccountAPIClient {
 
     final session = prefs.getString('session');
 
-    final url = '$baseUrl/account/user/$pid/deliveries' +
+    final url = '$baseUrl/account/user/$pid/deliveries/' +
         (page != null ? '?page=$page' : '');
     final res = await httpClient.get(
       url,
@@ -258,7 +258,7 @@ class AccountAPIClient {
 
     final decoded = utf8.decode(res.bodyBytes);
 
-    final deliveries = json.decode(decoded)['results'];
+    final deliveries = json.decode(decoded);
 
     return deliveries
         .map<PartialOrder>((delivery) => PartialOrder.fromJson(delivery))
