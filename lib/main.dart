@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:Eliverd/bloc/deliveryBloc.dart';
 import 'package:Eliverd/bloc/orderBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,6 +60,20 @@ class EliverdCustomer extends StatelessWidget {
             ),
           ),
         ),
+        BlocProvider<DeliveryBloc>(
+          create: (_) => DeliveryBloc(
+            deliveryRepository: DeliveryRepository(
+              deliveryAPIClient: DeliveryAPIClient(
+                httpClient: http.Client(),
+              ),
+            ),
+            accountRepository: AccountRepository(
+              accountAPIClient: AccountAPIClient(
+                httpClient: http.Client(),
+              ),
+            ),
+          ),
+        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

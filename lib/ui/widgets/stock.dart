@@ -726,3 +726,96 @@ class StockOnOrder extends StatelessWidget {
     )?.format(price);
   }
 }
+
+class StockOnDelivery extends StatelessWidget {
+  final OrderedStock orderedStock;
+
+  const StockOnDelivery({Key key, this.orderedStock}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 0.0,
+        right: 0.0,
+        top: 8.0,
+        bottom: 0.0,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Flexible(
+            flex: 1,
+            child: ConstrainedBox(
+              constraints: BoxConstraints.expand(
+                height: width * 0.25,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black12,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Text(
+                    '사진 없음',
+                    style: const TextStyle(
+                      color: Colors.black45,
+                      fontSize: 12.0,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 4.0),
+          Flexible(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  orderedStock.stock.product.manufacturer.name,
+                  maxLines: 1,
+                  textAlign: TextAlign.left,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13.0,
+                  ),
+                ),
+                Text(
+                  orderedStock.stock.product.name,
+                  maxLines: 1,
+                  textAlign: TextAlign.left,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 17.0,
+                  ),
+                ),
+                SizedBox(height: 1.6),
+                CategoryWidget(
+                  categoryId: orderedStock.stock.product.category,
+                  fontSize: 9.0,
+                  padding: 2.0,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String formattedPrice(int price) {
+    return NumberFormat.currency(
+      locale: 'ko',
+      symbol: '₩',
+    )?.format(price);
+  }
+}
