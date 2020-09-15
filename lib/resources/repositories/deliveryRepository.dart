@@ -9,7 +9,7 @@ class DeliveryRepository {
   final DeliveryAPIClient deliveryAPIClient;
 
   DeliveryRepository({@required this.deliveryAPIClient})
-      : assert(PurchaseAPIClient != null);
+      : assert(deliveryAPIClient != null);
 
   Future<PartialOrder> changeDeliveryState(String transportToken) async {
     final data = await deliveryAPIClient.changeDeliveryState(transportToken);

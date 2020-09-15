@@ -9,7 +9,7 @@ class StoreRepository {
   final StoreAPIClient storeAPIClient;
 
   StoreRepository({@required this.storeAPIClient})
-      : assert(StoreAPIClient != null);
+      : assert(storeAPIClient != null);
 
   Future<List<Store>> fetchStores(Coordinate coordinate) async {
     final stores = await storeAPIClient.fetchStoreListByLocation(coordinate);

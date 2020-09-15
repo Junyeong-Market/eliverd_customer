@@ -9,7 +9,7 @@ class PurchaseRepository {
   final PurchaseAPIClient purchaseAPIClient;
 
   PurchaseRepository({@required this.purchaseAPIClient})
-      : assert(PurchaseAPIClient != null);
+      : assert(purchaseAPIClient != null);
 
   Future<String> createOrder(
       List<Stock> items, List<int> amounts, Coordinate shippingDestination) async {
