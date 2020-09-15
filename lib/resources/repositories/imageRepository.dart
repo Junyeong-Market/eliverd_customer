@@ -17,7 +17,11 @@ class ImageRepository {
       throw Exception('File doesn\'t exist!');
     }
 
-    final url = await imageAPIClient.uploadImage(basename(image.path), image.readAsBytesSync());
+    final path = basename(image.path);
+    final ext = extension(image.path).replaceAll('.', '');
+    final bytes = image.readAsBytesSync();
+
+    final url = await imageAPIClient.uploadImage(path, ext, bytes);
 
     return url;
   }

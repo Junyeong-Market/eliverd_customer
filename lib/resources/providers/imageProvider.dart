@@ -14,13 +14,13 @@ class ImageAPIClient {
     @required this.httpClient,
   }) : assert(httpClient != null);
 
-  Future<String> uploadImage(String imageName, Uint8List imageBytes) async {
+  Future<String> uploadImage(String imageName, String imageExt, Uint8List imageBytes) async {
     final url = '$baseUrl/assets/';
 
     final res = await httpClient.post(
       url,
       headers: <String, String>{
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'image/$imageExt',
         'Content-Disposition': 'inline;filename=$imageName',
       },
       body: imageBytes,
