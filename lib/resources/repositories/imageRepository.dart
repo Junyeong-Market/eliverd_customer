@@ -12,6 +12,12 @@ class ImageRepository {
   ImageRepository({@required this.imageAPIClient})
       : assert(imageAPIClient != null);
 
+  Future<String> fetchImage(String id) async {
+    final url = await imageAPIClient.fetchImage(id);
+    
+    return url;
+  }
+
   Future<String> uploadImage(File image) async {
     if (!image.existsSync()) {
       throw Exception('File doesn\'t exist!');
