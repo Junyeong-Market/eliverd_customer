@@ -4,6 +4,7 @@ flutter_plugin_android_lifecycle=/Users/unperknown/.pub-cache/hosted/pub.dartlan
 geolocator=/Users/unperknown/.pub-cache/hosted/pub.dartlang.org/geolocator-5.3.2+2/
 google_api_availability=/Users/unperknown/.pub-cache/hosted/pub.dartlang.org/google_api_availability-2.0.4/
 google_maps_flutter=/Users/unperknown/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter-0.5.29/
+image_picker=/Users/unperknown/.pub-cache/hosted/pub.dartlang.org/image_picker-0.6.7+7/
 location_permissions=/Users/unperknown/.pub-cache/hosted/pub.dartlang.org/location_permissions-3.0.0+1/
 path_provider_linux=/Users/unperknown/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-0.0.1+2/
 shared_preferences=/Users/unperknown/.pub-cache/hosted/pub.dartlang.org/shared_preferences-0.5.8/
