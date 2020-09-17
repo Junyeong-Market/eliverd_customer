@@ -1,16 +1,17 @@
 import 'dart:io';
 
-import 'package:Eliverd/bloc/authBloc.dart';
-import 'package:Eliverd/bloc/events/authEvent.dart';
-import 'package:Eliverd/bloc/events/userEvent.dart';
-import 'package:Eliverd/bloc/states/authState.dart';
-import 'package:Eliverd/ui/pages/delivery_lookup.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:Eliverd/bloc/userBloc.dart';
+import 'package:Eliverd/bloc/authBloc.dart';
+
+import 'package:Eliverd/bloc/events/authEvent.dart';
+import 'package:Eliverd/bloc/events/userEvent.dart';
+
+import 'package:Eliverd/bloc/states/authState.dart';
 
 import 'package:Eliverd/resources/providers/accountProvider.dart';
 import 'package:Eliverd/resources/repositories/accountRepository.dart';
@@ -20,6 +21,8 @@ import 'package:Eliverd/common/color.dart';
 import 'package:Eliverd/ui/widgets/user_profile.dart';
 import 'package:Eliverd/ui/pages/order_lookup.dart';
 import 'package:Eliverd/ui/pages/proceed_delivery.dart';
+import 'package:Eliverd/ui/pages/delivery_lookup.dart';
+import 'package:Eliverd/ui/widgets/pick_image.dart';
 
 class MyPagePage extends StatefulWidget {
   @override

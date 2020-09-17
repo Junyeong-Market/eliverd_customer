@@ -45,5 +45,4 @@ class _ProceedDeliveryPageState extends State<ProceedDeliveryPage> {
       ),
     );
   }
-
 }
