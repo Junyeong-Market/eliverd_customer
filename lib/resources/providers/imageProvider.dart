@@ -8,6 +8,8 @@ import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:Eliverd/models/models.dart';
+
 class ImageAPIClient {
   static const baseUrl = 'SECRET:8000';
   final http.Client httpClient;
@@ -16,7 +18,7 @@ class ImageAPIClient {
     @required this.httpClient,
   }) : assert(httpClient != null);
 
-  Future<String> fetchImage(String id) async {
+  Future<Asset> fetchImage(String id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final session = prefs.getString('session');
@@ -35,10 +37,10 @@ class ImageAPIClient {
 
     final decoded = utf8.decode(res.bodyBytes);
 
-    return json.decode(decoded)['image'] as String;
+    return Asset.fromJson(json.decode(decoded));
   }
 
-  Future<String> uploadImage(
+  Future<Asset> uploadImage(
       String imageName, String imageExt, Uint8List imageBytes) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -62,6 +64,6 @@ class ImageAPIClient {
 
     final decoded = utf8.decode(res.bodyBytes);
 
-    return json.decode(decoded)['image'] as String;
+    return Asset.fromJson(json.decode(decoded));
   }
 }

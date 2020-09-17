@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart';
 
+import 'package:Eliverd/models/models.dart';
 import 'package:Eliverd/resources/providers/providers.dart';
 
 class ImageRepository {
@@ -12,13 +13,13 @@ class ImageRepository {
   ImageRepository({@required this.imageAPIClient})
       : assert(imageAPIClient != null);
 
-  Future<String> fetchImage(String id) async {
-    final url = await imageAPIClient.fetchImage(id);
-    
-    return url;
+  Future<Asset> fetchImage(String id) async {
+    final asset = await imageAPIClient.fetchImage(id);
+
+    return asset;
   }
 
-  Future<String> uploadImage(File image) async {
+  Future<Asset> uploadImage(File image) async {
     if (!image.existsSync()) {
       throw Exception('File doesn\'t exist!');
     }
@@ -27,8 +28,8 @@ class ImageRepository {
     final ext = extension(image.path).replaceAll('.', '');
     final bytes = image.readAsBytesSync();
 
-    final url = await imageAPIClient.uploadImage(path, ext, bytes);
+    final asset = await imageAPIClient.uploadImage(path, ext, bytes);
 
-    return url;
+    return asset;
   }
 }

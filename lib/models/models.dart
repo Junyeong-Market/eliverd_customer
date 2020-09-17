@@ -3,3 +3,4 @@ export './categories.dart';
 export './store.dart';
 export './product.dart';
 export './order.dart';
+export './asset.dart';
