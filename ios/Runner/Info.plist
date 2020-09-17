@@ -27,8 +27,6 @@
         <string>kakaotalk</string>
         <string>kakaopay</string>
     </array>
-	<key>NSCameraUsageDescription</key>
-	<string>Enable Eliverd to access your camera to capture your photo</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -50,11 +48,17 @@
 	<false/>
     <key>io.flutter.embedded_views_preview</key>
     <true/>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Eliverd가 디바이스의 사진 갤러리에 접근할 수 있도록 허용합니다.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Eliverd가 카메라 기능을 사용할 수 있도록 허용합니다.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Eliverd needs access to location when open.</string>
+    <string>Eliverd를 사용하는 중에만 디바이스의 위치를 추적합니다.</string>
     <key>NSLocationAlwaysUsageDescription</key>
-    <string>Eliverd needs access to location when in the background.</string>
+    <string>Eliverd를 사용하지 않더라도 항상 디바이스의 위치를 추적합니다.</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Eliverd needs access to location when open and in the background.</string>
+    <string>Eliverd를 사용하지 않더라도 항상 디바이스의 위치를 추적합니다.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Eliverd가 마이크 기능을 사용할 수 있도록 허용합니다.</string>
 </dict>
 </plist>
