@@ -22,7 +22,6 @@ import 'package:Eliverd/ui/widgets/user_profile.dart';
 import 'package:Eliverd/ui/pages/order_lookup.dart';
 import 'package:Eliverd/ui/pages/proceed_delivery.dart';
 import 'package:Eliverd/ui/pages/delivery_lookup.dart';
-import 'package:Eliverd/ui/widgets/pick_image.dart';
 
 class MyPagePage extends StatefulWidget {
   @override
