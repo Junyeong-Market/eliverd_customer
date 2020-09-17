@@ -14,7 +14,6 @@ class PickImageDialog extends StatefulWidget {
 }
 
 class _PickImageDialogState extends State<PickImageDialog> {
-  File _image;
   ImagePicker _imagePicker;
 
   @override
@@ -107,9 +106,8 @@ class _PickImageDialogState extends State<PickImageDialog> {
                         source: ImageSource.camera,
                       );
 
-                      setState(() {
-                        _image = File(pickedFile.path);
-                      });
+                      widget.onImageSelected(File(pickedFile.path));
+                      Navigator.pop(context);
                     },
                   ),
                 ),
@@ -154,9 +152,8 @@ class _PickImageDialogState extends State<PickImageDialog> {
                         source: ImageSource.gallery,
                       );
 
-                      setState(() {
-                        _image = File(pickedFile.path);
-                      });
+                      widget.onImageSelected(File(pickedFile.path));
+                      Navigator.pop(context);
                     },
                   ),
                 ),
