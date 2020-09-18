@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:Eliverd/common/color.dart';
+
 class PickImageDialog extends StatefulWidget {
   final ValueChanged<File> onImageSelected;
 
@@ -29,7 +31,7 @@ class _PickImageDialogState extends State<PickImageDialog> {
     final height = MediaQuery.of(context).size.height;
 
     return Container(
-      height: height * 0.4,
+      height: height * 0.3,
       padding: EdgeInsets.symmetric(
         horizontal: 20.0,
       ),
@@ -72,7 +74,7 @@ class _PickImageDialogState extends State<PickImageDialog> {
               Flexible(
                 child: ConstrainedBox(
                   constraints: BoxConstraints.expand(
-                    height: width * 0.45,
+                    height: width * 0.2,
                   ),
                   child: CupertinoButton(
                     padding: EdgeInsets.all(8.0),
@@ -99,7 +101,7 @@ class _PickImageDialogState extends State<PickImageDialog> {
                         ),
                       ],
                     ),
-                    color: Colors.black12.withOpacity(0.05),
+                    color: eliverdColor,
                     borderRadius: BorderRadius.circular(15.0),
                     onPressed: () async {
                       final pickedFile = await _imagePicker.getImage(
@@ -118,7 +120,7 @@ class _PickImageDialogState extends State<PickImageDialog> {
               Flexible(
                 child: ConstrainedBox(
                   constraints: BoxConstraints.expand(
-                    height: width * 0.45,
+                    height: width * 0.2,
                   ),
                   child: CupertinoButton(
                     padding: EdgeInsets.all(8.0),
@@ -145,7 +147,7 @@ class _PickImageDialogState extends State<PickImageDialog> {
                         ),
                       ],
                     ),
-                    color: Colors.black12.withOpacity(0.05),
+                    color: eliverdColor,
                     borderRadius: BorderRadius.circular(15.0),
                     onPressed: () async {
                       final pickedFile = await _imagePicker.getImage(
