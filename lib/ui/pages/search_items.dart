@@ -85,7 +85,7 @@ class _SearchItemsState extends State<SearchItems> {
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   border: Border.all(
-                    color: Colors.grey.withOpacity(0.5),
+                    color: Colors.black45,
                   ),
                 ),
                 padding: EdgeInsets.symmetric(

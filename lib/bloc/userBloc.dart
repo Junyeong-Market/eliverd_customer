@@ -64,7 +64,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final user = previous.copyWith(
         $realname: updates['realname'],
         $nickname: updates['nickname'],
-        $profile: updates['profile'],
+        $profile: profile,
       );
 
       final summary =
