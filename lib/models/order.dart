@@ -86,30 +86,30 @@ class Order extends Equatable {
 
   Order(
       {this.id,
-        this.tid,
-        this.customer,
-        this.partials,
-        this.createdAt,
-        this.status,
-        this.destination,
-        this.exclude});
+      this.tid,
+      this.customer,
+      this.partials,
+      this.createdAt,
+      this.status,
+      this.destination,
+      this.exclude});
 
   @override
   List<Object> get props =>
       [id, tid, customer, partials, createdAt, status, destination, exclude];
 
   static Order fromJson(dynamic json) => Order(
-    id: json['oid'],
-    tid: json['tid'],
-    customer: User.fromJson(json['customer']),
-    partials: json['partials']
-        .map<PartialOrder>((partial) => PartialOrder.fromJson(partial))
-        .toList(),
-    createdAt: DateTime.parse(json['created_at']),
-    status: json['status'],
-    destination: Coordinate.fromString(json['destination']),
-    exclude: json['exclude'],
-  );
+        id: json['oid'],
+        tid: json['tid'],
+        customer: User.fromJson(json['customer']),
+        partials: json['partials']
+            .map<PartialOrder>((partial) => PartialOrder.fromJson(partial))
+            .toList(),
+        createdAt: DateTime.parse(json['created_at']),
+        status: json['status'],
+        destination: Coordinate.fromString(json['destination']),
+        exclude: json['exclude'],
+      );
 
   @override
   String toString() {
@@ -117,16 +117,16 @@ class Order extends Equatable {
   }
 
   Map<String, dynamic> toJson() => {
-    'oid': id,
-    'tid': tid,
-    'customer': customer.toJson(),
-    'partials':
-    partials.map((PartialOrder partial) => partial.toJson()).toList(),
-    'created_at': createdAt.toIso8601String(),
-    'status': status,
-    'destination': destination.toJsonString(),
-    'exclude': exclude,
-  };
+        'oid': id,
+        'tid': tid,
+        'customer': customer.toJson(),
+        'partials':
+            partials.map((PartialOrder partial) => partial.toJson()).toList(),
+        'created_at': createdAt.toIso8601String(),
+        'status': status,
+        'destination': destination.toJsonString(),
+        'exclude': exclude,
+      };
 }
 
 class PartialOrder extends Equatable {
@@ -141,25 +141,25 @@ class PartialOrder extends Equatable {
 
   const PartialOrder(
       {this.poid,
-        this.store,
-        this.stocks,
-        this.transport,
-        this.createdAt,
-        this.status,
-        this.destination,
-        this.transportToken});
+      this.store,
+      this.stocks,
+      this.transport,
+      this.createdAt,
+      this.status,
+      this.destination,
+      this.transportToken});
 
   @override
   List<Object> get props => [
-    poid,
-    store,
-    stocks,
-    transport,
-    status,
-    createdAt,
-    destination,
-    transportToken
-  ];
+        poid,
+        store,
+        stocks,
+        transport,
+        status,
+        createdAt,
+        destination,
+        transportToken
+      ];
 
   @override
   String toString() {
@@ -167,30 +167,29 @@ class PartialOrder extends Equatable {
   }
 
   static PartialOrder fromJson(dynamic json) => PartialOrder(
-    poid: json['poid'],
-    store: Store.fromJson(json['store']),
-    stocks: json['stocks']
-        .map<OrderedStock>((stock) => OrderedStock.fromJson(stock))
-        .toList(),
-    transport: json['transport'] != null
-        ? User.fromJson(json['transport'])
-        : null,
-    status: json['status'],
-    createdAt: DateTime.parse(json['created_at']),
-    destination: Coordinate.fromString(json['destination']),
-    transportToken: json['transport_token'],
-  );
+        poid: json['poid'],
+        store: Store.fromJson(json['store']),
+        stocks: json['stocks']
+            .map<OrderedStock>((stock) => OrderedStock.fromJson(stock))
+            .toList(),
+        transport:
+            json['transport'] != null ? User.fromJson(json['transport']) : null,
+        status: json['status'],
+        createdAt: DateTime.parse(json['created_at']),
+        destination: Coordinate.fromString(json['destination']),
+        transportToken: json['transport_token'],
+      );
 
   Map<String, dynamic> toJson() => {
-    'poid': poid,
-    'store': store.toJson(),
-    'stocks': stocks.map((OrderedStock stock) => stock.toJson()).toList(),
-    'transport': transport.toJson(),
-    'created_at': createdAt.toIso8601String(),
-    'status': status,
-    'destination': destination.toJsonString(),
-    'transport_token': transportToken,
-  };
+        'poid': poid,
+        'store': store.toJson(),
+        'stocks': stocks.map((OrderedStock stock) => stock.toJson()).toList(),
+        'transport': transport.toJson(),
+        'created_at': createdAt.toIso8601String(),
+        'status': status,
+        'destination': destination.toJsonString(),
+        'transport_token': transportToken,
+      };
 }
 
 class OrderedStock extends Equatable {
@@ -210,16 +209,16 @@ class OrderedStock extends Equatable {
   }
 
   static OrderedStock fromJson(dynamic json) => OrderedStock(
-    osid: json['osid'],
-    amount: json['amount'],
-    status: json['status'],
-    stock: Stock.fromJsonWithoutStore(json['stock']),
-  );
+        osid: json['osid'],
+        amount: json['amount'],
+        status: json['status'],
+        stock: Stock.fromJsonWithoutStore(json['stock']),
+      );
 
   Map<String, dynamic> toJson() => {
-    'osid': osid,
-    'amount': amount,
-    'status': status,
-    'stock': stock.toJson(),
-  };
+        'osid': osid,
+        'amount': amount,
+        'status': status,
+        'stock': stock.toJson(),
+      };
 }
