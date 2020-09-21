@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:Eliverd/resources/providers/imageProvider.dart';
+import 'package:Eliverd/resources/repositories/imageRepository.dart';
+import 'package:Eliverd/ui/pages/change_profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,6 +41,11 @@ class _MyPagePageState extends State<MyPagePage> {
     _userBloc = UserBloc(
       accountRepository: AccountRepository(
         accountAPIClient: AccountAPIClient(
+          httpClient: http.Client(),
+        ),
+      ),
+      imageRepository: ImageRepository(
+        imageAPIClient: ImageAPIClient(
           httpClient: http.Client(),
         ),
       ),
@@ -125,6 +133,19 @@ class _MyPagePageState extends State<MyPagePage> {
               );
             },
             child: _buildOrderLookupButton(),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChangeProfilePage(
+                    userBloc: _userBloc,
+                  ),
+                ),
+              );
+            },
+            child: _buildChangeProfileButton(),
           ),
           GestureDetector(
             onTap: () {
@@ -224,6 +245,52 @@ class _MyPagePageState extends State<MyPagePage> {
                 flex: 15,
                 child: Text(
                   '주문 내역 조회',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 17.0,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              Flexible(
+                child: Text(
+                  '􀆊',
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  Widget _buildChangeProfileButton() => Card(
+        margin: EdgeInsets.zero,
+        elevation: 0.0,
+        color: Colors.transparent,
+        shape: Border(
+          bottom: BorderSide(
+            color: Colors.black12,
+            width: 1,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: 8.0,
+            top: 8.0,
+            bottom: 8.0,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 15,
+                child: Text(
+                  '프로필 수정',
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
