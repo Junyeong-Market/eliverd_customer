@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
@@ -20,12 +22,12 @@ class FetchUserInfo extends UserEvent {
 class UpdateUser extends UserEvent {
   final String nickname;
   final String realname;
-  final bool isSeller;
+  final File image;
 
-  const UpdateUser({@required this.nickname, this.realname, this.isSeller});
+  const UpdateUser({@required this.nickname, this.realname, this.image});
 
   @override
-  List<Object> get props => [nickname, realname, isSeller];
+  List<Object> get props => [nickname, realname, image];
 }
 
 class CloseUserAccount extends UserEvent {}
