@@ -1,11 +1,15 @@
 import 'package:equatable/equatable.dart';
 
+import 'package:Eliverd/models/models.dart';
+
 class User extends Equatable {
   final int pid;
   final String userId;
   final String password;
   final String nickname;
   final String realname;
+  final Coordinate home;
+  final Asset profile;
 
   const User({
     this.pid,
@@ -13,14 +17,17 @@ class User extends Equatable {
     this.password,
     this.nickname,
     this.realname,
+    this.home,
+    this.profile,
   });
 
   @override
-  List<Object> get props => [pid, userId, password, nickname, realname];
+  List<Object> get props =>
+      [pid, userId, password, nickname, realname, home, profile];
 
   @override
   String toString() {
-    return 'User{ pid: $pid, userId: $userId, password: $password, nickname: $nickname, realname: $realname }';
+    return 'User{ pid: $pid, userId: $userId, password: $password, nickname: $nickname, realname: $realname, home: $home, profile: $profile }';
   }
 
   static User fromJson(dynamic json) {
@@ -30,8 +37,21 @@ class User extends Equatable {
       password: json['password'],
       nickname: json['nickname'],
       realname: json['realname'],
+      home: Coordinate.fromString(json['home']),
+      profile: json['profile'] != null ? Asset.fromJson(json['profile']) : null,
     );
   }
+
+  User copyWith(
+          {String $password, String $nickname, String $realname, Asset $profile}) =>
+      User(
+        pid: pid,
+        userId: userId,
+        password: $password ?? password,
+        nickname: $nickname ?? nickname,
+        realname: $realname ?? realname,
+        profile: $profile ?? profile,
+      );
 
   Map<String, dynamic> toJson() => {
         'pid': pid,
@@ -39,6 +59,8 @@ class User extends Equatable {
         'password': password,
         'nickname': nickname,
         'realname': realname,
+        'home': home.toJsonString(),
+        'profile': profile.toJson(),
       };
 }
 

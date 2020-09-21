@@ -41,31 +41,49 @@ class _UserProfileState extends State<UserProfile> {
     return BlocBuilder<UserBloc, UserState>(
       cubit: widget.userBloc,
       builder: (context, state) {
-        if (state is UserInfoFetched) {
+        if (state is UserFetched) {
           return Column(
             children: <Widget>[
-              Container(
-                width: width * 0.3,
-                height: width * 0.3,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: [Colors.black54, Colors.black26],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight),
-                  borderRadius: BorderRadius.circular(100.0),
-                ),
-                child: Center(
-                  child: Text(
-                    state.user.nickname,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22.0,
+              state.user.profile != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(100.0),
+                      child: Image.network(
+                        state.user.profile.image,
+                        fit: BoxFit.fill,
+                        width: width * 0.3,
+                        height: width * 0.3,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent loadingProgress) {
+                          if (loadingProgress == null) return child;
+
+                          return Center(
+                            child: CupertinoActivityIndicator(),
+                          );
+                        },
+                      ),
+                    )
+                  : Container(
+                      width: width * 0.3,
+                      height: width * 0.3,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: [Colors.black54, Colors.black26],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight),
+                        borderRadius: BorderRadius.circular(100.0),
+                      ),
+                      child: Center(
+                        child: Text(
+                          state.user.nickname,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22.0,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
               SizedBox(
                 height: 4.0,
               ),
@@ -77,6 +95,19 @@ class _UserProfileState extends State<UserProfile> {
                   fontWeight: FontWeight.w700,
                   fontSize: 19.0,
                 ),
+              ),
+              Visibility(
+                child: Text(
+                  state.user.nickname,
+                  maxLines: 1,
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13.0,
+                  ),
+                ),
+                visible: state.user.profile != null,
+                maintainSize: false,
               ),
               SizedBox(
                 height: 16.0,
